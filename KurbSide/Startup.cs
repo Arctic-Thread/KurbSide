@@ -48,7 +48,7 @@ namespace KurbSide
             //    .AddRoleManager<RoleManager<IdentityRole>>()
             //    .AddDefaultUI()
             //    .AddDefaultTokenProviders()
-            //    .AddEntityFrameworkStores<KSContext>();
+            //    .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -66,6 +66,7 @@ namespace KurbSide
                 opt.User.AllowedUserNameCharacters =
                     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 opt.User.RequireUniqueEmail = true;
+                opt.SignIn.RequireConfirmedEmail = true;
             });
         }
 
