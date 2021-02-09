@@ -55,11 +55,11 @@ namespace KurbSide
 
             services.Configure<IdentityOptions>(opt =>
             {
-                //opt.Password.RequireDigit = false;
-                //opt.Password.RequireLowercase = false;
-                //opt.Password.RequireNonAlphanumeric = false;
-                //opt.Password.RequireUppercase = false;
-                //opt.Password.RequiredUniqueChars = 0;
+                opt.Password.RequireDigit = false;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequiredUniqueChars = 0;
                 opt.Lockout.MaxFailedAccessAttempts = 5;
                 opt.Lockout.AllowedForNewUsers = true;
 
