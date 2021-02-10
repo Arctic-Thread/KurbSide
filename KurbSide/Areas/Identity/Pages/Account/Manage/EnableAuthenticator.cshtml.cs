@@ -99,16 +99,20 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
 
             StatusMessage = "Your authenticator app has been verified.";
 
-            if (await _userManager.CountRecoveryCodesAsync(user) == 0)
-            {
-                var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
-                RecoveryCodes = recoveryCodes.ToArray();
-                return RedirectToPage("./ShowRecoveryCodes");
-            }
-            else
-            {
-                return RedirectToPage("./TwoFactorAuthentication");
-            }
+            //Generate new recovery codes when 2FA is enabled
+            var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+            RecoveryCodes = recoveryCodes.ToArray();
+            return RedirectToPage("./ShowRecoveryCodes");
+            //if (await _userManager.CountRecoveryCodesAsync(user) == 0)
+            //{
+            //    var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+            //    RecoveryCodes = recoveryCodes.ToArray();
+            //    return RedirectToPage("./ShowRecoveryCodes");
+            //}
+            //else
+            //{
+            //    return RedirectToPage("./TwoFactorAuthentication");
+            //}
         }
 
         private async Task LoadSharedKeyAndQrCodeUriAsync(IdentityUser user)
