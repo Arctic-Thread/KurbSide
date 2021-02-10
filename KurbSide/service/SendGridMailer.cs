@@ -5,6 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using KurbSide.Models;
+using System.Net;
+using System.Net.Mail;
 
 namespace KurbSide.service
 {

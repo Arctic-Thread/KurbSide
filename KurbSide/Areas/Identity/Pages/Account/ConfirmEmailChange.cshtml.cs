@@ -39,11 +39,16 @@ namespace KurbSide.Areas.Identity.Pages.Account
                 return NotFound($"Unable to load user with ID '{userId}'.");
             }
 
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            //code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+
             var result = await _userManager.ChangeEmailAsync(user, email, code);
             if (!result.Succeeded)
             {
-                StatusMessage = "Error changing email.";
+                foreach (var item in result.Errors)
+                {
+                    StatusMessage += item.Code + "-" + item.Description + " | ";
+                }
+                //StatusMessage = "Error changing email.";
                 return Page();
             }
 
@@ -57,8 +62,10 @@ namespace KurbSide.Areas.Identity.Pages.Account
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Thank you for confirming your email change.";
-            return Page();
+            TempData["sysMessage"] = $"Your email has been changed to {email}!";
+            return RedirectToPage("~/");
+            //StatusMessage = "Thank you for confirming your email change.";
+            //return Page();
         }
     }
 }

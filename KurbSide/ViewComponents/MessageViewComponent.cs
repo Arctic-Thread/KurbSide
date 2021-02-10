@@ -16,9 +16,7 @@ namespace KurbSide.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            //TempData["sysMessage"] = "test";
             return await Task.FromResult((IViewComponentResult)View("Default"));
-            //return await Task.FromResult((IViewComponentResult)View("Default", model));
         }
     }
 }

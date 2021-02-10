@@ -17,7 +17,7 @@
                 </a>
 
                 @* Navbar in Shared/Components/NavBar/Default.cshtml *@
-                @(await Component.InvokeAsync("NavBar"))
+                <vc:nav-bar />
 
             </div>
         </nav>
@@ -25,7 +25,7 @@
     <div class="container">
 
         @* Global notification message via ViewData["sysMessage"] *@
-        @(await Component.InvokeAsync("Message"))
+        <vc:Message />
 
         <main role="main" class="pb-3">
             @RenderBody()

@@ -14,11 +14,13 @@ namespace KurbSide.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class ConfirmEmailModel : PageModel
     {
+        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public ConfirmEmailModel(UserManager<IdentityUser> userManager)
+        public ConfirmEmailModel(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [TempData]
@@ -39,8 +41,12 @@ namespace KurbSide.Areas.Identity.Pages.Account
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
-            StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
-            return Page();
+            TempData["sysMessage"] = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+
+
+            await _signInManager.SignInAsync(user, true);
+            return RedirectToPage("~/");
+            //return LocalRedirect("~/");
         }
     }
 }

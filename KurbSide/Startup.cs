@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using KurbSide.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using KurbSide.service;
 
 namespace KurbSide
 {
@@ -68,6 +70,8 @@ namespace KurbSide
                 opt.User.RequireUniqueEmail = true;
                 opt.SignIn.RequireConfirmedEmail = true;
             });
+
+            services.AddTransient<IEmailSender, SendGridMailer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
