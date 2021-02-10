@@ -148,7 +148,7 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
         {
             return string.Format(
                 AuthenticatorUriFormat,
-                _urlEncoder.Encode("KurbSide"),
+                _urlEncoder.Encode($"KurbSide - {email}"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }
