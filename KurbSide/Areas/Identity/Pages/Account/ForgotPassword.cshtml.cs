@@ -22,8 +22,8 @@ namespace KurbSide.Areas.Identity.Pages.Account
         public ForgotPasswordModel(UserManager<IdentityUser> userManager, IEmailSender emailSender)
         {
             _userManager = userManager;
-            //_emailSender = emailSender;
-            _emailSender = new service.SendGridMailer();
+            _emailSender = emailSender;
+            //_emailSender = new service.SendGridMailer();
         }
 
         [BindProperty]

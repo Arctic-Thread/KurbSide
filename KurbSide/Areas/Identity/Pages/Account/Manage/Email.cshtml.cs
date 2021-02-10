@@ -26,8 +26,8 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            //_emailSender = emailSender;
-            _emailSender = new service.SendGridMailer();
+            _emailSender = emailSender;
+            //_emailSender = new service.SendGridMailer();
         }
 
         public string Username { get; set; }

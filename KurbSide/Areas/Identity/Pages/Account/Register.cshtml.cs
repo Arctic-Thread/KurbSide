@@ -33,8 +33,8 @@ namespace KurbSide.Areas.Identity.Pages.Account
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            //_emailSender = emailSender;
-            _emailSender = new service.SendGridMailer();
+            _emailSender = emailSender;
+            //_emailSender = new service.SendGridMailer();
         }
 
         [BindProperty]

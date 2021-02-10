@@ -18,8 +18,8 @@ namespace KurbSide.Areas.Identity.Pages.Account
         public RegisterConfirmationModel(UserManager<IdentityUser> userManager, IEmailSender sender)
         {
             _userManager = userManager;
-            //_sender = sender;
-            _sender = new service.SendGridMailer(); ;
+            _sender = sender;
+            //_sender = new service.SendGridMailer(); ;
         }
 
         public string Email { get; set; }
