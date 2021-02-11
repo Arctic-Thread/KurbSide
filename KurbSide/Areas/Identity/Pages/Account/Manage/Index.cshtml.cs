@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using KurbSide.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace KurbSide.Areas.Identity.Pages.Account.Manage
 {
@@ -13,16 +13,22 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly KSContext _context;
 
         public IndexModel(
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,
+            KSContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         public string Username { get; set; }
+
+        [Display(Name = "Kurbside Business ID")]
+        public string BusinessId { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -41,8 +47,13 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
 
             Username = userName;
+
+            BusinessId = business==null? "" : business.BusinessId.ToString();
 
             Input = new InputModel
             {

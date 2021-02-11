@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using KurbSide.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -22,18 +23,20 @@ namespace KurbSide.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly KSContext _context;
 
         public BusinessRegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            KSContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            //_emailSender = new service.SendGridMailer();
+            _context = context;
         }
 
         [BindProperty]
@@ -45,6 +48,7 @@ namespace KurbSide.Areas.Identity.Pages.Account
 
         public class InputModel
         {
+            //General Account Information
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -60,6 +64,8 @@ namespace KurbSide.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            //Business Information
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -78,6 +84,17 @@ namespace KurbSide.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                    //Create the business
+                    {
+                        var newBusiness = new Business
+                        {
+                            AspNetId = user.Id
+                        };
+
+                        _context.Business.Add(newBusiness);
+                        await _context.SaveChangesAsync();
+                    }
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -93,16 +110,6 @@ namespace KurbSide.Areas.Identity.Pages.Account
 
                     TempData["sysMessage"] = $"We've sent an email to {Input.Email}, Please confirm your account to continue.";
                     return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-
-                    //if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    //{
-                    //    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    //}
-                    //else
-                    //{
-                    //    await _signInManager.SignInAsync(user, isPersistent: false);
-                    //    return LocalRedirect(returnUrl);
-                    //}
                 }
                 foreach (var error in result.Errors)
                 {
