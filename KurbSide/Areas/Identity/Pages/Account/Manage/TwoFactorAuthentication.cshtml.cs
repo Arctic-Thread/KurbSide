@@ -64,7 +64,7 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.ForgetTwoFactorClientAsync();
-            StatusMessage = "The current browser has been forgotten. When you login again from this browser you will be prompted for your 2fa code.";
+            StatusMessage = "The current browser has been forgotten. When you login again from this browser you will be prompted for your 2FA code.";
             return RedirectToPage();
         }
     }
