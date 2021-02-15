@@ -23,7 +23,9 @@ namespace KurbSide.Models
         public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<Business> Business { get; set; }
+        public virtual DbSet<Country> Country { get; set; }
         public virtual DbSet<Member> Member { get; set; }
+        public virtual DbSet<Province> Province { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -141,11 +143,69 @@ namespace KurbSide.Models
 
                 entity.Property(e => e.BusinessId).HasDefaultValueSql("(newid())");
 
+                entity.Property(e => e.BusinessName)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.BusinessNumber).HasMaxLength(255);
+
+                entity.Property(e => e.City)
+                    .IsRequired()
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.CloseTime).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.CountryCode)
+                    .HasMaxLength(2)
+                    .HasDefaultValueSql("('CA')");
+
+                entity.Property(e => e.OpenTime).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.PhoneNumber)
+                    .IsRequired()
+                    .HasMaxLength(22);
+
+                entity.Property(e => e.Postal)
+                    .IsRequired()
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.ProvinceCode)
+                    .HasMaxLength(2)
+                    .HasDefaultValueSql("('ON')");
+
+                entity.Property(e => e.Street)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.StreetLn2).HasMaxLength(255);
+
                 entity.HasOne(d => d.AspNet)
                     .WithMany(p => p.Business)
                     .HasForeignKey(d => d.AspNetId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Business__AspNet__619B8048");
+
+                entity.HasOne(d => d.CountryCodeNavigation)
+                    .WithMany(p => p.Business)
+                    .HasForeignKey(d => d.CountryCode)
+                    .HasConstraintName("FK__Business__Countr__25518C17");
+
+                entity.HasOne(d => d.ProvinceCodeNavigation)
+                    .WithMany(p => p.Business)
+                    .HasForeignKey(d => d.ProvinceCode)
+                    .HasConstraintName("FK__Business__Provin__2645B050");
+            });
+
+            modelBuilder.Entity<Country>(entity =>
+            {
+                entity.HasKey(e => e.CountryCode)
+                    .HasName("PK__Country__5D9B0D2D68D0B277");
+
+                entity.Property(e => e.CountryCode).HasMaxLength(2);
+
+                entity.Property(e => e.FullName)
+                    .IsRequired()
+                    .HasMaxLength(60);
             });
 
             modelBuilder.Entity<Member>(entity =>
@@ -160,6 +220,34 @@ namespace KurbSide.Models
                     .HasForeignKey(d => d.AspNetId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Member__AspNetId__5DCAEF64");
+            });
+
+            modelBuilder.Entity<Province>(entity =>
+            {
+                entity.HasKey(e => e.ProvinceCode)
+                    .HasName("PK__Province__11D9FAD43C8ED12D");
+
+                entity.Property(e => e.ProvinceCode).HasMaxLength(2);
+
+                entity.Property(e => e.CountryCode)
+                    .IsRequired()
+                    .HasMaxLength(2);
+
+                entity.Property(e => e.FullName)
+                    .IsRequired()
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.TaxCode)
+                    .HasMaxLength(5)
+                    .HasDefaultValueSql("('')");
+
+                entity.Property(e => e.TaxRate).HasDefaultValueSql("((0))");
+
+                entity.HasOne(d => d.CountryCodeNavigation)
+                    .WithMany(p => p.Province)
+                    .HasForeignKey(d => d.CountryCode)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Province__Countr__208CD6FA");
             });
 
             OnModelCreatingPartial(modelBuilder);

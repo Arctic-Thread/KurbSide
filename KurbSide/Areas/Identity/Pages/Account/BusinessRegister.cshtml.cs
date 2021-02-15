@@ -66,6 +66,7 @@ namespace KurbSide.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             //Business Information
+            public string BusinessName { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
