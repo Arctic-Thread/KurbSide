@@ -22,5 +22,6 @@ namespace KurbSide.Models
         public virtual AspNetUsers AspNet { get; set; }
         public virtual Country CountryCodeNavigation { get; set; }
         public virtual Province ProvinceCodeNavigation { get; set; }
+        public virtual BusinessHours BusinessHours { get; set; }
     }
 }

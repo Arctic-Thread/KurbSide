@@ -23,6 +23,7 @@ namespace KurbSide.Models
         public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<Business> Business { get; set; }
+        public virtual DbSet<BusinessHours> BusinessHours { get; set; }
         public virtual DbSet<Country> Country { get; set; }
         public virtual DbSet<Member> Member { get; set; }
         public virtual DbSet<Province> Province { get; set; }
@@ -141,6 +142,10 @@ namespace KurbSide.Models
                 entity.HasKey(e => new { e.AspNetId, e.BusinessId })
                     .HasName("PK__Business__6321891DBA3473ED");
 
+                entity.HasIndex(e => e.BusinessId)
+                    .HasName("PK_Business_Unique")
+                    .IsUnique();
+
                 entity.Property(e => e.BusinessId).HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.BusinessName)
@@ -196,6 +201,21 @@ namespace KurbSide.Models
                     .HasConstraintName("FK__Business__Provin__2645B050");
             });
 
+            modelBuilder.Entity<BusinessHours>(entity =>
+            {
+                entity.HasKey(e => e.BusinessId)
+                    .HasName("PK__Business__F1EAA36E6DDC9C5A");
+
+                entity.Property(e => e.BusinessId).ValueGeneratedNever();
+
+                entity.HasOne(d => d.Business)
+                    .WithOne(p => p.BusinessHours)
+                    .HasPrincipalKey<Business>(p => p.BusinessId)
+                    .HasForeignKey<BusinessHours>(d => d.BusinessId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__BusinessH__Busin__3A4CA8FD");
+            });
+
             modelBuilder.Entity<Country>(entity =>
             {
                 entity.HasKey(e => e.CountryCode)
@@ -212,6 +232,10 @@ namespace KurbSide.Models
             {
                 entity.HasKey(e => new { e.AspNetId, e.MemberId })
                     .HasName("PK__Member__0CF0279A19B8FADE");
+
+                entity.HasIndex(e => e.MemberId)
+                    .HasName("PK_Member_Unique")
+                    .IsUnique();
 
                 entity.Property(e => e.MemberId).HasDefaultValueSql("(newid())");
 

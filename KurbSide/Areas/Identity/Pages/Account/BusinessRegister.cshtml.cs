@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -67,6 +68,18 @@ namespace KurbSide.Areas.Identity.Pages.Account
 
             //Business Information
             public string BusinessName { get; set; }
+            public string PhoneNumber { get; set; }
+            public DateTime OpenTime { get; set; }
+            public DateTime CloseTime { get; set; }
+
+            //Business Address
+            public string Street { get; set; }
+            public string StreetLn2 { get; set; }
+            public string City { get; set; }
+            public string Postal { get; set; }
+            public string ProvinceCode { get; set; }
+            public string CountryCode { get; set; }
+
         }
 
         public async Task OnGetAsync(string returnUrl = null)
