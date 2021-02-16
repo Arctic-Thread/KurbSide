@@ -1,10 +1,49 @@
-﻿<div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+﻿@{
+    var loggedInType = TempData["loggedInType"];
+    Business business = new Business();
+    Member member = new Member();
+    if (loggedInType.Equals("member"))
+    {
+        member = (Member)TempData["loggedInMember"];
+    }
+    else if (loggedInType.Equals("business"))
+    {
+        business = (Business)TempData["loggedInBusiness"];
+    }
+}
+
+<div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
     <partial name="_LoginPartial" />
-    @if (ViewData["email"].Equals(""))
+    @if (loggedInType.Equals(""))
+    {
+        @*<ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a id="navbar-home" name="navbar-home" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+            </ul>*@
+    }
+    else if (loggedInType.Equals("member"))
     {
         <ul class="navbar-nav flex-grow-1">
             <li class="nav-item">
                 <a id="navbar-home" name="navbar-home" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+        </ul>
+    }
+    else if (loggedInType.Equals("business"))
+    {
+        <ul class="navbar-nav flex-grow-1">
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Index"><strong>@business.BusinessName</strong> ></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Catalogue">Catalogue</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Orders">Orders (<span class="text-primary">0</span>)</a>
+            </li>
+            <li class="nav-item">
+                <span class="nav-link text-dark" title="todo*make this work">Status: <span class="text-success">Accepting Orders</span></span>
             </li>
         </ul>
     }
