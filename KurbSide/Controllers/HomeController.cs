@@ -28,6 +28,11 @@ namespace KurbSide.Controllers
             return View();
         }
 
+        public IActionResult PayPalTest()
+        {
+            return View("PayPalTest/PayPalTest");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
