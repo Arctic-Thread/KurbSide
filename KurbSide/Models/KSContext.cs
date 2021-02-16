@@ -160,6 +160,18 @@ namespace KurbSide.Models
 
                 entity.Property(e => e.CloseTime).HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.ContactFirst)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.ContactLast)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.ContactPhone)
+                    .IsRequired()
+                    .HasMaxLength(22);
+
                 entity.Property(e => e.CountryCode)
                     .HasMaxLength(2)
                     .HasDefaultValueSql("('CA')");

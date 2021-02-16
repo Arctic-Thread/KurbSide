@@ -2,37 +2,317 @@
 @model BusinessRegisterModel
 @{
     ViewData["Title"] = "Register";
+    bool useGeneric = false;
+    if (TempData["AdvancedChecked"] != null)
+    {
+        useGeneric = bool.Parse(TempData["AdvancedChecked"] + "");
+        //ViewData["UseGeneric"] = null;
+    }
+
 }
 
-<h1>@ViewData["Title"]</h1>
-
-<form class="row justify-content-center align-items-center jumbotron" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-    <div class="col-md-4">
-        <img src="/img/brand/kurbside/vector/Full Logo.svg" alt="KurbSide by Arctic Thread Logo" /><br /><br />
-        <hr />
-        <div asp-validation-summary="All" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="Input.Email"></label>
-            <input asp-for="Input.Email" class="form-control" />
-            <span asp-validation-for="Input.Email" class="text-danger"></span>
+@*<h1>@ViewData["Title"]</h1>*@
+<h1>@useGeneric</h1>
+<form class="" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row justify-content-center align-items-center jumbotron">
+        <div class="col-md-4">
+            <img src="/img/brand/kurbside/vector/Full Logo.svg" alt="KurbSide by Arctic Thread Logo" />
         </div>
-        <div class="form-group">
-            <label asp-for="Input.Password"></label>
-            <input asp-for="Input.Password" class="form-control" />
-            <span asp-validation-for="Input.Password" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Input.ConfirmPassword"></label>
-            <input asp-for="Input.ConfirmPassword" class="form-control" />
-            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+        <div class="col-md-4">
+            <div class="text-center">
+                <p>
+                    Welcome to KurbSide, We'll get your storefront up and running as quickly as possible, we just need some information first.<br />
+                    You will be able to add your catalouge and any other information not provided on this page after you confirm your email address, and your information is validated.
+                </p>
+            </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <p>WORK IN PROGRESS</p>
-        <button type="submit" class="btn btn-lg btn-block btn-primary">Register</button>
+    <div class="row justify-content-center align-items-center jumbotron">
+        <div class="col-md-4">
+            <div class="text-center">
+                <p>
+                    <h4>Step 1</h4>
+                    We'll start with some general information to generate an account with us. Please ensure that this is all accurate so that we can serve you easier.
+                    <i class="text-danger">Please note that each email address may only be used once. If you would like to register another account (Customer or Business), You must use an email not already registered with KurbSide.</i>
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h5>Primary Contact / Account Holder</h5>
+            <div class="form-group">
+                <label asp-for="Input.Email" hidden></label>
+                <input asp-for="Input.Email" class="form-control" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span class="row">
+                    <span class="col">
+                        <label asp-for="Input.ContactFirst" hidden></label>
+                        <input asp-for="Input.ContactFirst" class="form-control" />
+                        <span asp-validation-for="Input.ContactFirst" class="text-danger"></span>
+                    </span>
+                    <span class="col">
+                        <label asp-for="Input.ContactLast" hidden></label>
+                        <input asp-for="Input.ContactLast" class="form-control" />
+                        <span asp-validation-for="Input.ContactLast" class="text-danger"></span>
+                    </span>
+                </span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.ContactPhone" hidden></label>
+                <input asp-for="Input.ContactPhone" class="form-control" />
+                <span asp-validation-for="Input.ContactPhone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Password" hidden></label>
+                <input asp-for="Input.Password" class="form-control" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.ConfirmPassword" hidden></label>
+                <input asp-for="Input.ConfirmPassword" class="form-control" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center align-items-center jumbotron">
+        <div class="col-md-4">
+            <div class="text-center">
+                <p>
+                    <h4>Step 2</h4>
+                    Now some information about your business. This will let us know (almost) everything we need to know to present your store properly to your customers!
+                </p>
+            </div>
+            <hr />
+            <div class="form-group">
+                <label asp-for="Input.BusinessName" hidden></label>
+                <input asp-for="Input.BusinessName" class="form-control" />
+                <span asp-validation-for="Input.BusinessName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.PhoneNumber" hidden></label>
+                <input asp-for="Input.PhoneNumber" class="form-control" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.BusinessNumber" hidden></label>
+                <input asp-for="Input.BusinessNumber" class="form-control" />
+                <span asp-validation-for="Input.BusinessNumber" class="text-danger"></span>
+                <p class="text-center text-secondary font-italic">
+                    <small>
+                        A federal business registration isn't required yet, but it will be in the future.
+                    </small>
+                </p>
+            </div>
+            <div class="form-group">
+                <span @(useGeneric?"display: none;":"") class="row" name="genericHours">
+                    <span class="col">
+                        <label asp-for="Input.GenericOpen"></label>
+                        <input asp-for="Input.GenericOpen" class="form-control" type="time" />
+                        <span asp-validation-for="Input.GenericOpen" class="text-danger"></span>
+                    </span>
+                    <span class="col">
+                        <label asp-for="Input.GenericClose"></label>
+                        <input asp-for="Input.GenericClose" class="form-control" type="time" />
+                        <span asp-validation-for="Input.GenericClose" class="text-danger"></span>
+                    </span>
+                </span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h5>
+                Address Information
+                <br />
+                <p>
+                    <small class="text-secondary">
+                        This is Your Store or Business, Not a personal address.
+                    </small>
+                </p>
+            </h5>
+            <div class="form-group">
+                <label id="streetlabel" asp-for="Input.Street" hidden></label>
+                <input id="street" asp-for="Input.Street" class="form-control" />
+                <span asp-validation-for="Input.Street" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.StreetLn2" hidden></label>
+                <input asp-for="Input.StreetLn2" class="form-control" />
+                <span asp-validation-for="Input.StreetLn2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span class="row">
+                    <span class="col">
+                        <label asp-for="Input.City" hidden></label>
+                        <input asp-for="Input.City" class="form-control" />
+                        <span asp-validation-for="Input.City" class="text-danger"></span>
+                    </span>
+                    <span class="col">
+                        <label asp-for="Input.Postal" hidden></label>
+                        <input asp-for="Input.Postal" class="form-control" />
+                        <span asp-validation-for="Input.Postal" class="text-danger"></span>
+                    </span>
+                </span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.ProvinceCode" hidden></label>
+                <select asp-for="Input.ProvinceCode" class="form-control" asp-items="ViewBag.ProvinceCode"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.CountryCode" hidden></label>
+                <select asp-for="Input.CountryCode" class="form-control" asp-items="ViewBag.CountryCode"></select>
+                <p class="text-center text-secondary font-italic">
+                    <small>
+                        Don't see your Country or Province? We're expanding to more markets and hope to serve you soon!
+                    </small>
+                </p>
+            </div>
+            @if (useGeneric)
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" asp-for="Input.UseGeneric" checked>
+                    <label asp-for="Input.UseGeneric"> </label>
+                </div>
+            }
+            else
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" asp-for="Input.UseGeneric">
+                    <label asp-for="Input.UseGeneric"> </label>
+                </div>
+            }
+        </div>
+    </div>
+    <div style="@(useGeneric?"":"display: none;")" name="advancedHours" class="row justify-content-center align-items-center jumbotron">
+        <style>
+            .openHours {
+                padding: .4em;
+                border-radius: .3rem;
+            }
+        </style>
+        <div class="col-md-4">
+            <div class="text-center">
+                <p>
+                    <h4>Step 3*</h4>
+                    You've opted for more advanced options for your business' hours. <br />
+                    Note: For now, if you want to mark a day as closed, set the open and close times to be the same.
+                </p>
+            </div>
+            <hr />
+            <div class="form-group bg-light openHours">
+                <span class="row">
+                    <span class="col">
+                        <label asp-for="Input.MonOpen"></label>
+                        <input asp-for="Input.MonOpen" class="form-control" type="time" />
+                        <span asp-validation-for="Input.MonOpen" class="text-danger"></span>
+                    </span>
+                    <span class="col">
+                        <label asp-for="Input.MonClose"></label>
+                        <input asp-for="Input.MonClose" class="form-control" type="time" />
+                        <span asp-validation-for="Input.MonClose" class="text-danger"></span>
+                    </span>
+                </span>
+            </div>
+            <div class="form-group bg-light openHours">
+                <span class="row">
+                    <span class="col">
+                        <label asp-for="Input.TuesOpen"></label>
+                        <input asp-for="Input.TuesOpen" class="form-control" type="time" />
+                        <span asp-validation-for="Input.TuesOpen" class="text-danger"></span>
+                    </span>
+                    <span class="col">
+                        <label asp-for="Input.TuesClose"></label>
+                        <input asp-for="Input.TuesClose" class="form-control" type="time" />
+                        <span asp-validation-for="Input.TuesClose" class="text-danger"></span>
+                    </span>
+                </span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group bg-light openHours">
+                <span class="row">
+                    <span class="col">
+                        <label asp-for="Input.WedOpen"></label>
+                        <input asp-for="Input.WedOpen" class="form-control" type="time" />
+                        <span asp-validation-for="Input.WedOpen" class="text-danger"></span>
+                    </span>
+                    <span class="col">
+                        <label asp-for="Input.WedClose"></label>
+                        <input asp-for="Input.WedClose" class="form-control" type="time" />
+                        <span asp-validation-for="Input.WedClose" class="text-danger"></span>
+                    </span>
+                </span>
+            </div>
+            <div class="form-group bg-light openHours">
+                <span class="row">
+                    <span class="col">
+                        <label asp-for="Input.ThuOpen"></label>
+                        <input asp-for="Input.ThuOpen" class="form-control" type="time" />
+                        <span asp-validation-for="Input.ThuOpen" class="text-danger"></span>
+                    </span>
+                    <span class="col">
+                        <label asp-for="Input.ThuClose"></label>
+                        <input asp-for="Input.ThuClose" class="form-control" type="time" />
+                        <span asp-validation-for="Input.ThuClose" class="text-danger"></span>
+                    </span>
+                </span>
+            </div>
+            <div class="form-group bg-light openHours">
+                <span class="row">
+                    <span class="col">
+                        <label asp-for="Input.FriOpen"></label>
+                        <input asp-for="Input.FriOpen" class="form-control" type="time" />
+                        <span asp-validation-for="Input.FriOpen" class="text-danger"></span>
+                    </span>
+                    <span class="col">
+                        <label asp-for="Input.FriClose"></label>
+                        <input asp-for="Input.FriClose" class="form-control" type="time" />
+                        <span asp-validation-for="Input.FriClose" class="text-danger"></span>
+                    </span>
+                </span>
+            </div>
+            <div class="form-group bg-light openHours">
+                <span class="row">
+                    <span class="col">
+                        <label asp-for="Input.SatOpen"></label>
+                        <input asp-for="Input.SatOpen" class="form-control" type="time" />
+                        <span asp-validation-for="Input.SatOpen" class="text-danger"></span>
+                    </span>
+                    <span class="col">
+                        <label asp-for="Input.SatClose"></label>
+                        <input asp-for="Input.SatClose" class="form-control" type="time" />
+                        <span asp-validation-for="Input.SatClose" class="text-danger"></span>
+                    </span>
+                </span>
+            </div>
+            <div class="form-group bg-light openHours">
+                <span class="row">
+                    <span class="col">
+                        <label asp-for="Input.SunOpen"></label>
+                        <input asp-for="Input.SunOpen" class="form-control" type="time" />
+                        <span asp-validation-for="Input.SunOpen" class="text-danger"></span>
+                    </span>
+                    <span class="col">
+                        <label asp-for="Input.SunClose"></label>
+                        <input asp-for="Input.SunClose" class="form-control" type="time" />
+                        <span asp-validation-for="Input.SunClose" class="text-danger"></span>
+                    </span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center align-items-center">
+        <button type="submit" class="btn btn-lg btn-primary">Finish and Register</button>
     </div>
 </form>
-
+<script>
+    var elem = document.getElementsByName('advancedHours')[0];
+    var elem2 = document.getElementsByName('genericHours')[0];
+    document.getElementsByName('Input.UseGeneric')[0].onchange = function () {
+        elem.style.display = this.checked ? '' : 'none';
+        elem2.style.display = this.checked ? 'none' : '';
+    };
+</script>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

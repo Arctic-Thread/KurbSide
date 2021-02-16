@@ -18,6 +18,9 @@ namespace KurbSide.Models
         public string ProvinceCode { get; set; }
         public string CountryCode { get; set; }
         public string BusinessNumber { get; set; }
+        public string ContactPhone { get; set; }
+        public string ContactFirst { get; set; }
+        public string ContactLast { get; set; }
 
         public virtual AspNetUsers AspNet { get; set; }
         public virtual Country CountryCodeNavigation { get; set; }
