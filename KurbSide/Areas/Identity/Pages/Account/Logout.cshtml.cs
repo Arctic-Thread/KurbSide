@@ -30,6 +30,7 @@ namespace KurbSide.Areas.Identity.Pages.Account
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
+            TempData["sysMessage"] = $"You have been logged out of your account.";
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);

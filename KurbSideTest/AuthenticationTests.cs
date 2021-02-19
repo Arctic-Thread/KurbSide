@@ -216,5 +216,52 @@ namespace KurbSideTest
             //Assert
             Assert.IsNotNull(result);
         }
+
+        /// <summary>
+        /// UC06 - Logout
+        /// Logs into a test account then logs out.
+        /// </summary>
+        //[Order(1)]
+        [Test]
+        public void Authentication_Logout_ShouldPass()
+        {
+            // Arrange
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+
+            // Login Details
+            string loginEmail = "test@kurbsi.de";
+            string loginPassword = "Password12345";
+
+            // Fields & Buttons
+            string navbarLoginButtonID = "navbar-login";
+            string navbarlogoutButtonID = "navbar-logout";
+            string loginEmailFieldID = "Input_Email";
+            string loginPasswordFieldID = "Input_Password";
+            string loginButtonID = "login-button";
+            string sysMessageID = "sysMessage";
+
+            // Titles
+            string homePageTitle = "Home Page - KurbSide";
+            string loginPageTitle = "Log in - KurbSide";
+
+            // Expected Result
+            string expectedResult = "× You have been logged out of your account.";
+
+            //Act
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
+            _driver.FindElement(By.Id(navbarLoginButtonID)).Click(); // Click login buttin in navbar.
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(loginPageTitle)); // Wait until login page is visible
+            _driver.FindElement(By.Id(loginEmailFieldID)).SendKeys(loginEmail); // Send email to email field.
+            _driver.FindElement(By.Id(loginPasswordFieldID)).SendKeys(loginPassword); // Send password to password field.
+            _driver.FindElement(By.Id(loginButtonID)).Click(); // Click the login button.
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
+            _driver.FindElement(By.Id(navbarlogoutButtonID)).Click(); // Click the logout button
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
+
+            string result = _driver.FindElement(By.Id(sysMessageID)).Text;
+
+            //Assert
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }
