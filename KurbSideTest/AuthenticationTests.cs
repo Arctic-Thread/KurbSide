@@ -269,7 +269,7 @@ namespace KurbSideTest
 
         /// <summary>
         /// UC07 - Change Password
-        /// Logs into a test account then logs out.
+        /// Logs into a test account then changes the password.
         /// </summary>
         //[Order(1)]
         [Test]
