@@ -9,9 +9,9 @@
 <div class="row d-flex justify-content-center align-items-center">
     <div class="jumbotron col-md-4">
         <img src="/img/brand/kurbside/vector/Full Logo.svg" alt="KurbSide by Arctic Thread Logo" /><br /><br />
-        <a class="btn btn-lg btn-block btn-primary" asp-area="Identity" asp-page="/Account/Login">Log In</a>
-        <a class="btn btn-lg btn-block btn-primary disabled" asp-area="Identity" asp-page="/Account/MemberRegister">Register</a>
-        <a class="btn btn-sm btn-block btn-dark btn-dark" asp-area="Identity" asp-page="/Account/BusinessRegister">Register as a Business</a>
+        <a id="register-page-login" class="btn btn-lg btn-block btn-primary" asp-area="Identity" asp-page="/Account/Login">Log In</a>
+        <a id="register-page-member-register" class="btn btn-lg btn-block btn-primary disabled" asp-area="Identity" asp-page="/Account/MemberRegister">Register</a>
+        <a id="register-page-business-register" class="btn btn-sm btn-block btn-dark btn-dark" asp-area="Identity" asp-page="/Account/BusinessRegister">Register as a Business</a>
         @*<form asp-route-returnUrl="@Model.ReturnUrl" method="post">
                 <h4>Create a new account.</h4>
                 <hr />
