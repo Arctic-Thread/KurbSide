@@ -1,7 +1,7 @@
 ﻿@page
 @model BusinessRegisterModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Register as Business";
     bool useGeneric = false;
     if (TempData["AdvancedChecked"] != null)
     {
@@ -131,8 +131,8 @@
                 </p>
             </h5>
             <div class="form-group">
-                <label id="streetlabel" asp-for="Input.Street" hidden></label>
-                <input id="street" asp-for="Input.Street" class="form-control" />
+                <label asp-for="Input.Street" hidden></label>
+                <input asp-for="Input.Street" class="form-control" />
                 <span asp-validation-for="Input.Street" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -302,7 +302,7 @@
         </div>
     </div>
     <div class="row justify-content-center align-items-center">
-        <button type="submit" class="btn btn-lg btn-primary">Finish and Register</button>
+        <button id="submit" type="submit" class="btn btn-lg btn-primary">Finish and Register</button>
     </div>
 </form>
 <script>
