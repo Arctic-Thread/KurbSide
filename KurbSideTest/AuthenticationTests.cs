@@ -173,14 +173,20 @@ namespace KurbSideTest
 
 
         //[Order(1)]
-        [Test]
-        public void Authentication_LoginWithValidInformation_ShouldPass()
+        /// <summary>
+        /// Logs in with both account types, member and business.
+        /// </summary>
+        /// <param name="testCaseEmail">The email for each account type</param>
+        /// <param name="testCaseNavbarLinks">The ID to the list of links in the navbar for the given account type</param>
+        [TestCase("member@kurbsi.de", "navbar-member-links")]
+        [TestCase("business@kurbsi.de", "navbar-business-links")]
+        public void Authentication_Login_ShouldPass(string testCaseEmail, string testCaseNavbarLinks)
         {
             // Arrange
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
             // Login Details
-            var loginEmail = "test@kurbsi.de";
+            var loginEmail = testCaseEmail;
             var loginPassword = "Password12345";
 
             // Fields & Buttons
@@ -188,14 +194,13 @@ namespace KurbSideTest
             var loginEmailFieldID = "Input_Email";
             var loginPasswordFieldID = "Input_Password";
             var loginButtonID = "login-button";
-            var navbarGreetingID = "navbar-greeting";
+            var navbarLinks = testCaseNavbarLinks;
 
             // Titles
             var homePageTitle = "Home Page - KurbSide";
             var loginPageTitle = "Log in - KurbSide";
 
             // Expected Result
-            var expectedResult = "Hello test@kurbsi.de!";
 
             //Act
             wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
@@ -205,10 +210,11 @@ namespace KurbSideTest
             _driver.FindElement(By.Id(loginPasswordFieldID)).SendKeys(loginPassword); // Send password to password field.
             _driver.FindElement(By.Id(loginButtonID)).Click(); // Click the login button.
             wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
-            var result = _driver.FindElement(By.Id(navbarGreetingID)).Text; // Should be "Hello test@kurbsi.de!"
+
+            var result = _driver.FindElement(By.Id(navbarLinks));
 
             //Assert
-            Assert.AreEqual(expectedResult, result);
+            Assert.IsNotNull(result);
         }
     }
 }

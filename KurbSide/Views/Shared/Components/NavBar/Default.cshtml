@@ -24,7 +24,7 @@
     }
     else if (loggedInType.Equals("member"))
     {
-        <ul class="navbar-nav flex-grow-1">
+        <ul id="navbar-member-links" class="navbar-nav flex-grow-1">
             <li class="nav-item">
                 <a id="navbar-home" name="navbar-home" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
             </li>
@@ -32,7 +32,7 @@
     }
     else if (loggedInType.Equals("business"))
     {
-        <ul class="navbar-nav flex-grow-1">
+        <ul id="navbar-business-links" class="navbar-nav flex-grow-1">
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Index"><strong>@business.BusinessName</strong> ></a>
             </li>
