@@ -266,5 +266,67 @@ namespace KurbSideTest
             //Assert
             Assert.AreEqual(expectedResult, result);
         }
+
+        /// <summary>
+        /// UC07 - Change Password
+        /// Logs into a test account then logs out.
+        /// </summary>
+        //[Order(1)]
+        [Test]
+        public void UC07_Authentication_ChangePassword_ShouldPass()
+        {
+            // Arrange
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+
+            // Login Details
+            string loginEmail = "test@kurbsi.de";
+            string loginPassword = "Password12345";
+
+            // Fields & Buttons
+            string navbarLoginButtonID = "navbar-login";
+            string loginEmailFieldID = "Input_Email";
+            string loginPasswordFieldID = "Input_Password";
+            string loginButtonID = "login-button";
+            string navbarAccountSettingsID = "navbar-account-settings";
+            string accountSettingschangePasswordID = "change-password";
+            string currentPasswordID = "Input_OldPassword";
+            string newPasswordID = "Input_NewPassword";
+            string confirmNewPasswordID = "Input_ConfirmPassword";
+            string updatePasswordButtonID = "update-password";
+            string sysMessageID = "sysMessage";
+
+            // Titles
+            string homePageTitle = "Home Page - KurbSide";
+            string loginPageTitle = "Log in - KurbSide";
+            string accountSettingsPageTitle = "Profile - KurbSide";
+            string changePasswordPageTitle = "Change password - KurbSide";
+
+            // Expected Result
+            string expectedResult = "× Your password has been changed.";
+
+            //Act
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
+            _driver.FindElement(By.Id(navbarLoginButtonID)).Click(); // Click login buttin in navbar.
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(loginPageTitle)); // Wait until login page is visible
+            _driver.FindElement(By.Id(loginEmailFieldID)).SendKeys(loginEmail); // Send email to email field.
+            _driver.FindElement(By.Id(loginPasswordFieldID)).SendKeys(loginPassword); // Send password to password field.
+            _driver.FindElement(By.Id(loginButtonID)).Click(); // Click the login button.
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
+            _driver.FindElement(By.Id(navbarAccountSettingsID)).Click(); // Click the logout button.
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(accountSettingsPageTitle)); // Wait until account settings page is visible.
+            _driver.FindElement(By.Id(accountSettingschangePasswordID)).Click(); // Click the change password button / "Password" link in account settings.
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(changePasswordPageTitle)); // Wait until account settings page is visible.
+
+            _driver.FindElement(By.Id(currentPasswordID)).SendKeys(loginPassword); // Enter the current password.
+            _driver.FindElement(By.Id(newPasswordID)).SendKeys(loginPassword); // Enter the "new" password, its the current password for the sake of the test case.
+            _driver.FindElement(By.Id(confirmNewPasswordID)).SendKeys(loginPassword); // confirm the "new" password, its the current password for the sake of the test case.
+            _driver.FindElement(By.Id(updatePasswordButtonID)).Click(); // Change the password.
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(changePasswordPageTitle)); // Wait until account settings page is visible.
+
+            string result = _driver.FindElement(By.Id(sysMessageID)).Text;
+
+            //Assert
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }

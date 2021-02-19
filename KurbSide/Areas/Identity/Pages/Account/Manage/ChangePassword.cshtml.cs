@@ -28,9 +28,6 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public InputModel Input { get; set; }
 
-        [TempData]
-        public string StatusMessage { get; set; }
-
         public class InputModel
         {
             [Required]
@@ -92,7 +89,7 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
-            StatusMessage = "Your password has been changed.";
+            TempData["sysMessage"] = "Your password has been changed.";
 
             return RedirectToPage();
         }
