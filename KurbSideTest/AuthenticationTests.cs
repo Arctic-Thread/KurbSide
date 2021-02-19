@@ -15,14 +15,14 @@ namespace KurbSideTest
 
         //[Order(1)]
         [Test]
-        public void Unit_Template_ShouldPass()
+        public void UC00_Category_ThingsUnderTest_ShouldPass()
         {
             // Arrange
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
             // Login Details
-            var loginEmail = "test@kurbsi.de";
-            var loginPassword = "Password12345";
+            string loginEmail = "test@kurbsi.de";
+            string loginPassword = "Password12345";
 
             // Fields & Buttons
 
@@ -38,9 +38,14 @@ namespace KurbSideTest
             Assert.AreEqual(expectedResult, result);
         }
 
+
+        /// <summary>
+        /// UC03 - Register as Business
+        /// Registers a new business account
+        /// </summary>
         //[Order(1)]
         [Test]
-        public void Authentication_BusinessRegister_ShouldPass()
+        public void UC03_Authentication_BusinessRegister_ShouldPass()
         {
             // Arrange
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
@@ -115,7 +120,7 @@ namespace KurbSideTest
             string registrationConfirmationPageTitle = "Register confirmation - KurbSide";
 
             // Expected Result
-            var expectedResult = $"× We've sent an email to {email}, Please confirm your account to continue.";
+            string expectedResult = $"× We've sent an email to {email}, Please confirm your account to continue.";
 
             //Act
             wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible
@@ -165,42 +170,40 @@ namespace KurbSideTest
 
             wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(registrationConfirmationPageTitle)); // Wait until confirmation page is visible
 
-            var result = _driver.FindElement(By.Id(sysMessageID)).Text;
+            string result = _driver.FindElement(By.Id(sysMessageID)).Text;
 
             //Assert
             Assert.AreEqual(expectedResult, result);
         }
 
-
-        //[Order(1)]
         /// <summary>
+        /// UC05 - Login
         /// Logs in with both account types, member and business.
         /// </summary>
         /// <param name="testCaseEmail">The email for each account type</param>
         /// <param name="testCaseNavbarLinks">The ID to the list of links in the navbar for the given account type</param>
+        //[Order(1)]
         [TestCase("member@kurbsi.de", "navbar-member-links")]
         [TestCase("business@kurbsi.de", "navbar-business-links")]
-        public void Authentication_Login_ShouldPass(string testCaseEmail, string testCaseNavbarLinks)
+        public void UC05_Authentication_Login_ShouldPass(string testCaseEmail, string testCaseNavbarLinks)
         {
             // Arrange
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
             // Login Details
-            var loginEmail = testCaseEmail;
-            var loginPassword = "Password12345";
+            string loginEmail = testCaseEmail;
+            string loginPassword = "Password12345";
 
             // Fields & Buttons
-            var navbarLoginButtonID = "navbar-login";
-            var loginEmailFieldID = "Input_Email";
-            var loginPasswordFieldID = "Input_Password";
-            var loginButtonID = "login-button";
-            var navbarLinks = testCaseNavbarLinks;
+            string navbarLoginButtonID = "navbar-login";
+            string loginEmailFieldID = "Input_Email";
+            string loginPasswordFieldID = "Input_Password";
+            string loginButtonID = "login-button";
+            string navbarLinks = testCaseNavbarLinks;
 
             // Titles
-            var homePageTitle = "Home Page - KurbSide";
-            var loginPageTitle = "Log in - KurbSide";
-
-            // Expected Result
+            string homePageTitle = "Home Page - KurbSide";
+            string loginPageTitle = "Log in - KurbSide";
 
             //Act
             wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
@@ -223,7 +226,7 @@ namespace KurbSideTest
         /// </summary>
         //[Order(1)]
         [Test]
-        public void Authentication_Logout_ShouldPass()
+        public void UC06_Authentication_Logout_ShouldPass()
         {
             // Arrange
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
