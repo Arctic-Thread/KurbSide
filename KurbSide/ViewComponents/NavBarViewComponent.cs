@@ -1,12 +1,11 @@
 ﻿using KurbSide.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
+#nullable enable
 namespace KurbSide.ViewComponents
 {
     [ViewComponent(Name = "NavBar")]
@@ -31,26 +30,19 @@ namespace KurbSide.ViewComponents
 
         private string GetAccountType(IdentityUser? IUser)
         {
-            if (IUser == null)
-            {
-                return "";
-            }
+            if (IUser == null) return "";
 
             bool hasBusiness = _context.Business.Where(b => b.AspNetId.Equals(IUser.Id)).Count() > 0;
             bool hasMember = _context.Member.Where(b => b.AspNetId.Equals(IUser.Id)).Count() > 0;
 
-            if (hasBusiness)
-            {
-                return "business";
-            }
-            else if (hasMember)
-            {
-                return "member";
-            }
-            else
-            {
-                return "";
-            }
+            /*
+             * HACK maybe make this an enum rather than a string to prevent future issues
+             *      actually nevermind because C# enums aren't like Java enums
+             *      for now keeping it standard to lowercase strings works :)
+             */
+            if (hasBusiness) return "business";
+            else if (hasMember) return "member";
+            else return "";
 
         }
 
@@ -73,5 +65,7 @@ namespace KurbSide.ViewComponents
 
             return await Task.FromResult((IViewComponentResult)View("Default"));
         }
+
     }
+
 }

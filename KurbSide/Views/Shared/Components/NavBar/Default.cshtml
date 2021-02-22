@@ -24,11 +24,11 @@
     }
     else if (loggedInType.Equals("member"))
     {
-        <ul id="navbar-member-links" class="navbar-nav flex-grow-1">
+        @*<ul class="navbar-nav flex-grow-1">
             <li class="nav-item">
                 <a id="navbar-home" name="navbar-home" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
             </li>
-        </ul>
+        </ul>*@
     }
     else if (loggedInType.Equals("business"))
     {
@@ -43,6 +43,7 @@
                 <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Orders">Orders (<span class="text-primary">0</span>)</a>
             </li>
             <li class="nav-item">
+                @* Dynamically tell the business if their profile is complete/store is open/closed *@
                 <span class="nav-link text-dark" title="todo*make this work">Status: <span class="text-success">Accepting Orders</span></span>
             </li>
         </ul>
