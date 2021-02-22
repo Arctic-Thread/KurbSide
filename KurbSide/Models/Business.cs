@@ -5,6 +5,11 @@ namespace KurbSide.Models
 {
     public partial class Business
     {
+        public Business()
+        {
+            Item = new HashSet<Item>();
+        }
+
         public string AspNetId { get; set; }
         public Guid BusinessId { get; set; }
         public string BusinessName { get; set; }
@@ -26,5 +31,6 @@ namespace KurbSide.Models
         public virtual Country CountryCodeNavigation { get; set; }
         public virtual Province ProvinceCodeNavigation { get; set; }
         public virtual BusinessHours BusinessHours { get; set; }
+        public virtual ICollection<Item> Item { get; set; }
     }
 }
