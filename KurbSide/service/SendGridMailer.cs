@@ -10,7 +10,7 @@ using KurbSide.Models;
 using System.Net;
 using System.Net.Mail;
 
-namespace KurbSide.service
+namespace KurbSide.Service
 {
     public class SendGridMailer : IEmailSender
     {

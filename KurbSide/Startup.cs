@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using KurbSide.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using KurbSide.service;
+using KurbSide.Service;
 
 namespace KurbSide
 {
@@ -54,6 +54,9 @@ namespace KurbSide
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddMemoryCache();
+            services.AddSession();
+            services.AddMvc();
 
             services.Configure<IdentityOptions>(opt =>
             {
@@ -95,7 +98,7 @@ namespace KurbSide
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

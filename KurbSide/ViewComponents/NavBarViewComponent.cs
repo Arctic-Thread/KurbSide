@@ -20,6 +20,8 @@ namespace KurbSide.ViewComponents
             _userManager = userManager;
         }
 
+
+        //Current User Utils 1.0
         private Task<IdentityUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         private async Task<string> GetLoggedInEmailAsync()
@@ -45,6 +47,8 @@ namespace KurbSide.ViewComponents
             else return "";
 
         }
+        //End Current User Utils 1.0
+
 
         public async Task<IViewComponentResult> InvokeAsync()
         {

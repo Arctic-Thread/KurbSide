@@ -1,0 +1,110 @@
+﻿@model KurbSide.Models.Business
+@{
+    ViewData["Title"] = "Business Dashboard";
+}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title text-sm-center">@Model.BusinessName</h5>
+        <p class="card-text text-sm-center">@Model.BusinessId</p>
+    </div>
+</div>
+
+<br />
+
+<form method="post" asp-controller="business" asp-action="edit" asp-route-id="@Model.BusinessId">
+    <input hidden type="text" asp-for="BusinessId" />
+    <input hidden type="text" asp-for="AspNetId" />
+
+    <div class="container container-fluid">
+        <div class="row">
+            <div class="col">
+
+                <div class="form-group">
+                    <label asp-for="BusinessName" class=""></label>
+                    <input type="text" asp-for="BusinessName" class="form-control" />
+                    <span asp-validation-for="BusinessName"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class=""></label>
+                    <input type="text" asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Street" class=""></label>
+                    <input type="text" asp-for="Street" class="form-control" />
+                    <span asp-validation-for="Street"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="StreetLn2" class=""></label>
+                    <input type="text" asp-for="StreetLn2" class="form-control" />
+                    <span asp-validation-for="StreetLn2"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="City" class=""></label>
+                    <input type="text" asp-for="City" class="form-control" />
+                    <span asp-validation-for="City"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Postal" class=""></label>
+                    <input type="text" asp-for="Postal" class="form-control" />
+                    <span asp-validation-for="Postal"></span>
+                </div>
+
+            </div>
+
+            <div class="col">
+
+                <div class="form-group">
+                    <label asp-for="ProvinceCode" class=""></label>
+                    <select type="text" asp-for="ProvinceCode" asp-items="ViewBag.ProvinceCode" class="form-control"></select>
+                    <span asp-validation-for="ProvinceCode"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CountryCode" class=""></label>
+                    <select type="text" asp-for="CountryCode" asp-items="ViewBag.CountryCode" class="form-control"></select>
+                    <span asp-validation-for="CountryCode"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="BusinessNumber" class=""></label>
+                    <input type="text" asp-for="BusinessNumber" class="form-control" />
+                    <span asp-validation-for="BusinessNumber"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ContactPhone" class=""></label>
+                    <input type="text" asp-for="ContactPhone" class="form-control" />
+                    <span asp-validation-for="ContactPhone"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ContactFirst" class=""></label>
+                    <input type="text" asp-for="ContactFirst" class="form-control" />
+                    <span asp-validation-for="ContactFirst"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ContactLast" class=""></label>
+                    <input type="text" asp-for="ContactLast" class="form-control" />
+                    <span asp-validation-for="ContactLast"></span>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row justify-content-between">
+            <button class="btn btn-sm btn-success btn-block" type="submit">Save Changes</button>
+        </div>
+    </div>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
