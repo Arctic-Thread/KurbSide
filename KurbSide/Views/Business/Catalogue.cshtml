@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Item>
+@{
+    ViewData["Title"] = "Business Catalogue";
+}
+
+@foreach (Item item in Model)
+{
+    <b>@Html.DisplayNameFor(modelItem => item.ItemId);</b>
+    <i>@Html.DisplayFor(modelItem => item.ItemId);</i>
+    <br />
+    <b>@Html.DisplayNameFor(modelItem => item.ItemName);</b>
+    <i>@Html.DisplayFor(modelItem => item.ItemName);</i>
+    <br />
+    <b>@Html.DisplayNameFor(modelItem => item.CategoryNavigation.EnglishName);</b>
+    <i>@Html.DisplayFor(modelItem => item.CategoryNavigation.EnglishName);</i>
+    <br />
+    <b>@Html.DisplayNameFor(modelItem => item.Upc);</b>
+    <i>@Html.DisplayFor(modelItem => item.Upc);</i>
+    <br />
+    <b>@Html.DisplayNameFor(modelItem => item.Sku);</b>
+    <i>@Html.DisplayFor(modelItem => item.Sku);</i>
+    <br />
+    <b>@Html.DisplayNameFor(modelItem => item.Price);</b>
+    <i>@Html.DisplayFor(modelItem => item.Price);</i>
+    <br />
+    <b>@Html.DisplayNameFor(modelItem => item.Details);</b>
+    <i>@Html.DisplayFor(modelItem => item.Details);</i>
+    <br />
+    <b>@Html.DisplayNameFor(modelItem => item.ImageLocation);</b>
+    <i>@Html.DisplayFor(modelItem => item.ImageLocation);</i>
+    <hr />
+}
+
+<a asp-controller="business" asp-action="addItem" class="btn btn-sm btn-success"></a>

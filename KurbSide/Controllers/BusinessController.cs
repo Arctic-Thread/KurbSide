@@ -94,6 +94,39 @@ namespace KurbSide.Controllers
             return RedirectToAction("index");
         }
 
+        public async Task<IActionResult> Catalogue()
+        {
+            var user = await GetCurrentUserAsync();
+            var accountType = GetAccountType(user);
+            var isAllowed = accountType.Equals("business");
+
+            if (!isAllowed) return RedirectToAction("index");
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var items = await _context.Item
+                .Where(i => i.BusinessId.Equals(business.BusinessId))
+                .Include(i => i.Business)
+                .Include(i => i.Category)
+                .ToListAsync();
+
+            return View(items);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddItem(Guid id, Item item)
+        {
+            var user = await GetCurrentUserAsync();
+            var accountType = GetAccountType(user);
+            var isAllowed = accountType.Equals("business");
+
+            if (!isAllowed) return RedirectToAction("index");
+
+            return RedirectToAction("catalogue");
+        }
 
         //Current User Utils 1.0
         private Task<IdentityUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
