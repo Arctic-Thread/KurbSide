@@ -44,7 +44,7 @@ namespace KurbSideTest
         /// </summary>
         [Order(2)]
         [Test]
-        public void UC02_Generic_ViewPrivacyPlicy_ShouldPass()
+        public void UC02_Generic_ViewPrivacyPolicy_ShouldPass()
         {
             // Arrange
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));

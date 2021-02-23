@@ -40,7 +40,7 @@
             @*<th scope="col">
                 @Html.DisplayNameFor(modelItem => modelItem.ItemId)
             </th>*@
-            <th scope="col">
+            <th scope="col" >
                 @Html.DisplayNameFor(modelItem => modelItem.ItemName)
             </th>
             <th scope="col">
@@ -59,14 +59,14 @@
                 @Html.DisplayNameFor(modelItem => modelItem.Upc)
             </th>
             <th scope="col">
-                <a asp-controller="business" asp-action="addItem" class="btn btn-sm btn-success">New Item</a>
+                <a asp-controller="business" asp-action="addItem" class="btn btn-sm btn-success" id="catalogue-AddItem">New Item</a>
             </th>
         </tr>
     </thead>
     <tbody>
         @foreach (Item item in Model)
         {
-        <tr>
+        <tr >
             @*<td class="align-middle">
             @item.ItemId
         </td>*@
