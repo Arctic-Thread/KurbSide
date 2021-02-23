@@ -41,9 +41,8 @@ namespace KurbSide.Annotations
                 {
                     return ValidationResult.Success;
                 }
-
-                var before = (DateTime) field.GetValue(validationContext.ObjectInstance);
-                var after = (DateTime) dependant.GetValue(validationContext.ObjectInstance);
+                var before = (TimeSpan)field.GetValue(validationContext.ObjectInstance);
+                var after = (TimeSpan)dependant.GetValue(validationContext.ObjectInstance);
 
                 if (before == null || after == null)
                 {
@@ -52,10 +51,9 @@ namespace KurbSide.Annotations
 
                 if (before > after)
                 {
-                    return new ValidationResult(ErrorMessage = _beforeName + " Must be before " + _afterName);
+                    return new ValidationResult(ErrorMessage = _afterName + " Must be after " + _beforeName);
                 }
                 return ValidationResult.Success;
-
             }
             else
             {

@@ -2,17 +2,18 @@
 @{
     ViewData["Title"] = "Business Add Item";
 }
-<div class="card">
+@*<div class="card">
     <div class="card-body">
         <h5 class="card-title text-sm-center">@Model.Business.BusinessName</h5>
         <p class="card-text text-sm-center">@Model.Business.BusinessId</p>
     </div>
-</div>
+</div>*@
 
 <br />
 
 <form method="post" asp-controller="business" asp-action="addItem" asp-route-id="@Model.BusinessId">
     <input hidden type="text" asp-for="BusinessId" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="container container-fluid">
         <div class="row">
@@ -64,10 +65,10 @@
                 </div>
 
                 @*<div class="form-group">
-                    <label asp-for="ImageLocation" class=""></label>
-                    <input type="text" asp-for="ImageLocation" class="form-control" placeholder="FUTURE USE" disabled />
-                    <span asp-validation-for="ImageLocation"></span>
-                </div>*@
+                        <label asp-for="ImageLocation" class=""></label>
+                        <input type="text" asp-for="ImageLocation" class="form-control" placeholder="FUTURE USE" disabled />
+                        <span asp-validation-for="ImageLocation"></span>
+                    </div>*@
 
             </div>
 

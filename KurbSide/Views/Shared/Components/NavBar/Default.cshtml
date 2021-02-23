@@ -43,8 +43,18 @@
                 <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Orders">Orders (<span class="text-primary">0</span>)</a>
             </li>
             <li class="nav-item">
-                @* Dynamically tell the business if their profile is complete/store is open/closed *@
-                <span class="nav-link text-dark" title="todo*make this work">Status: <span class="text-success">Accepting Orders</span></span>
+                @{
+                    var openForBusiness = (bool)TempData["openForBusiness"];
+                    if (openForBusiness)
+                    {
+                        <span class="nav-link text-dark">Status: <span class="text-success">Open - Accepting Orders</span></span>
+                    }
+                    else
+                    {
+                        <span class="nav-link text-dark">Status: <span class="text-danger">Closed - Not Accepting Orders</span></span>
+                    }
+                }
+
             </li>
         </ul>
     }

@@ -119,74 +119,74 @@ namespace KurbSide.Areas.Identity.Pages.Account
             [Display(Name = "Open Time")]
             [RequiredIf("UseGeneric", false)]
             [MustBeBefore("GenericOpen", "GenericClose", "Open", "Close")]
-            public DateTime? GenericOpen { get; set; }
+            public TimeSpan? GenericOpen { get; set; }
 
             [Display(Name = "Close Time")]
             [RequiredIf("UseGeneric", false)]
-            public DateTime? GenericClose { get; set; }
+            public TimeSpan? GenericClose { get; set; }
 
             [Display(Name = "Monday Open")]
             [RequiredIf("UseGeneric", true)]
             [MustBeBefore("MonOpen", "MonClose", "Open", "Close")]
-            public DateTime? MonOpen { get; set; }
+            public TimeSpan? MonOpen { get; set; }
 
             [Display(Name = "Close")]
             [RequiredIf("UseGeneric", true)]
-            public DateTime? MonClose { get; set; }
+            public TimeSpan? MonClose { get; set; }
 
             [Display(Name = "Tuesday Open")]
             [RequiredIf("UseGeneric", true)]
             [MustBeBefore("TuesOpen", "TuesClose", "Open", "Close")]
-            public DateTime? TuesOpen { get; set; }
+            public TimeSpan? TuesOpen { get; set; }
 
             [Display(Name = "Close")]
             [RequiredIf("UseGeneric", true)]
-            public DateTime? TuesClose { get; set; }
+            public TimeSpan? TuesClose { get; set; }
 
             [Display(Name = "Wednesday Open")]
             [RequiredIf("UseGeneric", true)]
             [MustBeBefore("WedOpen", "WedClose", "Open", "Close")]
-            public DateTime? WedOpen { get; set; }
+            public TimeSpan? WedOpen { get; set; }
 
             [Display(Name = "Close")]
             [RequiredIf("UseGeneric", true)]
-            public DateTime? WedClose { get; set; }
+            public TimeSpan? WedClose { get; set; }
 
             [Display(Name = "Thursday Open")]
             [RequiredIf("UseGeneric", true)]
             [MustBeBefore("ThuOpen", "ThuClose", "Open", "Close")]
-            public DateTime? ThuOpen { get; set; }
+            public TimeSpan? ThuOpen { get; set; }
 
             [Display(Name = "Close")]
             [RequiredIf("UseGeneric", true)]
-            public DateTime? ThuClose { get; set; }
+            public TimeSpan? ThuClose { get; set; }
 
             [Display(Name = "Friday Open")]
             [MustBeBefore("FriOpen", "FriClose", "Open", "Close")]
             [RequiredIf("UseGeneric", true)]
-            public DateTime? FriOpen { get; set; }
+            public TimeSpan? FriOpen { get; set; }
 
             [Display(Name = "Close")]
             [RequiredIf("UseGeneric", true)]
-            public DateTime? FriClose { get; set; }
+            public TimeSpan? FriClose { get; set; }
 
             [Display(Name = "Saturday Open")]
             [MustBeBefore("SatOpen", "SatClose", "Open", "Close")]
             [RequiredIf("UseGeneric", true)]
-            public DateTime? SatOpen { get; set; }
+            public TimeSpan? SatOpen { get; set; }
 
             [Display(Name = "Close")]
             [RequiredIf("UseGeneric", true)]
-            public DateTime? SatClose { get; set; }
+            public TimeSpan? SatClose { get; set; }
 
             [Display(Name = "Sunday Open")]
             [RequiredIf("UseGeneric", true)]
             [MustBeBefore("SunOpen", "SunClose", "Open", "Close")]
-            public DateTime? SunOpen { get; set; }
+            public TimeSpan? SunOpen { get; set; }
 
             [Display(Name = "Close")]
             [RequiredIf("UseGeneric", true)]
-            public DateTime? SunClose { get; set; }
+            public TimeSpan? SunClose { get; set; }
 
         }
 
@@ -238,26 +238,26 @@ namespace KurbSide.Areas.Identity.Pages.Account
                         {
                             BusinessId = newBusiness.BusinessId,
 
-                            MonOpen = Input.UseGeneric ? Input.GenericOpen.Value.TimeOfDay : Input.MonOpen.Value.TimeOfDay,
-                            MonClose = Input.UseGeneric ? Input.GenericClose.Value.TimeOfDay : Input.MonClose.Value.TimeOfDay,
+                            MonOpen = Input.UseGeneric ? Input.GenericOpen.Value : Input.MonOpen.Value,
+                            MonClose = Input.UseGeneric ? Input.GenericClose.Value : Input.MonClose.Value,
 
-                            TuesOpen = Input.UseGeneric ? Input.GenericOpen.Value.TimeOfDay : Input.TuesOpen.Value.TimeOfDay,
-                            TuesClose = Input.UseGeneric ? Input.GenericClose.Value.TimeOfDay : Input.TuesClose.Value.TimeOfDay,
+                            TuesOpen = Input.UseGeneric ? Input.GenericOpen.Value : Input.TuesOpen.Value,
+                            TuesClose = Input.UseGeneric ? Input.GenericClose.Value : Input.TuesClose.Value,
 
-                            WedOpen = Input.UseGeneric ? Input.GenericOpen.Value.TimeOfDay : Input.WedOpen.Value.TimeOfDay,
-                            WedClose = Input.UseGeneric ? Input.GenericClose.Value.TimeOfDay : Input.WedClose.Value.TimeOfDay,
+                            WedOpen = Input.UseGeneric ? Input.GenericOpen.Value : Input.WedOpen.Value,
+                            WedClose = Input.UseGeneric ? Input.GenericClose.Value : Input.WedClose.Value,
 
-                            ThuOpen = Input.UseGeneric ? Input.GenericOpen.Value.TimeOfDay : Input.ThuOpen.Value.TimeOfDay,
-                            ThuClose = Input.UseGeneric ? Input.GenericClose.Value.TimeOfDay : Input.ThuClose.Value.TimeOfDay,
+                            ThuOpen = Input.UseGeneric ? Input.GenericOpen.Value : Input.ThuOpen.Value,
+                            ThuClose = Input.UseGeneric ? Input.GenericClose.Value : Input.ThuClose.Value,
 
-                            FriOpen = Input.UseGeneric ? Input.GenericOpen.Value.TimeOfDay : Input.FriOpen.Value.TimeOfDay,
-                            FriClose = Input.UseGeneric ? Input.GenericClose.Value.TimeOfDay : Input.FriClose.Value.TimeOfDay,
+                            FriOpen = Input.UseGeneric ? Input.GenericOpen.Value : Input.FriOpen.Value,
+                            FriClose = Input.UseGeneric ? Input.GenericClose.Value : Input.FriClose.Value,
 
-                            SatOpen = Input.UseGeneric ? Input.GenericOpen.Value.TimeOfDay : Input.SatOpen.Value.TimeOfDay,
-                            SatClose = Input.UseGeneric ? Input.GenericClose.Value.TimeOfDay : Input.SatClose.Value.TimeOfDay,
+                            SatOpen = Input.UseGeneric ? Input.GenericOpen.Value : Input.SatOpen.Value,
+                            SatClose = Input.UseGeneric ? Input.GenericClose.Value : Input.SatClose.Value,
 
-                            SunOpen = Input.UseGeneric ? Input.GenericOpen.Value.TimeOfDay : Input.SunOpen.Value.TimeOfDay,
-                            SunClose = Input.UseGeneric ? Input.GenericClose.Value.TimeOfDay : Input.SunClose.Value.TimeOfDay,
+                            SunOpen = Input.UseGeneric ? Input.GenericOpen.Value : Input.SunOpen.Value,
+                            SunClose = Input.UseGeneric ? Input.GenericClose.Value : Input.SunClose.Value,
                         };
 
                         _context.BusinessHours.Add(businessHours);

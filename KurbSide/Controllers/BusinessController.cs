@@ -338,5 +338,74 @@ namespace KurbSide.Controllers
 
         }
         //End Current User Utils 1.0
+
+        #region Business Hours
+        public async Task<IActionResult> EditBusinessHours()
+        {
+            var user = await GetCurrentUserAsync();
+            var accountType = GetAccountType(user);
+            var isAllowed = accountType.Equals("business");
+
+            if (!isAllowed) return RedirectToAction("index");
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var businessHours = await _context.BusinessHours
+                .FirstOrDefaultAsync(b => b.BusinessId == business.BusinessId);
+
+            if (businessHours == null)
+            {
+                TempData["sysMessage"] = $"Error: Business hours not found.";
+                return RedirectToAction("index");
+            }
+
+            return View(businessHours);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditBusinessHours(Guid id, BusinessHours businessHours)
+        {
+            var user = await GetCurrentUserAsync();
+            var accountType = GetAccountType(user);
+            var isAllowed = accountType.Equals("business");
+
+            if (!isAllowed) return RedirectToAction("index");
+
+            if (id != businessHours.BusinessId)
+            {
+                //TODO Remove Debug messages
+                TempData["sysMessage"] = $"Debug: Id Mismatch. Edit not performed.";
+                return RedirectToAction("index");
+            }
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Update(businessHours);
+                    await _context.SaveChangesAsync();
+
+                    //TODO Remove Debug messages
+                    TempData["sysMessage"] = $"Debug: Business Hours Edit succeeded. {businessHours.BusinessId}";
+                    return RedirectToAction("index");
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                TempData["sysMessage"] = $"Error: Business does not exist, Add Failed.";
+                return RedirectToAction("index");
+            }
+            catch (Exception ex)
+            {
+                //TODO even more debug messages!
+                TempData["sysMessage"] = $"Error: {ex.GetBaseException().Message}. Add not performed.";
+                return RedirectToAction("index");
+            }
+            return View(businessHours);
+        }
+        #endregion
     }
 }
