@@ -197,29 +197,27 @@ namespace KurbSide.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    try
-                    {
-                        _context.Add(item);
-                        await _context.SaveChangesAsync();
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        TempData["sysMessage"] = $"Error: Business does not exist, Add Failed.";
-                        return RedirectToAction("index");
-                    }
+                    _context.Add(item);
+                    await _context.SaveChangesAsync();
+                    
                     //TODO more debug messages!
                     TempData["sysMessage"] = $"Debug: Add succeeded. {item.ItemId}";
                     return RedirectToAction("catalogue");
                 }
             }
+            catch (DbUpdateConcurrencyException)
+            {
+                TempData["sysMessage"] = $"Error: Business does not exist, Add Failed.";
+                return RedirectToAction("index");
+            }
             catch (Exception ex)
             {
                 //TODO even more debug messages!
+
                 TempData["sysMessage"] = $"Error: {ex.GetBaseException().Message}. Add not performed.";
                 return RedirectToAction("index");
             }
-
-            return RedirectToAction("catalogue");
+            return View(item);
         }
 
         public async Task<IActionResult> AddItem()
