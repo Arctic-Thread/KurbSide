@@ -1,0 +1,99 @@
+﻿@model KurbSide.Models.BusinessHours
+
+@{
+    ViewData["Title"] = "EditBusinessHours";
+}
+
+<h1>EditBusinessHours</h1>
+
+<h4>BusinessHours</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-controller="Business" asp-action="EditBusinessHours" asp-route-id="@Model.BusinessId">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BusinessId" />
+            <div class="form-group">
+                <label asp-for="MonOpen" class="control-label"></label>
+                <input type="time" asp-for="MonOpen" class="form-control" />
+                <span asp-validation-for="MonOpen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MonClose" class="control-label"></label>
+                <input type="time" asp-for="MonClose" class="form-control" />
+                <span asp-validation-for="MonClose" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TuesOpen" class="control-label"></label>
+                <input type="time" asp-for="TuesOpen" class="form-control" />
+                <span asp-validation-for="TuesOpen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TuesClose" class="control-label"></label>
+                <input type="time" asp-for="TuesClose" class="form-control" />
+                <span asp-validation-for="TuesClose" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WedOpen" class="control-label"></label>
+                <input type="time" asp-for="WedOpen" class="form-control" />
+                <span asp-validation-for="WedOpen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WedClose" class="control-label"></label>
+                <input type="time" asp-for="WedClose" class="form-control" />
+                <span asp-validation-for="WedClose" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ThuOpen" class="control-label"></label>
+                <input type="time" asp-for="ThuOpen" class="form-control" />
+                <span asp-validation-for="ThuOpen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ThuClose" class="control-label"></label>
+                <input type="time" asp-for="ThuClose" class="form-control" />
+                <span asp-validation-for="ThuClose" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FriOpen" class="control-label"></label>
+                <input type="time" asp-for="FriOpen" class="form-control" />
+                <span asp-validation-for="FriOpen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FriClose" class="control-label"></label>
+                <input type="time" asp-for="FriClose" class="form-control" />
+                <span asp-validation-for="FriClose" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SatOpen" class="control-label"></label>
+                <input type="time" asp-for="SatOpen" class="form-control" />
+                <span asp-validation-for="SatOpen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SatClose" class="control-label"></label>
+                <input type="time" asp-for="SatClose" class="form-control" />
+                <span asp-validation-for="SatClose" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SunOpen" class="control-label"></label>
+                <input type="time" asp-for="SunOpen" class="form-control" />
+                <span asp-validation-for="SunOpen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SunClose" class="control-label"></label>
+                <input type="time" asp-for="SunClose" class="form-control" />
+                <span asp-validation-for="SunClose" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
