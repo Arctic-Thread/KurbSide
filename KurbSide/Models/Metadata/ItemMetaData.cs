@@ -47,9 +47,20 @@ namespace KurbSide.Models
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
 
-            Sku = Sku.Trim();
-            Upc = Upc.Trim();
-            Details = Details.Trim();
+            if (!string.IsNullOrEmpty(Sku))
+            {
+                Sku = Sku.Trim();
+            }
+
+            if (!string.IsNullOrEmpty(Upc))
+            {
+                Upc = Upc.Trim();
+            }
+
+            if (!string.IsNullOrEmpty(Details))
+            {
+                Details = Details.Trim();
+            }
 
             if (string.IsNullOrEmpty(ItemName))
             {
