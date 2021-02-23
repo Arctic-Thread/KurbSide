@@ -108,8 +108,6 @@ namespace KurbSideTest
                     throw new NotImplementedException("KurbSideTest.BaseTest.KSUnitTestLogin - Account Type Not Implemented");
             }
 
-
-
             // Fields & Buttons
             string navbarLoginButtonID = "navbar-login";
             string loginEmailFieldID = "Input_Email";
