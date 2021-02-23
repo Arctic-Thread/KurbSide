@@ -122,8 +122,9 @@ namespace KurbSide.Controllers
 
             var items = await _context.Item
                 .Where(i => i.BusinessId.Equals(business.BusinessId))
-                .Include(i => i.Business)
-                .Include(i => i.Category)
+                //TODO Re-visit
+                //.Include(i => i.Business)
+                //.Include(i => i.Category)
                 .ToListAsync();
 
             return View(items);
