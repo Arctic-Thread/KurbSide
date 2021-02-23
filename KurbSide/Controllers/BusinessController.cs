@@ -124,7 +124,7 @@ namespace KurbSide.Controllers
                 .Where(i => i.BusinessId.Equals(business.BusinessId))
                 //TODO Re-visit
                 .Include(i => i.Business)
-                .GroupBy(i => i.Category)
+                //.GroupBy(i => i.Category)
                 .ToListAsync();
 
             return View(items);

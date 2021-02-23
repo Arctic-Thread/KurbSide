@@ -4,50 +4,91 @@
 }
 <style>
     .barcode {
-        height: 1.6em;
-        width: 8em;
+        height: 1.5em;
+        width: 6em;
         margin-bottom: .2em;
     }
+
     .qrcode {
-        height: 1.6em;
-        width: 1.6em;
+        height: 1.5em;
+        width: 1.5em;
         margin-bottom: .2em;
     }
+
     .none {
         display: none;
         height: 0;
         height: 0;
     }
-</style>
-@foreach (Item item in Model)
-{
-    <b>@Html.DisplayNameFor(modelItem => item.ItemId)</b>
-    <i>@Html.DisplayFor(modelItem => item.ItemId)</i>
-    <br />
-    <b>@Html.DisplayNameFor(modelItem => item.ItemName)</b>
-    <i>@Html.DisplayFor(modelItem => item.ItemName)</i>
-    <br />
-    <b>@Html.DisplayNameFor(modelItem => item.Category)</b>
-    <i>@Html.DisplayFor(modelItem => item.Category)</i>
-    <br />
-    <b>@Html.DisplayNameFor(modelItem => item.Upc)</b>
-    <i>@Html.DisplayFor(modelItem => item.Upc)</i>
-    <img class="@(item.Upc == null ? "none":"barcode")" src="https://bwipjs-api.metafloor.com/?bcid=upca&text=@item.Upc" />
-    <br />
-    <b>@Html.DisplayNameFor(modelItem => item.Sku)</b>
-    <i>@Html.DisplayFor(modelItem => item.Sku)</i>
-    <img class="@(item.Sku == null ? "none":"qrcode")" src="https://bwipjs-api.metafloor.com/?bcid=microqrcode&text=@item.Sku" />
-    <br />
-    <b>@Html.DisplayNameFor(modelItem => item.Price)</b>
-    <i>@Html.DisplayFor(modelItem => item.Price)</i>
-    <br />
-    <b>@Html.DisplayNameFor(modelItem => item.Details)</b>
-    <i>@Html.DisplayFor(modelItem => item.Details)</i>
-    <br />
-    @*<b>@Html.DisplayNameFor(modelItem => item.ImageLocation)</b>
-    <i>@Html.DisplayFor(modelItem => item.ImageLocation)</i>
-    <br />*@
-    <hr />
-}
 
-<a asp-controller="business" asp-action="addItem" class="btn btn-sm btn-success">Add Item (WIP)</a>
+    .btn{
+        min-width: 6em;
+    }
+</style>
+<table class="table table-responsive-sm">
+    <thead class="thead-light">
+        <tr>
+            @*<th scope="col">
+                @Html.DisplayNameFor(modelItem => modelItem.ItemId)
+            </th>*@
+            <th scope="col">
+                @Html.DisplayNameFor(modelItem => modelItem.ItemName)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(modelItem => modelItem.Price)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(modelItem => modelItem.Category)
+            </th>
+            @*<th scope="col">
+                @Html.DisplayNameFor(modelItem => modelItem.Details)
+            </th>*@
+            <th scope="col">
+                @Html.DisplayNameFor(modelItem => modelItem.Sku)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(modelItem => modelItem.Upc)
+            </th>
+            <th scope="col">
+                <a asp-controller="business" asp-action="addItem" class="btn btn-sm btn-success">New Item</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Item item in Model)
+        {
+        <tr>
+            @*<td class="align-middle">
+            @item.ItemId
+        </td>*@
+            <td class="align-middle">
+                @item.ItemName
+            </td>
+            <td class="align-middle">
+                $@item.Price
+            </td>
+            <td class="align-middle">
+                @item.Category
+            </td>
+            @*<td class="align-middle">
+            @item.Details
+        </td>*@
+            <td class="align-middle">
+                <img class="@(item.Sku == null ? "none":"qrcode")" src="https://bwipjs-api.metafloor.com/?bcid=microqrcode&text=@item.Sku" />
+                @item.Sku
+            </td>
+            <td class="align-middle">
+                <img class="@(item.Upc == null ? "none":"barcode")" src="https://bwipjs-api.metafloor.com/?bcid=upca&text=@item.Upc" />
+                <br />@item.Upc
+            </td>
+            <td class="align-middle">
+                <div class="btn-group-vertical btn-group-sm">
+                    <a class="btn btn-warning" asp-controller="business" asp-action="editItem" asp-route-ItemId="@item.ItemId">Edit</a>
+                    <a class="btn btn-danger" asp-controller="business" asp-action="hideItem" asp-route-ItemId="@item.ItemId">Remove</a>
+                </div>
+
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

@@ -14,6 +14,7 @@ namespace KurbSide.Models
         public string Upc { get; set; }
         public string ImageLocation { get; set; }
         public string Category { get; set; }
+        public bool? Removed { get; set; }
 
         public virtual Business Business { get; set; }
     }
