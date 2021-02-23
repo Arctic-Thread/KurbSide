@@ -12,43 +12,6 @@ namespace KurbSideTest
     {
         private string randomString = RandomString(5) + "_";
 
-        //We can change the ordering when we decide on it later.
-        /// <summary>
-        /// Logs you into the test user
-        /// </summary>
-        public void Login()
-        {
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
-
-            // Login Details
-            string loginEmail = "test@kurbsi.de";
-            string loginPassword = "Password12345";
-
-            // Fields & Buttons
-            string navbarLoginButtonID = "navbar-login";
-            string navbarlogoutButtonID = "navbar-logout";
-            string loginEmailFieldID = "Input_Email";
-            string loginPasswordFieldID = "Input_Password";
-            string loginButtonID = "login-button";
-            string sysMessageID = "sysMessage";
-
-            // Titles
-            string homePageTitle = "Home Page - KurbSide";
-            string loginPageTitle = "Log in - KurbSide";
-
-            // Expected Result
-            string expectedResult = "× You have been logged out of your account.";
-
-            //Act
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
-            _driver.FindElement(By.Id(navbarLoginButtonID)).Click(); // Click login button in navbar.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(loginPageTitle)); // Wait until login page is visible
-            _driver.FindElement(By.Id(loginEmailFieldID)).SendKeys(loginEmail); // Send email to email field.
-            _driver.FindElement(By.Id(loginPasswordFieldID)).SendKeys(loginPassword); // Send password to password field.
-            _driver.FindElement(By.Id(loginButtonID)).Click(); // Click the login button.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
-        }
-
         /// <summary>
         /// Test for adding a item to the business catalogue
         /// </summary>
@@ -62,18 +25,17 @@ namespace KurbSideTest
             string SkuTest = "TestSKU";
             string UpcTest = "012345678905";
             string CategoryTest = "This is a test category";
-            IWebElement itemFound = null;
             
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
-            Login();
+            KSUnitTestLogin(AccountType.BUSINESS);
 
             _driver.FindElement(By.Id("navbar-catalogue")).Click();//Clicks the catalogue button in the nav bar
 
-            wait.Until(ExpectedConditions.ElementIsVisible(By.Id("catalogue-AddItem")));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("catalogue-AddItem")));
             _driver.FindElement(By.Id("catalogue-AddItem")).Click();
 
-            wait.Until(ExpectedConditions.ElementIsVisible(By.Id("ItemName")));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("ItemName")));
             _driver.FindElement(By.Id("ItemName")).SendKeys(ItemNameTest);
             _driver.FindElement(By.Id("Price")).SendKeys(PriceTest);
             _driver.FindElement(By.Id("Details")).SendKeys(DetailTest);

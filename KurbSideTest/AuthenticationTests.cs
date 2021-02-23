@@ -1,5 +1,4 @@
 ﻿using System;
-using KurbSideTest;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -12,7 +11,6 @@ namespace KurbSideTest
         private string randomString = RandomString(5) + "_";
 
         //We can change the ordering when we decide on it later.
-
         //[Order(1)]
         [Test]
         public void UC00_Category_ThingsUnderTest_ShouldPass()
@@ -21,8 +19,7 @@ namespace KurbSideTest
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
             // Login Details
-            string loginEmail = "test@kurbsi.de";
-            string loginPassword = "Password12345";
+            KSUnitTestLogin(AccountType.TEST);
 
             // Fields & Buttons
 
@@ -38,10 +35,9 @@ namespace KurbSideTest
             Assert.AreEqual(expectedResult, result);
         }
 
-
         /// <summary>
         /// UC03 - Register as Business
-        /// Registers a new business account
+        /// Tests registering a new business account
         /// </summary>
         //[Order(1)]
         [Test]
@@ -50,7 +46,7 @@ namespace KurbSideTest
             // Arrange
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
-            // Registraton Details
+            // Registration Details
             string email = randomString + "TESTMEMBER@mail.com";
             string firstName = randomString + "FIRSTNAME";
             string lastName = randomString + "LASTNAME";
@@ -178,42 +174,23 @@ namespace KurbSideTest
 
         /// <summary>
         /// UC05 - Login
-        /// Logs in with both account types, member and business.
+        /// Tests logging in to the specified account type.
         /// </summary>
-        /// <param name="testCaseEmail">The email for each account type</param>
-        /// <param name="testCaseNavbarLinks">The ID to the list of links in the navbar for the given account type</param>
+        /// <param name="accountType">The account type to be used in the unit test.</param>
+        /// <param name="testCaseNavbarLinks">The ID for the list of links in the navbar for the given account type.</param>
         //[Order(1)]
-        [TestCase("member@kurbsi.de", "navbar-member-links")]
-        [TestCase("business@kurbsi.de", "navbar-business-links")]
-        public void UC05_Authentication_Login_ShouldPass(string testCaseEmail, string testCaseNavbarLinks)
+        //[TestCase(AccountType.MEMBER, "navbar-member-links")]
+        [TestCase(AccountType.BUSINESS, "navbar-business-links")]
+        public void UC05_Authentication_Login_ShouldPass(AccountType accountType, string testCaseNavbarLinks)
         {
             // Arrange
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
-            // Login Details
-            string loginEmail = testCaseEmail;
-            string loginPassword = "Password12345";
-
             // Fields & Buttons
-            string navbarLoginButtonID = "navbar-login";
-            string loginEmailFieldID = "Input_Email";
-            string loginPasswordFieldID = "Input_Password";
-            string loginButtonID = "login-button";
             string navbarLinks = testCaseNavbarLinks;
 
-            // Titles
-            string homePageTitle = "Home Page - KurbSide";
-            string loginPageTitle = "Log in - KurbSide";
-
             //Act
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
-            _driver.FindElement(By.Id(navbarLoginButtonID)).Click(); // Click login buttin in navbar.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(loginPageTitle)); // Wait until login page is visible
-            _driver.FindElement(By.Id(loginEmailFieldID)).SendKeys(loginEmail); // Send email to email field.
-            _driver.FindElement(By.Id(loginPasswordFieldID)).SendKeys(loginPassword); // Send password to password field.
-            _driver.FindElement(By.Id(loginButtonID)).Click(); // Click the login button.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
-
+            KSUnitTestLogin(accountType);
             var result = _driver.FindElement(By.Id(navbarLinks));
 
             //Assert
@@ -222,7 +199,7 @@ namespace KurbSideTest
 
         /// <summary>
         /// UC06 - Logout
-        /// Logs into a test account then logs out.
+        /// Tests logging in to a test account, then logging out.
         /// </summary>
         //[Order(1)]
         [Test]
@@ -231,33 +208,18 @@ namespace KurbSideTest
             // Arrange
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
-            // Login Details
-            string loginEmail = "test@kurbsi.de";
-            string loginPassword = "Password12345";
-
             // Fields & Buttons
-            string navbarLoginButtonID = "navbar-login";
             string navbarlogoutButtonID = "navbar-logout";
-            string loginEmailFieldID = "Input_Email";
-            string loginPasswordFieldID = "Input_Password";
-            string loginButtonID = "login-button";
             string sysMessageID = "sysMessage";
 
             // Titles
             string homePageTitle = "Home Page - KurbSide";
-            string loginPageTitle = "Log in - KurbSide";
 
             // Expected Result
             string expectedResult = "× You have been logged out of your account.";
 
             //Act
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
-            _driver.FindElement(By.Id(navbarLoginButtonID)).Click(); // Click login buttin in navbar.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(loginPageTitle)); // Wait until login page is visible
-            _driver.FindElement(By.Id(loginEmailFieldID)).SendKeys(loginEmail); // Send email to email field.
-            _driver.FindElement(By.Id(loginPasswordFieldID)).SendKeys(loginPassword); // Send password to password field.
-            _driver.FindElement(By.Id(loginButtonID)).Click(); // Click the login button.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
+            KSUnitTestLogin(AccountType.TEST);
             _driver.FindElement(By.Id(navbarlogoutButtonID)).Click(); // Click the logout button
             wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
 
@@ -269,7 +231,7 @@ namespace KurbSideTest
 
         /// <summary>
         /// UC07 - Change Password
-        /// Logs into a test account then changes the password.
+        /// Tests logging in to a test account, then changing the password.
         /// </summary>
         //[Order(1)]
         [Test]
@@ -279,14 +241,9 @@ namespace KurbSideTest
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
             // Login Details
-            string loginEmail = "test@kurbsi.de";
             string loginPassword = "Password12345";
 
             // Fields & Buttons
-            string navbarLoginButtonID = "navbar-login";
-            string loginEmailFieldID = "Input_Email";
-            string loginPasswordFieldID = "Input_Password";
-            string loginButtonID = "login-button";
             string navbarAccountSettingsID = "navbar-account-settings";
             string accountSettingschangePasswordID = "change-password";
             string currentPasswordID = "Input_OldPassword";
@@ -296,8 +253,6 @@ namespace KurbSideTest
             string sysMessageID = "sysMessage";
 
             // Titles
-            string homePageTitle = "Home Page - KurbSide";
-            string loginPageTitle = "Log in - KurbSide";
             string accountSettingsPageTitle = "Profile - KurbSide";
             string changePasswordPageTitle = "Change password - KurbSide";
 
@@ -305,13 +260,7 @@ namespace KurbSideTest
             string expectedResult = "× Your password has been changed.";
 
             //Act
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
-            _driver.FindElement(By.Id(navbarLoginButtonID)).Click(); // Click login buttin in navbar.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(loginPageTitle)); // Wait until login page is visible
-            _driver.FindElement(By.Id(loginEmailFieldID)).SendKeys(loginEmail); // Send email to email field.
-            _driver.FindElement(By.Id(loginPasswordFieldID)).SendKeys(loginPassword); // Send password to password field.
-            _driver.FindElement(By.Id(loginButtonID)).Click(); // Click the login button.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
+            KSUnitTestLogin(AccountType.TEST);
             _driver.FindElement(By.Id(navbarAccountSettingsID)).Click(); // Click the logout button.
             wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(accountSettingsPageTitle)); // Wait until account settings page is visible.
             _driver.FindElement(By.Id(accountSettingschangePasswordID)).Click(); // Click the change password button / "Password" link in account settings.
