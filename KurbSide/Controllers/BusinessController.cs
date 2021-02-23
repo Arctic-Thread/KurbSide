@@ -128,6 +128,7 @@ namespace KurbSide.Controllers
 
             return View(items);
         }
+
         public async Task<IActionResult> RemoveItem(Guid id)
         {
             var user = await GetCurrentUserAsync();
@@ -148,7 +149,7 @@ namespace KurbSide.Controllers
             try
             {
                 //HACK throw an exception forcing items to be hidden instead of removed
-                throw new Exception("Test Exception, force hide");
+                //throw new Exception("Test Exception, force hide");
                 _context.Item.Remove(item);
                 //TODO even more debug messages!
                 TempData["sysMessage"] = $"Debug: Item not present in any orders, Removed From Database.";
@@ -175,7 +176,6 @@ namespace KurbSide.Controllers
             return RedirectToAction("catalogue");
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddItem(Guid id, Item item)
@@ -197,7 +197,7 @@ namespace KurbSide.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    _context.Add(item);
+                    _context.Item.Add(item);
                     await _context.SaveChangesAsync();
                     
                     //TODO more debug messages!
@@ -239,6 +239,75 @@ namespace KurbSide.Controllers
             };
 
             return View(blankItem);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditItem(Guid id, Item item)
+        {
+            var user = await GetCurrentUserAsync();
+            var accountType = GetAccountType(user);
+            var isAllowed = accountType.Equals("business");
+
+            if (!isAllowed) return RedirectToAction("index");
+
+            if (id != item.BusinessId)
+            {
+                //TODO Remove Debug messages
+                TempData["sysMessage"] = $"Debug: Id Mismatch. Update not performed.";
+                return RedirectToAction("index");
+            }
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Item.Update(item);
+                    await _context.SaveChangesAsync();
+
+                    //TODO more debug messages!
+                    TempData["sysMessage"] = $"Debug: Update succeeded. {item.ItemId}";
+                    return RedirectToAction("catalogue");
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                TempData["sysMessage"] = $"Error: Business does not exist, Update Failed.";
+                return RedirectToAction("index");
+            }
+            catch (Exception ex)
+            {
+                //TODO even more debug messages!
+                TempData["sysMessage"] = $"Error: {ex.GetBaseException().Message}. Update not performed.";
+                return RedirectToAction("index");
+            }
+
+            return View(item);
+        }
+
+        public async Task<IActionResult> EditItem(Guid id)
+        {
+            var user = await GetCurrentUserAsync();
+            var accountType = GetAccountType(user);
+            var isAllowed = accountType.Equals("business");
+
+            if (!isAllowed) return RedirectToAction("index");
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var item = await _context.Item
+                .Where(i => i.BusinessId.Equals(business.BusinessId))
+                .Where(i => i.ItemId.Equals(id))
+                .FirstOrDefaultAsync();
+
+            if (item==null)
+            {
+                return RedirectToAction("index");
+            }
+
+            return View(item);
         }
 
         //Current User Utils 1.0
