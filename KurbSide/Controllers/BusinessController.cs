@@ -123,8 +123,8 @@ namespace KurbSide.Controllers
             var items = await _context.Item
                 .Where(i => i.BusinessId.Equals(business.BusinessId))
                 //TODO Re-visit
-                //.Include(i => i.Business)
-                //.Include(i => i.Category)
+                .Include(i => i.Business)
+                .GroupBy(i => i.Category)
                 .ToListAsync();
 
             return View(items);
@@ -140,7 +140,61 @@ namespace KurbSide.Controllers
 
             if (!isAllowed) return RedirectToAction("index");
 
+            if (id != item.BusinessId)
+            {
+                //TODO Remove Debug messages
+                TempData["sysMessage"] = $"Debug: Id Mismatch. Edit not performed.";
+                return RedirectToAction("index");
+            }
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        _context.Add(item);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        TempData["sysMessage"] = $"Error: Business does not exist, Add Failed.";
+                        return RedirectToAction("index");
+                    }
+                    //TODO more debug messages!
+                    TempData["sysMessage"] = $"Debug: Add succeeded. {item.ItemId}";
+                    return RedirectToAction("catalogue");
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO even more debug messages!
+                TempData["sysMessage"] = $"Error: {ex.GetBaseException().Message}. Add not performed.";
+                return RedirectToAction("index");
+            }
+
             return RedirectToAction("catalogue");
+        }
+
+        public async Task<IActionResult> AddItem()
+        {
+            var user = await GetCurrentUserAsync();
+            var accountType = GetAccountType(user);
+            var isAllowed = accountType.Equals("business");
+
+            if (!isAllowed) return RedirectToAction("index");
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var blankItem = new Item
+            {
+                BusinessId = business.BusinessId,
+                Business = business
+            };
+
+            return View(blankItem);
         }
 
         //Current User Utils 1.0

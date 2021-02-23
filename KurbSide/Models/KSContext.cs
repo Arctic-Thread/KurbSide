@@ -24,7 +24,6 @@ namespace KurbSide.Models
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<Business> Business { get; set; }
         public virtual DbSet<BusinessHours> BusinessHours { get; set; }
-        public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<Country> Country { get; set; }
         public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<Member> Member { get; set; }
@@ -230,18 +229,6 @@ namespace KurbSide.Models
                     .HasConstraintName("FK__BusinessH__Busin__3A4CA8FD");
             });
 
-            modelBuilder.Entity<Category>(entity =>
-            {
-                entity.HasKey(e => e.CategoryCode)
-                    .HasName("PK__Category__371BA95423CFB635");
-
-                entity.Property(e => e.CategoryCode).HasMaxLength(6);
-
-                entity.Property(e => e.EnglishName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-            });
-
             modelBuilder.Entity<Country>(entity =>
             {
                 entity.HasKey(e => e.CountryCode)
@@ -261,13 +248,9 @@ namespace KurbSide.Models
 
                 entity.Property(e => e.ItemId).HasDefaultValueSql("(newid())");
 
-                entity.Property(e => e.Category)
-                    .IsRequired()
-                    .HasMaxLength(6);
+                entity.Property(e => e.Category).HasMaxLength(50);
 
-                entity.Property(e => e.Details)
-                    .IsRequired()
-                    .HasMaxLength(500);
+                entity.Property(e => e.Details).HasMaxLength(500);
 
                 entity.Property(e => e.ImageLocation).HasMaxLength(255);
 
@@ -289,12 +272,6 @@ namespace KurbSide.Models
                     .HasForeignKey(d => d.BusinessId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Item__BusinessId__5224328E");
-
-                entity.HasOne(d => d.CategoryNavigation)
-                    .WithMany(p => p.Item)
-                    .HasForeignKey(d => d.Category)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Item__Category__531856C7");
             });
 
             modelBuilder.Entity<Member>(entity =>
