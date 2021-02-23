@@ -192,6 +192,7 @@ namespace KurbSide.Models
                     yield return new ValidationResult("Your Business Identification Number (BIN) can only contain numbers.", new[] { nameof(BusinessNumber) });
                 }
             }
+
             if (string.IsNullOrEmpty(ContactPhone))
             {
                 yield return new ValidationResult("The entered Contact Phone Number is required.", new[] { nameof(ContactPhone) });
@@ -200,7 +201,6 @@ namespace KurbSide.Models
             {
                 yield return new ValidationResult("The entered Contact Phone Number is invalid.", new[] { nameof(ContactPhone) });
             }
-
 
             if (string.IsNullOrEmpty(ContactFirst))
             {
