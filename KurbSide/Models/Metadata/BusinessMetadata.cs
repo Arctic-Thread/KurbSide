@@ -79,10 +79,6 @@ namespace KurbSide.Models
             {
                 yield return new ValidationResult("Your Businesses Phone Number is invalid.", new[] { nameof(PhoneNumber) });
             }
-            else
-            {
-                PhoneNumber = PhoneNumber.KSRemoveWhitespace();
-            }
 
             if (string.IsNullOrEmpty(Street))
             {
@@ -205,11 +201,6 @@ namespace KurbSide.Models
             {
                 yield return new ValidationResult("The entered Contact Phone Number is invalid.", new[] { nameof(ContactPhone) });
             }
-            else
-            {
-                ContactPhone = ContactPhone.KSRemoveWhitespace();
-            }
-
 
             if (string.IsNullOrEmpty(ContactFirst))
             {

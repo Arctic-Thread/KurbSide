@@ -98,7 +98,7 @@ namespace KurbSideUtils
         {
             if (postalCode.KSPostalCodeValidation() == true)
             {
-                postalCode = postalCode.ToUpper();
+                postalCode = postalCode.ToUpper().KSRemoveWhitespace();
                 postalCode = postalCode.KSExtractNumbersAndLetters();
 
                 switch (format)
