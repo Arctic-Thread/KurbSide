@@ -158,6 +158,7 @@ namespace KurbSide.Controllers
             {
                 try
                 {
+                    if (item == null) throw new Exception();
                     item.Removed = true;
                     _context.Item.Update(item);
                     //TODO even more debug messages!
@@ -165,7 +166,7 @@ namespace KurbSide.Controllers
                 }
                 catch (Exception)
                 {
-                    TempData["sysMessage"] = $"Error: Item does not exist or does not belong to buisness.";
+                    //TempData["sysMessage"] = $"Error: Item does not exist or does not belong to buisness.";
                 }
             }
             finally
