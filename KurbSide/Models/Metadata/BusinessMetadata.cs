@@ -79,6 +79,10 @@ namespace KurbSide.Models
             {
                 yield return new ValidationResult("Your Businesses Phone Number is invalid.", new[] { nameof(PhoneNumber) });
             }
+            else
+            {
+                PhoneNumber = PhoneNumber.KSRemoveWhitespace();
+            }
 
             if (string.IsNullOrEmpty(Street))
             {
@@ -192,6 +196,7 @@ namespace KurbSide.Models
                     yield return new ValidationResult("Your Business Identification Number (BIN) can only contain numbers.", new[] { nameof(BusinessNumber) });
                 }
             }
+
             if (string.IsNullOrEmpty(ContactPhone))
             {
                 yield return new ValidationResult("The entered Contact Phone Number is required.", new[] { nameof(ContactPhone) });
@@ -199,6 +204,10 @@ namespace KurbSide.Models
             else if (ContactPhone.KSPhoneNumberValidation() == false)
             {
                 yield return new ValidationResult("The entered Contact Phone Number is invalid.", new[] { nameof(ContactPhone) });
+            }
+            else
+            {
+                ContactPhone = ContactPhone.KSRemoveWhitespace();
             }
 
 
