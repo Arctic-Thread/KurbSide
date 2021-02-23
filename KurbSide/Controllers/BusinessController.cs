@@ -53,15 +53,15 @@ namespace KurbSide.Controllers
                 .Where(b => b.AspNetId.Equals(user.Id))
                 .FirstOrDefaultAsync();
 
-            ViewData["CountryCode"] = new SelectList(_context.Country, "CountryCode", "FullName", "CA");
-            ViewData["ProvinceCode"] = new SelectList(_context.Province, "ProvinceCode", "FullName", "ON");
+            ViewData["CountryCode"] = new SelectList(_context.Country, "CountryCode", "FullName", business.ProvinceCode);
+            ViewData["ProvinceCode"] = new SelectList(_context.Province, "ProvinceCode", "FullName", business.ProvinceCode);
 
             return View(business);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //TODO Needs to remove debug messages
+        //TODO Needs to remove debug messages - ideally should be logged
         public async Task<IActionResult> Edit(Guid id, Business business)
         {
             var user = await GetCurrentUserAsync();
@@ -72,26 +72,40 @@ namespace KurbSide.Controllers
 
             if (id != business.BusinessId)
             {
+                //TODO Remove Debug messages
                 TempData["sysMessage"] = $"Debug: Id Mismatch. Edit not performed.";
                 return RedirectToAction("index");
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    _context.Update(business);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    TempData["sysMessage"] = $"Error: Business does not exist, Update Failed.";
+                    try
+                    {
+                        _context.Update(business);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        TempData["sysMessage"] = $"Error: Business does not exist, Update Failed.";
+                        return RedirectToAction("index");
+                    }
+                    //TODO more debug messages!
+                    TempData["sysMessage"] = $"Debug: Edit succeeded. {business.BusinessId}";
                     return RedirectToAction("index");
                 }
             }
+            catch(Exception ex)
+            {
+                //TODO even more debug messages!
+                TempData["sysMessage"] = $"Error: {ex.GetBaseException().Message}. Edit not performed.";
+                return RedirectToAction("index");
+            }
 
-            TempData["sysMessage"] = $"Debug: Edit succeeded. {business.BusinessId}";
-            return RedirectToAction("index");
+            ViewData["CountryCode"] = new SelectList(_context.Country, "CountryCode", "FullName", business.ProvinceCode);
+            ViewData["ProvinceCode"] = new SelectList(_context.Province, "ProvinceCode", "FullName", business.ProvinceCode);
+            return View(business);
         }
 
         public async Task<IActionResult> Catalogue()

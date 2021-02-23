@@ -22,4 +22,8 @@
     <Folder Include="wwwroot\img\brand\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KurbSideUtils\KurbSideUtils.csproj" />
+  </ItemGroup>
+
 </Project>
