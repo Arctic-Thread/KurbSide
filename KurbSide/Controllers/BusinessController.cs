@@ -122,13 +122,59 @@ namespace KurbSide.Controllers
 
             var items = await _context.Item
                 .Where(i => i.BusinessId.Equals(business.BusinessId))
-                //TODO Re-visit
                 .Include(i => i.Business)
-                //.GroupBy(i => i.Category)
+                .Where(i => i.Removed==false)
                 .ToListAsync();
 
             return View(items);
         }
+        public async Task<IActionResult> RemoveItem(Guid id)
+        {
+            var user = await GetCurrentUserAsync();
+            var accountType = GetAccountType(user);
+            var isAllowed = accountType.Equals("business");
+
+            if (!isAllowed) return RedirectToAction("index");
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var item = await _context.Item
+                .Where(i => i.BusinessId.Equals(business.BusinessId))
+                .Where(i => i.ItemId.Equals(id))
+                .FirstOrDefaultAsync();
+
+            try
+            {
+                //HACK throw an exception forcing items to be hidden instead of removed
+                throw new Exception("Test Exception, force hide");
+                _context.Item.Remove(item);
+                //TODO even more debug messages!
+                TempData["sysMessage"] = $"Debug: Item not present in any orders, Removed From Database.";
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    item.Removed = true;
+                    _context.Item.Update(item);
+                    //TODO even more debug messages!
+                    TempData["sysMessage"] = $"Debug: Item is present in orders, Marked as Hidden/Removed.";
+                }
+                catch (Exception)
+                {
+                    TempData["sysMessage"] = $"Error: Item does not exist or does not belong to buisness.";
+                }
+            }
+            finally
+            {
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("catalogue");
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
