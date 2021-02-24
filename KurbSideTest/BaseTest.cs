@@ -33,12 +33,10 @@ namespace KurbSideTest
     {
         public IWebDriver _driver;
         public Process _application;
-        public WebDriverWait _wait;
 
         [SetUp]
         public void SetUpMethod()
         {
-
             var newPath = Directory.GetParent(
                 Directory.GetParent(
                     Directory.GetParent(
@@ -63,9 +61,6 @@ namespace KurbSideTest
             };
             _driver = new ChromeDriver(newPath, chrome);
             _driver.Navigate().GoToUrl("http://localhost:5000/");
-
-            _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-            _wait.PollingInterval = TimeSpan.FromSeconds(5);
         }
 
         [TearDown]
@@ -93,7 +88,6 @@ namespace KurbSideTest
         public void KSUnitTestLogin(AccountType accountType)
         {
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
-            wait.PollingInterval = TimeSpan.FromSeconds(5);
 
             // Login Details
             string loginEmail;
