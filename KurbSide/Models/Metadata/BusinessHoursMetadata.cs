@@ -49,7 +49,78 @@ namespace KurbSide.Models
     }
 
     [ModelMetadataType(typeof(BusinessHoursMetadata))]
-    public partial class BusinessHours
+    public partial class BusinessHours : IValidatableObject
     {
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            /*
+             * ^ is the XOR operator. only one side can be true.
+             * If one is set and the other is not, it is invalid.
+             * If both times are the same, it is invalid.
+             */
+
+            if (MonOpen == null ^ MonClose == null)
+            {
+                yield return new ValidationResult("You must specify both open and closing times", new[] { nameof(MonOpen) });
+            }
+            else if (MonOpen == MonClose && MonOpen != null && MonClose != null)
+            {
+                yield return new ValidationResult("Both Open and Closing time can not be the same.", new[] { nameof(MonOpen) });
+            }
+
+            if (TuesOpen == null ^ TuesClose == null)
+            {
+                yield return new ValidationResult("You must specify both open and closing times", new[] { nameof(TuesOpen) });
+            }
+            else if (TuesOpen == TuesClose && TuesOpen != null && TuesClose != null)
+            {
+                yield return new ValidationResult("Both Open and Closing time can not be the same.", new[] { nameof(TuesOpen) });
+            }
+
+            if (WedOpen == null ^ WedClose == null)
+            {
+                yield return new ValidationResult("You must specify both open and closing times", new[] { nameof(WedOpen) });
+            }
+            else if (WedOpen == WedClose && WedOpen != null && WedClose != null)
+            {
+                yield return new ValidationResult("Both Open and Closing time can not be the same.", new[] { nameof(WedOpen) });
+            }
+
+            if (ThuOpen == null ^ ThuClose == null)
+            {
+                yield return new ValidationResult("You must specify both open and closing times", new[] { nameof(ThuOpen) });
+            }
+            else if (ThuOpen == ThuClose && ThuOpen != null && ThuClose != null)
+            {
+                yield return new ValidationResult("Both Open and Closing time can not be the same.", new[] { nameof(ThuOpen) });
+            }
+
+            if (FriOpen == null ^ FriClose == null)
+            {
+                yield return new ValidationResult("You must specify both open and closing times", new[] { nameof(FriOpen) });
+            }
+            else if (FriOpen == FriClose && FriOpen != null && FriClose != null)
+            {
+                yield return new ValidationResult("Both Open and Closing time can not be the same.", new[] { nameof(FriOpen) });
+            }
+
+            if (SatOpen == null ^ SatClose == null)
+            {
+                yield return new ValidationResult("You must specify both open and closing times", new[] { nameof(SatOpen) });
+            }
+            else if (SatOpen == SatClose && SatOpen != null && SatClose != null)
+            {
+                yield return new ValidationResult("Both Open and Closing time can not be the same.", new[] { nameof(SatOpen) });
+            }
+
+            if (SunOpen == null ^ SunClose == null)
+            {
+                yield return new ValidationResult("You must specify both open and closing times", new[] { nameof(SunOpen) });
+            }
+            else if (SunOpen == SunClose && SunOpen != null && SunClose != null)
+            {
+                yield return new ValidationResult("Both Open and Closing time can not be the same.", new[] { nameof(SunOpen) });
+            }
+        }
     }
 }
