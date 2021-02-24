@@ -44,7 +44,8 @@ namespace KurbSideTest
         public void UC03_Authentication_BusinessRegister_ShouldPass()
         {
             // Arrange
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            wait.PollingInterval = TimeSpan.FromSeconds(5);
 
             // Registration Details
             string email = randomString + "TESTMEMBER@mail.com";

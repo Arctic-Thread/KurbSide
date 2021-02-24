@@ -126,7 +126,7 @@ namespace KurbSide.Controllers
             var items = await _context.Item
                 .Where(i => i.BusinessId.Equals(business.BusinessId))
                 .Include(i => i.Business)
-                .Where(i => i.Removed==false)
+                .Where(i => i.Removed == false)
                 .OrderByDescending(i => i.Category)
                 .ToListAsync();
 
@@ -144,7 +144,7 @@ namespace KurbSide.Controllers
                         .Where(i => i.Category.Equals(filter))
                         .ToList();
                 }
-            else
+                else
                 {
                     items = items
                         .Where(i => i.ItemName.ToLower().Contains(filter.ToLower()))
@@ -226,7 +226,7 @@ namespace KurbSide.Controllers
                 {
                     _context.Item.Add(item);
                     await _context.SaveChangesAsync();
-                    
+
                     //TODO more debug messages!
                     TempData["sysMessage"] = $"Debug: Add succeeded. {item.ItemId}";
                     return RedirectToAction("catalogue");
@@ -327,7 +327,7 @@ namespace KurbSide.Controllers
                 .Where(i => i.ItemId.Equals(id))
                 .FirstOrDefaultAsync();
 
-            if (item==null)
+            if (item == null)
             {
                 return RedirectToAction("Index");
             }

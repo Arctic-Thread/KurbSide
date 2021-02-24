@@ -27,15 +27,16 @@ namespace KurbSideTest
             string CategoryTest = "This is a test category";
             
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            wait.PollingInterval = TimeSpan.FromSeconds(5);
 
             KSUnitTestLogin(AccountType.BUSINESS);
 
             _driver.FindElement(By.Id("navbar-catalogue")).Click();//Clicks the catalogue button in the nav bar
 
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("catalogue-AddItem")));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id("catalogue-AddItem")));
             _driver.FindElement(By.Id("catalogue-AddItem")).Click();
 
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("ItemName")));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id("ItemName")));
             _driver.FindElement(By.Id("ItemName")).SendKeys(ItemNameTest);
             _driver.FindElement(By.Id("Price")).SendKeys(PriceTest);
             _driver.FindElement(By.Id("Details")).SendKeys(DetailTest);
