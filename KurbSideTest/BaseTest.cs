@@ -5,6 +5,7 @@ using System.Linq;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
 
 namespace KurbSideTest
@@ -57,15 +58,25 @@ namespace KurbSideTest
             startInfo.WorkingDirectory = @$"{newPath}";
             _application = Process.Start(startInfo);
 
-            var chrome = new ChromeOptions
+            //var chrome = new ChromeOptions
+            //{
+            //    AcceptInsecureCertificates = true
+            //};
+            //_driver = new ChromeDriver(newPath, chrome);
+
+            FirefoxDriverService service = FirefoxDriverService.CreateDefaultService();
+            service.Host = "::1";
+            var op = new FirefoxOptions
             {
-                AcceptInsecureCertificates = true
+                AcceptInsecureCertificates = true,
             };
-            _driver = new ChromeDriver(newPath, chrome);
+            _driver = new FirefoxDriver(service, op);
             _driver.Navigate().GoToUrl("http://localhost:5000/");
 
             _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
             _wait.PollingInterval = TimeSpan.FromSeconds(5);
+
+            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
         }
 
         [TearDown]
@@ -92,12 +103,14 @@ namespace KurbSideTest
         /// <param name="accountType">The account type to be used in the unit test.</param>
         public void KSUnitTestLogin(AccountType accountType)
         {
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
-            wait.PollingInterval = TimeSpan.FromSeconds(5);
-
             // Login Details
             string loginEmail;
             string loginPassword = "Password12345";
+
+
+            // Titles
+            string homePageTitle = "Home Page - KurbSide";
+            string loginPageTitle = "Log in - KurbSide";
 
             switch (accountType)
             {
@@ -106,9 +119,11 @@ namespace KurbSideTest
                     break;
                 case AccountType.BUSINESS:
                     loginEmail = "business@kurbsi.de";
+                    homePageTitle = "Business Dashboard - KurbSide";
                     break;
                 case AccountType.TEST:
                     loginEmail = "test@kurbsi.de";
+                    homePageTitle = "Business Dashboard - KurbSide";
                     break;
                 default:
                     throw new NotImplementedException("KurbSideTest.BaseTest.KSUnitTestLogin - Account Type Not Implemented");
@@ -120,18 +135,17 @@ namespace KurbSideTest
             string loginPasswordFieldID = "Input_Password";
             string loginButtonID = "login-button";
 
-            // Titles
-            string homePageTitle = "Home Page - KurbSide";
-            string loginPageTitle = "Log in - KurbSide";
-
             //Act
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
+            //_wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(navbarLoginButtonID))); // Wait until login page is visible
             _driver.FindElement(By.Id(navbarLoginButtonID)).Click(); // Click login button in navbar.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(loginPageTitle)); // Wait until login page is visible
+
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(loginButtonID))); // Wait until login page is visible
             _driver.FindElement(By.Id(loginEmailFieldID)).SendKeys(loginEmail); // Send email to email field.
             _driver.FindElement(By.Id(loginPasswordFieldID)).SendKeys(loginPassword); // Send password to password field.
             _driver.FindElement(By.Id(loginButtonID)).Click(); // Click the login button.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
+
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
         }
     }
 }

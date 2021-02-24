@@ -16,7 +16,7 @@ namespace KurbSideTest
         public void UC00_Category_ThingsUnderTest_ShouldPass()
         {
             // Arrange
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            //WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
             // Login Details
             KSUnitTestLogin(AccountType.TEST);
@@ -120,11 +120,16 @@ namespace KurbSideTest
             string expectedResult = $"× We've sent an email to {email}, Please confirm your account to continue.";
 
             //Act
-            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible
+            //_wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(navbarRegisterButtonID))); // Wait until home page is visible
             _driver.FindElement(By.Id(navbarRegisterButtonID)).Click(); // Click the register button in navbar
-            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(registerPageTitle)); // Wait until register page is visible
+
+            //_wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(registerPageTitle)); // Wait until register page is visible
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(registerAsBusinessID))); // Wait until register page is visible
             _driver.FindElement(By.Id(registerAsBusinessID)).Click(); // Click "Register as a Business" button
-            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(businessRegisterPageTitle)); // Wait until business registration page is visible
+
+            //_wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(businessRegisterPageTitle)); // Wait until business registration page is visible
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(submitID))); // Wait until business registration page is visible
 
             // Fill out the form
             _driver.FindElement(By.Id(emailID)).SendKeys(email);
@@ -185,7 +190,7 @@ namespace KurbSideTest
         public void UC05_Authentication_Login_ShouldPass(AccountType accountType, string testCaseNavbarLinks)
         {
             // Arrange
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            //WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
             // Fields & Buttons
             string navbarLinks = testCaseNavbarLinks;
@@ -207,7 +212,7 @@ namespace KurbSideTest
         public void UC06_Authentication_Logout_ShouldPass()
         {
             // Arrange
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            //WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
             // Fields & Buttons
             string navbarlogoutButtonID = "navbar-logout";
@@ -221,8 +226,9 @@ namespace KurbSideTest
 
             //Act
             KSUnitTestLogin(AccountType.TEST);
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(navbarlogoutButtonID))); // Wait until home page is visible.
             _driver.FindElement(By.Id(navbarlogoutButtonID)).Click(); // Click the logout button
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id(sysMessageID))); // Wait until home page is visible.
 
             string result = _driver.FindElement(By.Id(sysMessageID)).Text;
 
@@ -239,7 +245,7 @@ namespace KurbSideTest
         public void UC07_Authentication_ChangePassword_ShouldPass()
         {
             // Arrange
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            //WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
             // Login Details
             string loginPassword = "Password12345";
@@ -262,16 +268,22 @@ namespace KurbSideTest
 
             //Act
             KSUnitTestLogin(AccountType.TEST);
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(navbarAccountSettingsID)));
             _driver.FindElement(By.Id(navbarAccountSettingsID)).Click(); // Click the logout button.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(accountSettingsPageTitle)); // Wait until account settings page is visible.
-            _driver.FindElement(By.Id(accountSettingschangePasswordID)).Click(); // Click the change password button / "Password" link in account settings.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(changePasswordPageTitle)); // Wait until account settings page is visible.
 
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(accountSettingsPageTitle)); // Wait until account settings page is visible.
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(accountSettingschangePasswordID)));
+            _driver.FindElement(By.Id(accountSettingschangePasswordID)).Click(); // Click the change password button / "Password" link in account settings.
+
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(changePasswordPageTitle)); // Wait until account settings page is visible.
+
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(updatePasswordButtonID)));
             _driver.FindElement(By.Id(currentPasswordID)).SendKeys(loginPassword); // Enter the current password.
             _driver.FindElement(By.Id(newPasswordID)).SendKeys(loginPassword); // Enter the "new" password, its the current password for the sake of the test case.
             _driver.FindElement(By.Id(confirmNewPasswordID)).SendKeys(loginPassword); // confirm the "new" password, its the current password for the sake of the test case.
             _driver.FindElement(By.Id(updatePasswordButtonID)).Click(); // Change the password.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(changePasswordPageTitle)); // Wait until account settings page is visible.
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(changePasswordPageTitle)); // Wait until account settings page is visible.
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id(sysMessageID)));
 
             string result = _driver.FindElement(By.Id(sysMessageID)).Text;
 
