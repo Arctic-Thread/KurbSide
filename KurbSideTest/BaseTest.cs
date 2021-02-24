@@ -127,5 +127,37 @@ namespace KurbSideTest
             _driver.FindElement(By.Id(loginButtonID)).Click(); // Click the login button.
             wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
         }
+
+        /// <summary>
+        /// Waits until the element is clickable, then sends the input.
+        /// </summary>
+        /// <param name="elementIdToWaitFor">The ID of the element to be waited on.</param>
+        /// <param name="input">The input for the selected ID.</param>
+        public void KSSendKeys(string elementIdToWaitFor, string input)
+        {
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(elementIdToWaitFor))).SendKeys(input);
+        }
+
+
+        /// <summary>
+        /// Waits until the element is clickable, then clicks it.
+        /// </summary>
+        /// <param name="elementIdToWaitFor">The ID of the element to click.</param>
+        public void KSClick(string elementIdToWaitFor)
+        {
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(elementIdToWaitFor))).Click();
+        }
+
+        /// <summary>
+        /// Waits until the title of the webpage contains the desired title.
+        /// </summary>
+        /// <param name="webPageTitle">The desired title of the webpage.</param>
+        public void KSTitleContains(string webPageTitle)
+        {
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(webPageTitle));
+        }
     }
 }
