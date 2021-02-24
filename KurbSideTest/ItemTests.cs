@@ -19,7 +19,7 @@ namespace KurbSideTest
         [Test]
         public void UC15_AddItem_ShouldPass()
         {
-            string ItemNameTest = "Test Item pls delete";
+            string ItemNameTest = "Test Item Pls Delete";
             string DetailTest = "This item is to be deleted";
             string PriceTest = "75";
             string SkuTest = "TestSKU";
@@ -82,18 +82,9 @@ namespace KurbSideTest
 
             _driver.FindElement(By.Id("catalogue-saveItem")).Click();
 
-            IReadOnlyList<IWebElement> itemNames = _driver.FindElements(By.Id("catalogue-allItems"));//gets all the items and store them in a list
+            IWebElement itemFounds = _driver.FindElement(By.XPath("//td[contains(.,'Test Item Pls Delete Edit')]"));
 
-            IWebElement itemFounds = null;
-            foreach (IWebElement element in itemNames)
-            {
-                if (element.Text == "Test Item pls delete Edit")
-                {
-                    itemFounds = element;
-                }
-            }
-
-            Assert.IsTrue(itemNames.Count > 0);//checks to make sure that there are items in the list
+            Assert.AreEqual("Test Item Pls Delete Edit", itemFounds.Text);//checks to make sure that there are items in the list
         }
         /// <summary>
         /// This test deletes the test item from the test business
