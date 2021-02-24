@@ -4,8 +4,4 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Selenium.WebDriver.GeckoDriver.Win64" Version="0.29.0" />
-  </ItemGroup>
-
 </Project>
