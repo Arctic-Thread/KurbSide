@@ -119,13 +119,11 @@ namespace KurbSideTest
             string loginPageTitle = "Log in - KurbSide";
 
             //Act
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
-            _driver.FindElement(By.Id(navbarLoginButtonID)).Click(); // Click login button in navbar.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(loginPageTitle)); // Wait until login page is visible
-            _driver.FindElement(By.Id(loginEmailFieldID)).SendKeys(loginEmail); // Send email to email field.
-            _driver.FindElement(By.Id(loginPasswordFieldID)).SendKeys(loginPassword); // Send password to password field.
-            _driver.FindElement(By.Id(loginButtonID)).Click(); // Click the login button.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
+            KSClick(navbarLoginButtonID);
+            KSSendKeys(loginEmailFieldID, loginEmail);
+            KSSendKeys(loginPasswordFieldID, loginPassword);
+            KSClick(loginButtonID);
+            KSTitleContains(homePageTitle); // Wait until home page is visible.
         }
 
         /// <summary>

@@ -44,7 +44,6 @@ namespace KurbSideTest
         public void UC03_Authentication_BusinessRegister_ShouldPass()
         {
             // Arrange
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
             // Registration Details
             string email = randomString + "TESTMEMBER@mail.com";
@@ -119,52 +118,52 @@ namespace KurbSideTest
             string expectedResult = $"× We've sent an email to {email}, Please confirm your account to continue.";
 
             //Act
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible
-            _driver.FindElement(By.Id(navbarRegisterButtonID)).Click(); // Click the register button in navbar
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(registerPageTitle)); // Wait until register page is visible
-            _driver.FindElement(By.Id(registerAsBusinessID)).Click(); // Click "Register as a Business" button
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(businessRegisterPageTitle)); // Wait until business registration page is visible
+            KSTitleContains(homePageTitle); // Wait until home page is visible
+            KSClick(navbarRegisterButtonID); // Click the register button in navbar
+            KSTitleContains(registerPageTitle); // Wait until register page is visible
+            KSClick(registerAsBusinessID); // Click "Register as a Business" button
+            KSTitleContains(businessRegisterPageTitle); // Wait until business registration page is visible
 
             // Fill out the form
-            _driver.FindElement(By.Id(emailID)).SendKeys(email);
-            _driver.FindElement(By.Id(contactFirstID)).SendKeys(firstName);
-            _driver.FindElement(By.Id(contactLastID)).SendKeys(lastName);
-            _driver.FindElement(By.Id(contactPhoneID)).SendKeys(contactPhoneNumber);
-            _driver.FindElement(By.Id(passwordID)).SendKeys(password);
-            _driver.FindElement(By.Id(confrimPasswordID)).SendKeys(password);
+            KSSendKeys(emailID, email);
+            KSSendKeys(contactFirstID, firstName);
+            KSSendKeys(contactLastID, lastName);
+            KSSendKeys(contactPhoneID, contactPhoneNumber);
+            KSSendKeys(passwordID, password);
+            KSSendKeys(confrimPasswordID, password);
 
-            _driver.FindElement(By.Id(businessNameID)).SendKeys(businessName);
-            _driver.FindElement(By.Id(businessPhoneID)).SendKeys(businessPhoneNumber);
-            _driver.FindElement(By.Id(businessNumberID)).SendKeys(businessNumber);
-            _driver.FindElement(By.Id(businessStreetID)).SendKeys(businessAddress);
-            _driver.FindElement(By.Id(businessStreet2ID)).SendKeys(businessAddress2);
-            _driver.FindElement(By.Id(businessCityID)).SendKeys(city);
-            _driver.FindElement(By.Id(businessPostalID)).SendKeys(postalCode);
-            _driver.FindElement(By.Id(businessProvinceID)).SendKeys(province);
-            _driver.FindElement(By.Id(businessCountryID)).SendKeys(country);
+            KSSendKeys(businessNameID, businessName);
+            KSSendKeys(businessPhoneID, businessPhoneNumber);
+            KSSendKeys(businessNumberID, businessNumber);
+            KSSendKeys(businessStreetID, businessAddress);
+            KSSendKeys(businessStreet2ID, businessAddress2);
+            KSSendKeys(businessCityID, city);
+            KSSendKeys(businessPostalID, postalCode);
+            KSSendKeys(businessProvinceID, province);
+            KSSendKeys(businessCountryID, country);
 
-            _driver.FindElement(By.Id(businessAdvancedHoursCheckboxID)).Click();
+            KSClick(businessAdvancedHoursCheckboxID);
 
-            _driver.FindElement(By.Id(monOpenID)).SendKeys(eightAM);
-            _driver.FindElement(By.Id(monClosedID)).SendKeys(sixPM);
-            _driver.FindElement(By.Id(tuesOpenID)).SendKeys(eightAM);
-            _driver.FindElement(By.Id(tuesClosedID)).SendKeys(sixPM);
-            _driver.FindElement(By.Id(wedOpenID)).SendKeys(eightAM);
-            _driver.FindElement(By.Id(wedClosedID)).SendKeys(sixPM);
-            _driver.FindElement(By.Id(thurOpenID)).SendKeys(eightAM);
-            _driver.FindElement(By.Id(thurClosedID)).SendKeys(sixPM);
-            _driver.FindElement(By.Id(friOpenID)).SendKeys(eightAM);
-            _driver.FindElement(By.Id(friClosedID)).SendKeys(sixPM);
-            _driver.FindElement(By.Id(friOpenID)).SendKeys(eightAM);
-            _driver.FindElement(By.Id(friClosedID)).SendKeys(sixPM);
-            _driver.FindElement(By.Id(satOpenID)).SendKeys(tenAM);
-            _driver.FindElement(By.Id(satClosedID)).SendKeys(sixPM);
-            _driver.FindElement(By.Id(sunOpenID)).SendKeys(noon);
-            _driver.FindElement(By.Id(sunClosedID)).SendKeys(sixPM);
+            KSSendKeys(monOpenID, eightAM);
+            KSSendKeys(monClosedID, sixPM);
+            KSSendKeys(tuesOpenID, eightAM);
+            KSSendKeys(tuesClosedID, sixPM);
+            KSSendKeys(wedOpenID, eightAM);
+            KSSendKeys(wedClosedID, sixPM);
+            KSSendKeys(thurOpenID, eightAM);
+            KSSendKeys(thurClosedID, sixPM);
+            KSSendKeys(friOpenID, eightAM);
+            KSSendKeys(friClosedID, sixPM);
+            KSSendKeys(friOpenID, eightAM);
+            KSSendKeys(friClosedID, sixPM);
+            KSSendKeys(satOpenID, tenAM);
+            KSSendKeys(satClosedID, sixPM);
+            KSSendKeys(sunOpenID, noon);
+            KSSendKeys(sunClosedID, sixPM);
 
-            _driver.FindElement(By.Id(submitID)).Click();
+            KSClick(submitID);
 
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(registrationConfirmationPageTitle)); // Wait until confirmation page is visible
+            KSTitleContains(registrationConfirmationPageTitle); // Wait until confirmation page is visible
 
             string result = _driver.FindElement(By.Id(sysMessageID)).Text;
 
@@ -184,7 +183,6 @@ namespace KurbSideTest
         public void UC05_Authentication_Login_ShouldPass(AccountType accountType, string testCaseNavbarLinks)
         {
             // Arrange
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
             // Fields & Buttons
             string navbarLinks = testCaseNavbarLinks;
@@ -206,7 +204,6 @@ namespace KurbSideTest
         public void UC06_Authentication_Logout_ShouldPass()
         {
             // Arrange
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
             // Fields & Buttons
             string navbarlogoutButtonID = "navbar-logout";
@@ -220,8 +217,8 @@ namespace KurbSideTest
 
             //Act
             KSUnitTestLogin(AccountType.TEST);
-            _driver.FindElement(By.Id(navbarlogoutButtonID)).Click(); // Click the logout button
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible.
+            KSClick(navbarlogoutButtonID); // Click the logout button
+            KSTitleContains(homePageTitle); // Wait until home page is visible.
 
             string result = _driver.FindElement(By.Id(sysMessageID)).Text;
 
@@ -238,7 +235,6 @@ namespace KurbSideTest
         public void UC07_Authentication_ChangePassword_ShouldPass()
         {
             // Arrange
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
 
             // Login Details
             string loginPassword = "Password12345";
@@ -261,16 +257,16 @@ namespace KurbSideTest
 
             //Act
             KSUnitTestLogin(AccountType.TEST);
-            _driver.FindElement(By.Id(navbarAccountSettingsID)).Click(); // Click the logout button.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(accountSettingsPageTitle)); // Wait until account settings page is visible.
-            _driver.FindElement(By.Id(accountSettingschangePasswordID)).Click(); // Click the change password button / "Password" link in account settings.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(changePasswordPageTitle)); // Wait until account settings page is visible.
+            KSClick(navbarAccountSettingsID); // Click the logout button.
+            KSTitleContains(accountSettingsPageTitle); // Wait until account settings page is visible.
+            KSClick(accountSettingschangePasswordID); // Click the change password button / "Password" link in account settings.
+            KSTitleContains(changePasswordPageTitle); // Wait until account settings page is visible.
 
-            _driver.FindElement(By.Id(currentPasswordID)).SendKeys(loginPassword); // Enter the current password.
-            _driver.FindElement(By.Id(newPasswordID)).SendKeys(loginPassword); // Enter the "new" password, its the current password for the sake of the test case.
-            _driver.FindElement(By.Id(confirmNewPasswordID)).SendKeys(loginPassword); // confirm the "new" password, its the current password for the sake of the test case.
-            _driver.FindElement(By.Id(updatePasswordButtonID)).Click(); // Change the password.
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(changePasswordPageTitle)); // Wait until account settings page is visible.
+            KSSendKeys(currentPasswordID, loginPassword); // Enter the current password.
+            KSSendKeys(newPasswordID, loginPassword); // Enter the "new" password, its the current password for the sake of the test case.
+            KSSendKeys(confirmNewPasswordID, loginPassword); // confirm the "new" password, its the current password for the sake of the test case.
+            KSClick(updatePasswordButtonID); // Change the password.
+            KSTitleContains(changePasswordPageTitle); // Wait until account settings page is visible.
 
             string result = _driver.FindElement(By.Id(sysMessageID)).Text;
 

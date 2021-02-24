@@ -28,9 +28,9 @@ namespace KurbSideTest
             string homePageTitle = "Home Page - KurbSide";
 
             //Act
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle));
-            _driver.FindElement(By.Id(navbarHomeID)).Click();
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle));
+            KSTitleContains(homePageTitle);
+            KSClick(navbarHomeID);
+            KSTitleContains(homePageTitle);
 
             var result = _driver.Title.Contains(homePageTitle);
 
@@ -57,9 +57,9 @@ namespace KurbSideTest
             string privacyPolicyPageTitle = "Privacy Policy - KurbSide";
 
             //Act
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle));
-            _driver.FindElement(By.Id(footerPrivacyID)).Click();
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(privacyPolicyPageTitle));
+            KSTitleContains(homePageTitle);
+            KSClick(footerPrivacyID);
+            KSTitleContains(privacyPolicyPageTitle);
 
             var result = _driver.Title.Contains(privacyPolicyPageTitle);
 
