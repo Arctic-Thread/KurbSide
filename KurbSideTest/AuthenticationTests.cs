@@ -44,8 +44,8 @@ namespace KurbSideTest
         public void UC03_Authentication_BusinessRegister_ShouldPass()
         {
             // Arrange
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-            wait.PollingInterval = TimeSpan.FromSeconds(5);
+            //WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            //wait.PollingInterval = TimeSpan.FromSeconds(5);
 
             // Registration Details
             string email = randomString + "TESTMEMBER@mail.com";
@@ -120,11 +120,11 @@ namespace KurbSideTest
             string expectedResult = $"× We've sent an email to {email}, Please confirm your account to continue.";
 
             //Act
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(homePageTitle)); // Wait until home page is visible
             _driver.FindElement(By.Id(navbarRegisterButtonID)).Click(); // Click the register button in navbar
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(registerPageTitle)); // Wait until register page is visible
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(registerPageTitle)); // Wait until register page is visible
             _driver.FindElement(By.Id(registerAsBusinessID)).Click(); // Click "Register as a Business" button
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(businessRegisterPageTitle)); // Wait until business registration page is visible
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(businessRegisterPageTitle)); // Wait until business registration page is visible
 
             // Fill out the form
             _driver.FindElement(By.Id(emailID)).SendKeys(email);
@@ -165,7 +165,7 @@ namespace KurbSideTest
 
             _driver.FindElement(By.Id(submitID)).Click();
 
-            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(registrationConfirmationPageTitle)); // Wait until confirmation page is visible
+            _wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(registrationConfirmationPageTitle)); // Wait until confirmation page is visible
 
             string result = _driver.FindElement(By.Id(sysMessageID)).Text;
 
