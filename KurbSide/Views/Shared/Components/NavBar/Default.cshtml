@@ -36,6 +36,17 @@
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Index">
                     <strong>@business.BusinessName</strong>
+                    @{
+                        var openForBusiness = (bool)TempData["openForBusiness"];
+                        if (openForBusiness)
+                        {
+                            <span title="Accepting Orders" class=" badge badge-success">Accepting Orders</span>
+                        }
+                        else
+                        {
+                            <span title="Not Accepting Orders" class="badge badge-danger">Closed</span>
+                        }
+                    }
                 </a>
             </li>
             <li class="nav-item">
@@ -48,7 +59,7 @@
             </li>
             <li class="nav-item">
                 <span class="nav-link text-secondary" asp-area="" asp-controller="Business" asp-action="Orders">
-                    Orders
+                    Orders (Coming Soon)
                     @{
                         var orderCount = TempData["orderCount"];
                         orderCount = orderCount == null ? 0 : orderCount;
@@ -56,24 +67,6 @@
                         if ((int)orderCount > 0)
                         {
                             <span class="badge badge-primary">@((int) orderCount)</span>
-                        }
-                    }
-                </span>
-            </li>
-            <li class="nav-item">
-                <span class="nav-link text-secondary">
-                    Status
-                    @{
-                        var openForBusiness = (bool)TempData["openForBusiness"];
-                        if (openForBusiness)
-                        {
-                            @*<span class="nav-link text-dark">Status: <span class="text-success">Open - Accepting Orders</span></span>*@
-                            <span title="Accepting Orders" class=" badge badge-success">Open</span>
-                        }
-                        else
-                        {
-                            @*<span class="nav-link text-dark">Status: <span class="text-danger">Closed - Not Accepting Orders</span></span>*@
-                            <span title="Not Accepting Orders" class="badge badge-danger">Closed</span>
                         }
                     }
                 </span>
