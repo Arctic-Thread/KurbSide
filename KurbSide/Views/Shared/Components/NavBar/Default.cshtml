@@ -34,27 +34,49 @@
     {
         <ul id="navbar-business-links" class="navbar-nav flex-grow-1">
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Index"><strong>@business.BusinessName</strong> ></a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Index">
+                    <strong>@business.BusinessName</strong>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Index">
+                    Dashboard
+                </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Catalogue" id="navbar-catalogue">Catalogue</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Orders">Orders (<span class="text-primary">0</span>)</a>
+                <span class="nav-link text-secondary" asp-area="" asp-controller="Business" asp-action="Orders">
+                    Orders
+                    @{
+                        var orderCount = TempData["orderCount"];
+                        orderCount = orderCount == null ? 0 : orderCount;
+
+                        if ((int)orderCount > 0)
+                        {
+                            <span class="badge badge-primary">@((int) orderCount)</span>
+                        }
+                    }
+                </span>
             </li>
             <li class="nav-item">
-                @{
-                    var openForBusiness = (bool)TempData["openForBusiness"];
-                    if (openForBusiness)
-                    {
-                        <span class="nav-link text-dark">Status: <span class="text-success">Open - Accepting Orders</span></span>
+                <span class="nav-link text-secondary">
+                    Status
+                    @{
+                        var openForBusiness = (bool)TempData["openForBusiness"];
+                        if (openForBusiness)
+                        {
+                            @*<span class="nav-link text-dark">Status: <span class="text-success">Open - Accepting Orders</span></span>*@
+                            <span title="Accepting Orders" class=" badge badge-success">Open</span>
+                        }
+                        else
+                        {
+                            @*<span class="nav-link text-dark">Status: <span class="text-danger">Closed - Not Accepting Orders</span></span>*@
+                            <span title="Not Accepting Orders" class="badge badge-danger">Closed</span>
+                        }
                     }
-                    else
-                    {
-                        <span class="nav-link text-dark">Status: <span class="text-danger">Closed - Not Accepting Orders</span></span>
-                    }
-                }
-
+                </span>
             </li>
         </ul>
     }

@@ -1,7 +1,10 @@
 ﻿@{ 
-    string message = (string) TempData["sysMessage"];
+    string message = (string)TempData["sysMessage"];
 }
-@if (message != null)
+@{
+    //HACK Disable debug messages from showing
+}
+@if (message != null && !message.ToString().StartsWith("Debug"))
 {
     var statusMessageClass = message.ToString().StartsWith("Error") ? "danger" : "success";
     statusMessageClass = message.ToString().StartsWith("Denied") ? "warning" : statusMessageClass;

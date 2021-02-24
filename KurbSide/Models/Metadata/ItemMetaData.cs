@@ -28,7 +28,7 @@ namespace KurbSide.Models
         [Display(Name ="SKU")]
         public string Sku { get; set; }
         [Display(Name ="UPC")]
-        [RegularExpression(@"^(?=.*0)[0-9]{12}$", ErrorMessage ="Please enter valid UPC")]
+        //[RegularExpression(@"^(?=.*0)[0-9]{12}$", ErrorMessage ="Please enter valid UPC")]
         public string Upc { get; set; }
         public string ImageLocation { get; set; }
         [Display(Name ="Product Category")]

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,6 +23,7 @@ namespace KurbSide.Controllers
             _userManager = userManager;
         }
 
+        #region BusinessRU
         public async Task<IActionResult> IndexAsync()
         {
             var user = await GetCurrentUserAsync();
@@ -41,7 +43,7 @@ namespace KurbSide.Controllers
             return View(business);
         }
 
-        public async Task<IActionResult> Edit()
+        public async Task<IActionResult> EditBusiness()
         {
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
@@ -61,20 +63,19 @@ namespace KurbSide.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //TODO Needs to remove debug messages - ideally should be logged
-        public async Task<IActionResult> Edit(Guid id, Business business)
+        public async Task<IActionResult> EditBusiness(Guid id, Business business)
         {
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
 
-            if (!isAllowed) return RedirectToAction("index");
+            if (!isAllowed) return RedirectToAction("Index");
 
             if (id != business.BusinessId)
             {
                 //TODO Remove Debug messages
                 TempData["sysMessage"] = $"Debug: Id Mismatch. Edit not performed.";
-                return RedirectToAction("index");
+                return RedirectToAction("Index");
             }
 
             try
@@ -89,32 +90,34 @@ namespace KurbSide.Controllers
                     catch (DbUpdateConcurrencyException)
                     {
                         TempData["sysMessage"] = $"Error: Business does not exist, Update Failed.";
-                        return RedirectToAction("index");
+                        return RedirectToAction("Index");
                     }
                     //TODO more debug messages!
                     TempData["sysMessage"] = $"Debug: Edit succeeded. {business.BusinessId}";
-                    return RedirectToAction("index");
+                    return RedirectToAction("Index");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //TODO even more debug messages!
                 TempData["sysMessage"] = $"Error: {ex.GetBaseException().Message}. Edit not performed.";
-                return RedirectToAction("index");
+                return RedirectToAction("Index");
             }
 
             ViewData["CountryCode"] = new SelectList(_context.Country, "CountryCode", "FullName", business.ProvinceCode);
             ViewData["ProvinceCode"] = new SelectList(_context.Province, "ProvinceCode", "FullName", business.ProvinceCode);
             return View(business);
         }
+        #endregion
 
-        public async Task<IActionResult> Catalogue()
+        #region ItemCRUD
+        public async Task<IActionResult> Catalogue(string? filter)
         {
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
 
-            if (!isAllowed) return RedirectToAction("index");
+            if (!isAllowed) return RedirectToAction("Index");
 
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
@@ -124,18 +127,41 @@ namespace KurbSide.Controllers
                 .Where(i => i.BusinessId.Equals(business.BusinessId))
                 .Include(i => i.Business)
                 .Where(i => i.Removed==false)
+                .OrderByDescending(i => i.Category)
                 .ToListAsync();
 
+            var categories = items
+                .Select(i => i.Category)
+                .Distinct()
+                .ToList();
+
+            if (filter != null)
+            {
+                TempData["catalogueFilter"] = filter;
+                if (categories.Contains(filter))
+                {
+                    items = items
+                        .Where(i => i.Category.Equals(filter))
+                        .ToList();
+                }
+            else
+                {
+                    items = items
+                        .Where(i => i.ItemName.ToLower().Contains(filter.ToLower()))
+                        .ToList();
+                }
+            }
+
+            TempData["itemCategories"] = categories;
             return View(items);
         }
-
         public async Task<IActionResult> RemoveItem(Guid id)
         {
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
 
-            if (!isAllowed) return RedirectToAction("index");
+            if (!isAllowed) return RedirectToAction("Index");
 
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
@@ -174,7 +200,7 @@ namespace KurbSide.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("catalogue");
+            return RedirectToAction("Catalogue");
         }
 
         [HttpPost]
@@ -220,7 +246,6 @@ namespace KurbSide.Controllers
             }
             return View(item);
         }
-
         public async Task<IActionResult> AddItem()
         {
             var user = await GetCurrentUserAsync();
@@ -250,13 +275,13 @@ namespace KurbSide.Controllers
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
 
-            if (!isAllowed) return RedirectToAction("index");
+            if (!isAllowed) return RedirectToAction("Index");
 
             if (id != item.BusinessId)
             {
                 //TODO Remove Debug messages
                 TempData["sysMessage"] = $"Debug: Id Mismatch. Update not performed.";
-                return RedirectToAction("index");
+                return RedirectToAction("Index");
             }
 
             try
@@ -268,31 +293,30 @@ namespace KurbSide.Controllers
 
                     //TODO more debug messages!
                     TempData["sysMessage"] = $"Debug: Update succeeded. {item.ItemId}";
-                    return RedirectToAction("catalogue");
+                    return RedirectToAction("Catalogue");
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
                 TempData["sysMessage"] = $"Error: Business does not exist, Update Failed.";
-                return RedirectToAction("index");
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 //TODO even more debug messages!
                 TempData["sysMessage"] = $"Error: {ex.GetBaseException().Message}. Update not performed.";
-                return RedirectToAction("index");
+                return RedirectToAction("Index");
             }
 
             return View(item);
         }
-
         public async Task<IActionResult> EditItem(Guid id)
         {
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
 
-            if (!isAllowed) return RedirectToAction("index");
+            if (!isAllowed) return RedirectToAction("Index");
 
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
@@ -305,12 +329,83 @@ namespace KurbSide.Controllers
 
             if (item==null)
             {
-                return RedirectToAction("index");
+                return RedirectToAction("Index");
             }
 
             return View(item);
         }
+        #endregion
 
+        #region Business Hours
+        public async Task<IActionResult> EditBusinessHours()
+        {
+            var user = await GetCurrentUserAsync();
+            var accountType = GetAccountType(user);
+            var isAllowed = accountType.Equals("business");
+
+            if (!isAllowed) return RedirectToAction("Index");
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var businessHours = await _context.BusinessHours
+                .FirstOrDefaultAsync(b => b.BusinessId == business.BusinessId);
+
+            if (businessHours == null)
+            {
+                TempData["sysMessage"] = $"Error: Business hours not found.";
+                return RedirectToAction("Index");
+            }
+
+            return View(businessHours);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditBusinessHours(Guid id, BusinessHours businessHours)
+        {
+            var user = await GetCurrentUserAsync();
+            var accountType = GetAccountType(user);
+            var isAllowed = accountType.Equals("business");
+
+            if (!isAllowed) return RedirectToAction("Index");
+
+            if (id != businessHours.BusinessId)
+            {
+                //TODO Remove Debug messages
+                TempData["sysMessage"] = $"Debug: Id Mismatch. Edit not performed.";
+                return RedirectToAction("Index");
+            }
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Update(businessHours);
+                    await _context.SaveChangesAsync();
+
+                    //TODO Remove Debug messages
+                    TempData["sysMessage"] = $"Debug: Business Hours Edit succeeded. {businessHours.BusinessId}";
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                TempData["sysMessage"] = $"Error: Business does not exist, Add Failed.";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                //TODO even more debug messages!
+                TempData["sysMessage"] = $"Error: {ex.GetBaseException().Message}. Add not performed.";
+                return RedirectToAction("Index");
+            }
+            return View(businessHours);
+        }
+        #endregion
+
+        #region CurrentUserUtils
         //Current User Utils 1.0
         private Task<IdentityUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
@@ -338,74 +433,6 @@ namespace KurbSide.Controllers
 
         }
         //End Current User Utils 1.0
-
-        #region Business Hours
-        public async Task<IActionResult> EditBusinessHours()
-        {
-            var user = await GetCurrentUserAsync();
-            var accountType = GetAccountType(user);
-            var isAllowed = accountType.Equals("business");
-
-            if (!isAllowed) return RedirectToAction("index");
-
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
-
-            var businessHours = await _context.BusinessHours
-                .FirstOrDefaultAsync(b => b.BusinessId == business.BusinessId);
-
-            if (businessHours == null)
-            {
-                TempData["sysMessage"] = $"Error: Business hours not found.";
-                return RedirectToAction("index");
-            }
-
-            return View(businessHours);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditBusinessHours(Guid id, BusinessHours businessHours)
-        {
-            var user = await GetCurrentUserAsync();
-            var accountType = GetAccountType(user);
-            var isAllowed = accountType.Equals("business");
-
-            if (!isAllowed) return RedirectToAction("index");
-
-            if (id != businessHours.BusinessId)
-            {
-                //TODO Remove Debug messages
-                TempData["sysMessage"] = $"Debug: Id Mismatch. Edit not performed.";
-                return RedirectToAction("index");
-            }
-
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    _context.Update(businessHours);
-                    await _context.SaveChangesAsync();
-
-                    //TODO Remove Debug messages
-                    TempData["sysMessage"] = $"Debug: Business Hours Edit succeeded. {businessHours.BusinessId}";
-                    return RedirectToAction("index");
-                }
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                TempData["sysMessage"] = $"Error: Business does not exist, Add Failed.";
-                return RedirectToAction("index");
-            }
-            catch (Exception ex)
-            {
-                //TODO even more debug messages!
-                TempData["sysMessage"] = $"Error: {ex.GetBaseException().Message}. Add not performed.";
-                return RedirectToAction("index");
-            }
-            return View(businessHours);
-        }
         #endregion
     }
 }
