@@ -58,20 +58,20 @@ namespace KurbSideTest
             startInfo.WorkingDirectory = @$"{newPath}";
             _application = Process.Start(startInfo);
 
-            var chrome = new ChromeOptions
-            {
-                AcceptInsecureCertificates = true
-            };
-            _driver = new ChromeDriver(newPath, chrome);
-
-            //FirefoxDriverService service = FirefoxDriverService.CreateDefaultService();
-            //service.Host = "::1";
-            //var op = new FirefoxOptions
+            //var chrome = new ChromeOptions
             //{
-            //    AcceptInsecureCertificates = true,
+            //    AcceptInsecureCertificates = true
             //};
-            //_driver = new FirefoxDriver(service, op);
-            //_driver.Navigate().GoToUrl("http://localhost:5000/");
+            //_driver = new ChromeDriver(newPath, chrome);
+
+            FirefoxDriverService service = FirefoxDriverService.CreateDefaultService();
+            service.Host = "::1";
+            var op = new FirefoxOptions
+            {
+                AcceptInsecureCertificates = true,
+            };
+            _driver = new FirefoxDriver(service, op);
+            _driver.Navigate().GoToUrl("http://localhost:5000/");
 
             _wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
             _wait.PollingInterval = TimeSpan.FromSeconds(5);
