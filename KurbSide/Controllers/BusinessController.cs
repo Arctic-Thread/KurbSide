@@ -111,8 +111,10 @@ namespace KurbSide.Controllers
         #endregion
 
         #region ItemCRUD
-        public async Task<IActionResult> Catalogue(string? filter)
+        public async Task<IActionResult> Catalogue(string? filter, int page = 1)
         {
+            //if (filter != null) page = 1;
+
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
@@ -153,7 +155,13 @@ namespace KurbSide.Controllers
             }
 
             TempData["itemCategories"] = categories;
-            return View(items);
+            //return View(items);
+            var paginatedList = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, 10);
+            //TempData["maxPage"] = paginatedList.TotalPages;
+            TempData["currentPage"] = page;
+            TempData["hasNextPage"] = paginatedList.HasNextPage;
+            TempData["hasPrevPage"] = paginatedList.HasPreviousPage;
+            return View(paginatedList);
         }
         public async Task<IActionResult> RemoveItem(Guid id)
         {

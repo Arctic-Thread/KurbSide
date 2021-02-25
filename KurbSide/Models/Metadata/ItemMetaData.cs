@@ -31,9 +31,9 @@ namespace KurbSide.Models
         [Display(Name = "SKU")]
         [MaxLength(50, ErrorMessage = "The entered SKU is too long. 50 characters max.")]
         public string Sku { get; set; }
-        [Display(Name = "UPC")]
-        [MaxLength(12, ErrorMessage = "The entered UPC is too long. 12 characters max.")]
-        [RegularExpression(@"^(?=.*0)[0-9]{11,12}$", ErrorMessage = "Please enter valid UPC (11 or 12 digits, with at least one 0)")]
+        [Display(Name = "UPC/EAN")]
+        [MaxLength(13, ErrorMessage = "The entered UPC/EAN is too long. 13 numbers max.")]
+        //[RegularExpression(@"^(?=.*0)[0-9]{11,12}$", ErrorMessage = "Please enter valid UPC (11 or 12 digits, with at least one 0)")]
         public string Upc { get; set; }
         public string ImageLocation { get; set; }
         [Display(Name = "Product Category")]

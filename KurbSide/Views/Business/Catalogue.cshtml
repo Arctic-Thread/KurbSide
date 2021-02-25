@@ -8,6 +8,10 @@
     var categories = new List<string>();
     var activeFilter = "";
 
+    var page = (int)TempData["currentPage"];
+    var hasNext = (bool)TempData["hasNextPage"];
+    var hasPrev = (bool)TempData["hasPrevPage"];
+
     if (rawCategories != null)
     {
         categories.AddRange(rawCategories);
@@ -64,7 +68,7 @@
                 }
                 @if (categories.Count <= 0)
                 {
-                    <span class="btn btn-sm btn-outline-light active border-secondary rounded" style="margin:1px 1px 3px 1px;">No Categories</span>
+                    <span class="btn btn-sm btn-outline-light active border-secondary rounded" style="margin:1px 1px 3px 1px; opacity: 0.50;">No Categories</span>
                 }
             </div>
         </div>
@@ -114,7 +118,7 @@
                         @*<td class="align-middle">
                                 @item.ItemId
                             </td>*@
-                        <td class="align-middle" id="catalogue-allItems" >
+                        <td class="align-middle" id="catalogue-allItems">
                             @item.ItemName
                         </td>
                         <td class="align-middle">
@@ -131,7 +135,16 @@
                             @item.Sku
                         </td>
                         <td class="align-middle">
-                            <img class="@(item.Upc == null ? "none":"barcode")" src="https://bwipjs-api.metafloor.com/?bcid=upca&text=@item.Upc" />
+                            <div class="@(item.Upc == null ? "none":null)"></div>
+                            @switch (item.Upc.Length)
+                            {
+                                case 13:
+                                    <img class="barcode" src="https://bwipjs-api.metafloor.com/?bcid=ean13&text=@item.Upc" />
+                                    break;
+                                default:
+                                    <img class="barcode" src="https://bwipjs-api.metafloor.com/?bcid=upca&text=@item.Upc" />
+                                    break;
+                            }
                             <br />@item.Upc
                         </td>
                         <td class="align-middle">
@@ -145,7 +158,14 @@
             </tbody>
         </table>
         <div class="container container-fluid justify-content-center">
-
+            <div class="row justify-content-between">
+                <a class="btn btn-sm btn-light border-secondary @(hasPrev?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page-1)" asp-route-filter="@(activeFilter)">@("<Prev Page")</a>
+                <span class="text-secondary">Page @(page)</span>
+                <a class="btn btn-sm btn-light border-secondary @(hasNext?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page+1)" asp-route-filter="@(activeFilter)">@("Next Page>")</a>
+            </div>
+        </div>
+        <hr />
+        <div class="container container-fluid justify-content-center">
             <div class="row justify-content-between">
                 <a class="btn btn-sm btn-secondary" asp-action="Index">Back to Dashboard</a>
             </div>
