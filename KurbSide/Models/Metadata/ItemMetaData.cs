@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using KurbSideUtils;
+using KurbSide.Annotations;
 
 namespace KurbSide.Models
 {
@@ -16,26 +17,29 @@ namespace KurbSide.Models
         public Guid ItemId { get; set; }
         public Guid BusinessId { get; set; }
         [Display(Name = "Product Name")]
-        [MinLength(2, ErrorMessage ="Please enter a valid product name")]
-        [MaxLength(90, ErrorMessage = "Please enter a valid product name")]
-        [Required]
+        [MinLength(2, ErrorMessage = "The entered Product Name is too short. A minimum of 2 characters is required.")]
+        [MaxLength(75, ErrorMessage = "The entered Product Name is too long. 75 characters max.")]
+        [Required(ErrorMessage = "You must enter a product name.")]
         public string ItemName { get; set; }
-        [Display(Name ="Product Details")]
-        [MaxLength(490, ErrorMessage ="Too many chareters")]
+        [Display(Name = "Product Details")]
+        [MaxLength(500, ErrorMessage = "The entered Product Details is too long. 500 characters max.")]
         public string Details { get; set; }
-        [Required]
+        [KSMinValue(0.01, ErrorMessage = "The entered price is too low. The minimum price is $0.01.")]
+        [KSMaxValue(2147483647d, ErrorMessage = "The entered Price is too high. $2,147,483,647 max. ")]
+        [Required(ErrorMessage = "You must enter the products price.")]
         public double? Price { get; set; }
-        [Display(Name ="SKU")]
-        [MaxLength(49)]
+        [Display(Name = "SKU")]
+        [MaxLength(50, ErrorMessage = "The entered SKU is too long. 50 characters max.")]
         public string Sku { get; set; }
-        [Display(Name ="UPC")]
-        [RegularExpression(@"^(?=.*0)[0-9]{11,12}$", ErrorMessage ="Please enter valid UPC")]
+        [Display(Name = "UPC")]
+        [MaxLength(12, ErrorMessage = "The entered UPC is too long. 12 characters max.")]
+        [RegularExpression(@"^(?=.*0)[0-9]{11,12}$", ErrorMessage = "Please enter valid UPC (11 or 12 digits, with at least one 0)")]
         public string Upc { get; set; }
         public string ImageLocation { get; set; }
-        [Display(Name ="Product Category")]
-        [MinLength(2, ErrorMessage ="Please enter a valid product catagory")]
-        [MaxLength(40, ErrorMessage = "Please enter a valid product catagory")]
-        [Required]
+        [Display(Name = "Product Category")]
+        [MinLength(2, ErrorMessage = "The entered Product Category is too short. A minimum of 2 characters is required.")]
+        [MaxLength(50, ErrorMessage = "The entered Product Category is too long. 50 characters max.")]
+        [Required(ErrorMessage = "You must enter a Category for your product.")]
         public string Category { get; set; }
     }
     /// <summary>
@@ -50,12 +54,12 @@ namespace KurbSide.Models
 
             if (!string.IsNullOrEmpty(Sku))
             {
-                Sku = Sku.Trim();
+                Sku = Sku.KSRemoveWhitespace();
             }
 
             if (!string.IsNullOrEmpty(Upc))
             {
-                Upc = Upc.Trim();
+                Upc = Upc.KSRemoveWhitespace();
             }
 
             if (!string.IsNullOrEmpty(Details))
@@ -65,7 +69,7 @@ namespace KurbSide.Models
 
             if (string.IsNullOrEmpty(ItemName))
             {
-                yield return new ValidationResult($"Product must have a name.", new[] { nameof(ItemName) });
+                yield return new ValidationResult($"You must enter a product name.", new[] { nameof(ItemName) });
             }
             else
             {
@@ -84,16 +88,20 @@ namespace KurbSide.Models
 
             if (!IsNumber)
             {
-                yield return new ValidationResult($"Product value must be a number.", new[] { nameof(Price) });
+                yield return new ValidationResult($"Product Price must be a number.", new[] { nameof(Price) });
             }
-            else if (Price.Value <= 0)
+            else if (Price.Value == 0)
             {
-                yield return new ValidationResult($"Product value cannot be negative.", new[] { nameof(Price) });
+                yield return new ValidationResult($"Product Price cannot be zero.", new[] { nameof(Price) });
+            }
+            else if(Price.Value < 0)
+            {
+                yield return new ValidationResult($"Product Price cannot be negative.", new[] { nameof(Price) });
             }
             
             if (string.IsNullOrEmpty(Category))
             {
-                yield return new ValidationResult($"You must have a category.", new[] { nameof(Category) });
+                yield return new ValidationResult($"You must enter a Product Category.", new[] { nameof(Category) });
             }
             else
             {

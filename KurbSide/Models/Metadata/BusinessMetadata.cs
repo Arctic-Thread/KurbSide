@@ -14,44 +14,53 @@ namespace KurbSide.Models
         [Display(Name = "KurbSide ID")]
         public Guid BusinessId { get; set; }
         [Display(Name = "Business Name")]
-        [Required]
+        [MaxLength(100, ErrorMessage = "The entered Business Name is too long. 250 characters max.")]
+        [Required(ErrorMessage = "You must enter a Business Name.")]
         public string BusinessName { get; set; }
         [Display(Name = "Phone Number")]
-        [Required]
+        [Required(ErrorMessage = "You must enter a Phone Number.")]
         [RegularExpression(@"^\(?([2-9][0-9]{2})\)?[-. ]?([2-9](?!11)[0-9]{2})[-. ]?([0-9]{4})(x[0-9]{1,4})?$", ErrorMessage = "You must enter a valid Phone Number. e.g. (519)-123-1234x1234")]
         public string PhoneNumber { get; set; }
         public TimeSpan? OpenTime { get; set; }
         public TimeSpan? CloseTime { get; set; }
         [Display(Name = "Address Line 1")]
-        [Required]
+        [MaxLength(250, ErrorMessage = "The entered Address is too long. 250 characters max.")]
+        [Required(ErrorMessage = "You must enter your Businesses Address.")]
         public string Street { get; set; }
         [Display(Name = "Address Line 2 (Optional)")]
+        [MaxLength(250, ErrorMessage = "The entered Address Line 2 can be no longer than 250 characters.")]
         public string StreetLn2 { get; set; }
-        [Required]
+        //TODO Change this. Longest city name in the world is 176 characters. Longest in Canada is 68.
+        [MaxLength(50, ErrorMessage = "The entered City is too long. 50 characters max.")]
+        [Required(ErrorMessage = "You must enter your Businesses City.")]
         public string City { get; set; }
         [Display(Name = "Postal Code")]
-        [Required]
+        [Required(ErrorMessage = "You must enter your Businesses Postal Code.")]
         [RegularExpression(@"^(?i)[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ]([ ]|[-])?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$", ErrorMessage = "You must enter a valid postal code. e.g. K1A 0A9")]
         public string Postal { get; set; }
         [Display(Name = "Province")]
-        [Required]
+        [MaxLength(2, ErrorMessage = "The entered Province is too long. 2 characters max.")]
+        [Required(ErrorMessage = "You must enter your Businesses Province.")]
         public string ProvinceCode { get; set; }
         [Display(Name = "Country")]
-        [Required]
+        [MaxLength(2, ErrorMessage = "The entered Country Code is too long. 2 characters max.")]
+        [Required(ErrorMessage = "You must enter your Businesses Country.")]
         public string CountryCode { get; set; }
         [Display(Name = "Business Number (BN)")]
-        [Required]
+        [Required(ErrorMessage = "You must enter your Business Number.")]
         [RegularExpression(@"^([0-9]{9})$", ErrorMessage = "Your Business Number must be 9 digits in length.")]
         public string BusinessNumber { get; set; }
-        [Required]
+        [Required(ErrorMessage = "You must enter your Business Contacts Phone Number.")]
         [RegularExpression(@"^\(?([2-9][0-9]{2})\)?[-. ]?([2-9](?!11)[0-9]{2})[-. ]?([0-9]{4})(x[0-9]{1,4})?$", ErrorMessage = "You must enter a valid Phone Number. e.g. (519)-123-1234x1234")]
         [Display(Name = "Contact Phone Number ")]
         public string ContactPhone { get; set; }
         [Display(Name = "Contact First Name")]
-        [Required]
+        [MaxLength(100, ErrorMessage = "The entered Contact First Name is too long. 100 characters max.")]
+        [Required(ErrorMessage = "You must enter your Business Contacts First Name.")]
         public string ContactFirst { get; set; }
         [Display(Name = "Contact Last Name")]
-        [Required]
+        [MaxLength(100, ErrorMessage = "The entered Contact Last Name is too long. 100 characters max.")]
+        [Required(ErrorMessage = "You must enter your Business Contacts Last Name.")]
         public string ContactLast { get; set; }
     }
 
