@@ -33,6 +33,7 @@ namespace KurbSide.Models
         public string Sku { get; set; }
         [Display(Name = "UPC/EAN")]
         [MaxLength(13, ErrorMessage = "The entered UPC/EAN is too long. 13 numbers max.")]
+        [MinLength(11, ErrorMessage = "The entered UPC/EAN is too short. 11 numbers min.")]
         //[RegularExpression(@"^(?=.*0)[0-9]{11,12}$", ErrorMessage = "Please enter valid UPC (11 or 12 digits, with at least one 0)")]
         public string Upc { get; set; }
         public string ImageLocation { get; set; }
