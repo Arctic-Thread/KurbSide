@@ -9,6 +9,7 @@
     var activeFilter = "";
 
     var page = (int)TempData["currentPage"];
+    var totalPage = (int)TempData["totalPage"];
     var hasNext = (bool)TempData["hasNextPage"];
     var hasPrev = (bool)TempData["hasPrevPage"];
 
@@ -161,7 +162,7 @@
         <div class="container container-fluid justify-content-center">
             <div class="row justify-content-between">
                 <a class="btn btn-sm btn-light border-secondary @(hasPrev?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page-1)" asp-route-filter="@(activeFilter)">@("<Prev Page")</a>
-                <span class="text-secondary">Page @(page)</span>
+                <span class="text-secondary">Page @(page) / @(totalPage)</span>
                 <a class="btn btn-sm btn-light border-secondary @(hasNext?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page+1)" asp-route-filter="@(activeFilter)">@("Next Page>")</a>
             </div>
         </div>

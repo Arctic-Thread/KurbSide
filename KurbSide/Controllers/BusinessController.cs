@@ -159,6 +159,7 @@ namespace KurbSide.Controllers
             var paginatedList = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, 10);
             //TempData["maxPage"] = paginatedList.TotalPages;
             TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedList.TotalPages;
             TempData["hasNextPage"] = paginatedList.HasNextPage;
             TempData["hasPrevPage"] = paginatedList.HasPreviousPage;
             return View(paginatedList);
