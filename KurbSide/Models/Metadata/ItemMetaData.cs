@@ -16,24 +16,25 @@ namespace KurbSide.Models
         public Guid ItemId { get; set; }
         public Guid BusinessId { get; set; }
         [Display(Name = "Product Name")]
-        [MinLength(2)]
-        [MaxLength(90)]
+        [MinLength(2, ErrorMessage ="Please enter a valid product name")]
+        [MaxLength(90, ErrorMessage = "Please enter a valid product name")]
         [Required]
         public string ItemName { get; set; }
         [Display(Name ="Product Details")]
-        [MaxLength(490)]
+        [MaxLength(490, ErrorMessage ="Too many chareters")]
         public string Details { get; set; }
         [Required]
         public double? Price { get; set; }
         [Display(Name ="SKU")]
+        [MaxLength(49)]
         public string Sku { get; set; }
         [Display(Name ="UPC")]
-        //[RegularExpression(@"^(?=.*0)[0-9]{12}$", ErrorMessage ="Please enter valid UPC")]
+        [RegularExpression(@"^(?=.*0)[0-9]{11,12}$", ErrorMessage ="Please enter valid UPC")]
         public string Upc { get; set; }
         public string ImageLocation { get; set; }
         [Display(Name ="Product Category")]
-        [MinLength(2)]
-        [MaxLength(90)]
+        [MinLength(2, ErrorMessage ="Please enter a valid product catagory")]
+        [MaxLength(40, ErrorMessage = "Please enter a valid product catagory")]
         [Required]
         public string Category { get; set; }
     }

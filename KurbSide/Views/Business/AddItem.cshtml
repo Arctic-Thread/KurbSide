@@ -18,7 +18,7 @@
                         <div class="form-group">
                             <label asp-for="ItemName" class=""></label>
                             <input type="text" asp-for="ItemName" class="form-control" />
-                            <span asp-validation-for="ItemName"></span>
+                            <span asp-validation-for="ItemName" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
@@ -29,13 +29,13 @@
                                 </div>
                                 <input type="number" asp-for="Price" class="form-control" step="0.01" />
                             </div>
-                            <span asp-validation-for="Price"></span>
+                            <span asp-validation-for="Price" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
                             <label asp-for="Details" class=""></label>
                             <textarea asp-for="Details" class="form-control" rows="4"></textarea>
-                            <span asp-validation-for="Details"></span>
+                            <span asp-validation-for="Details" class="text-danger"></span>
                         </div>
 
                     </div>
@@ -45,19 +45,19 @@
                         <div class="form-group">
                             <label asp-for="Category" class=""></label>
                             <input type="text" asp-for="Category" class="form-control" />
-                            <span asp-validation-for="Category"></span>
+                            <span asp-validation-for="Category" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
                             <label asp-for="Sku" class=""></label>
                             <input type="text" asp-for="Sku" class="form-control" />
-                            <span asp-validation-for="Sku"></span>
+                            <span asp-validation-for="Sku" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
                             <label asp-for="Upc" class=""></label>
                             <input type="text" asp-for="Upc" class="form-control" />
-                            <span asp-validation-for="Upc"></span>
+                            <span asp-validation-for="Upc" class="text-danger"></span>
                         </div>
 
                         @*<div class="form-group">
