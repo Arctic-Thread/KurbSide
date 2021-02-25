@@ -136,7 +136,8 @@
                         </td>
                         <td class="align-middle">
                             <div class="@(item.Upc == null ? "none":null)"></div>
-                            @switch (item.Upc.Length)
+                            
+                            @if (item.Upc!= null) switch (item.Upc.Length)
                             {
                                 case 13:
                                     <img class="barcode" src="https://bwipjs-api.metafloor.com/?bcid=ean13&text=@item.Upc" />
