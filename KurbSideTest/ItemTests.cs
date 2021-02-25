@@ -92,7 +92,7 @@ namespace KurbSideTest
 
             KSClick("navbar-catalogue"); //Clicks the catalogue button in the nav bar
 
-            KSClick("catalogue-AddItem");
+            KSClick("catalogue-DeleteItem");
 
             IReadOnlyList<IWebElement> itemNames = _driver.FindElements(By.Id("catalogue-allItems"));//gets all the items and store them in a list
 
