@@ -111,7 +111,7 @@ namespace KurbSide.Controllers
         #endregion
 
         #region ItemCRUD
-        public async Task<IActionResult> Catalogue(string? filter, int page = 1)
+        public async Task<IActionResult> Catalogue(string? filter, int page = 1, int perPage = 5)
         {
             //if (filter != null) page = 1;
 
@@ -156,7 +156,7 @@ namespace KurbSide.Controllers
 
             TempData["itemCategories"] = categories;
             //return View(items);
-            var paginatedList = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, 10);
+            var paginatedList = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
             //TempData["maxPage"] = paginatedList.TotalPages;
             TempData["currentPage"] = page;
             TempData["totalPage"] = paginatedList.TotalPages;
