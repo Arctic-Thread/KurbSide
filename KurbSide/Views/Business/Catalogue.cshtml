@@ -9,6 +9,7 @@
     var activeFilter = "";
 
     var page = (int)TempData["currentPage"];
+    var perPage = (int)TempData["perPage"];
     var totalPage = (int)TempData["totalPage"];
     var hasNext = (bool)TempData["hasNextPage"];
     var hasPrev = (bool)TempData["hasPrevPage"];
@@ -62,10 +63,10 @@
     <div class="card-body row">
         <div class="col">
             <div class="btn-group btn-group-sm" style="flex-wrap: wrap; ">
-                <a class="btn btn-sm btn-dark btn-filter rounded" style="margin:0px 8px 3px 0px;" asp-action="Catalogue">@((activeFilter!="")? "Clear Filter" : "Filter By Category") </a>
+                <a class="btn btn-sm btn-dark btn-filter rounded" style="margin:0px 8px 3px 0px;" asp-action="Catalogue" asp-route-perPage="@(perPage)">@((activeFilter!="")? "Clear Filter" : "Filter By Category") </a>
                 @foreach (string category in categories)
                 {
-                    <a class="btn btn-sm btn-light border-secondary rounded @(category.Equals(activeFilter)? "active" : null)" style="margin:1px 1px 3px 1px;" asp-route-filter="@category">@category</a>
+                    <a class="btn btn-sm btn-light border-secondary rounded @(category.Equals(activeFilter)? "active" : null)" style="margin:1px 1px 3px 1px;" asp-route-filter="@category" asp-route-perPage="@(perPage)">@category</a>
                 }
                 @if (categories.Count <= 0)
                 {
@@ -137,16 +138,16 @@
                         </td>
                         <td class="align-middle">
                             <div class="@(item.Upc == null ? "none":null)"></div>
-                            
-                            @if (item.Upc!= null) switch (item.Upc.Length)
-                            {
-                                case 13:
-                                    <img class="barcode" src="https://bwipjs-api.metafloor.com/?bcid=ean13&text=@item.Upc" />
-                                    break;
-                                default:
-                                    <img class="barcode" src="https://bwipjs-api.metafloor.com/?bcid=upca&text=@item.Upc" />
-                                    break;
-                            }
+
+                            @if (item.Upc != null) switch (item.Upc.Length)
+                                {
+                                    case 13:
+                                        <img class="barcode" src="https://bwipjs-api.metafloor.com/?bcid=ean13&text=@item.Upc" />
+                                        break;
+                                    default:
+                                        <img class="barcode" src="https://bwipjs-api.metafloor.com/?bcid=upca&text=@item.Upc" />
+                                        break;
+                                }
                             <br />@item.Upc
                         </td>
                         <td class="align-middle">
@@ -159,11 +160,72 @@
                 }
             </tbody>
         </table>
+        @*<div class="container container-fluid justify-content-center">
+                <div class="row justify-content-between">
+                    <a class="btn btn-sm btn-light border-secondary @(hasPrev?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page-1)" asp-route-filter="@(activeFilter)" asp-route-perPage="">@("<Prev Page")</a>
+                    <span class="text-secondary">Page @(page) / @(totalPage)  <small>(@(perPage) Per Page)</small></span>
+                    <a class="btn btn-sm btn-light border-secondary @(hasNext?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page+1)" asp-route-filter="@(activeFilter)">@("Next Page>")</a>
+                </div>
+            </div>
+            <hr />*@
         <div class="container container-fluid justify-content-center">
             <div class="row justify-content-between">
-                <a class="btn btn-sm btn-light border-secondary @(hasPrev?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page-1)" asp-route-filter="@(activeFilter)">@("<Prev Page")</a>
-                <span class="text-secondary">Page @(page) / @(totalPage)</span>
-                <a class="btn btn-sm btn-light border-secondary @(hasNext?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page+1)" asp-route-filter="@(activeFilter)">@("Next Page>")</a>
+                <a class="btn btn-sm btn-light border-secondary @(hasPrev?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page-1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("<Prev Page")</a>
+                <span class="text-secondary">
+                    Page @(page) / @(totalPage)
+                </span>
+                <span>
+                    <form class="col" method="GET" asp-action="Catalogue" asp-route-page="@(page)" asp-route-filter="@(activeFilter)">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">Per Page</label>
+                            </div>
+                            <select name="perPage" id="perPage" class="custom-select" style="max-width: 200px;" onchange="submit();">
+                                @if (perPage == 5)
+                                {
+                                    <option value="5" selected>5</option>
+                                }
+                                else
+                                {
+                                    <option value="5">5</option>
+                                }
+                                @if (perPage == 10)
+                                {
+                                    <option value="10" selected>10</option>
+                                }
+                                else
+                                {
+                                    <option value="10">10</option>
+                                }
+                                @if (perPage == 25)
+                                {
+                                    <option value="25" selected>25</option>
+                                }
+                                else
+                                {
+                                    <option value="25">25</option>
+                                }
+                                @if (perPage == 50)
+                                {
+                                    <option value="50" selected>50</option>
+                                }
+                                else
+                                {
+                                    <option value="50">50</option>
+                                }
+                                @if (perPage == 100)
+                                {
+                                    <option value="100" selected>100</option>
+                                }
+                                else
+                                {
+                                    <option value="100">100</option>
+                                }
+                            </select>
+                        </div>
+                    </form>
+                </span>
+                <a class="btn btn-sm btn-light border-secondary @(hasNext?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page+1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("Next Page>")</a>
             </div>
         </div>
         <hr />
