@@ -56,15 +56,15 @@
 <div class="card">
     <div class="card-body row">
         <div class="col">
-            <div class="btn-group btn-group-sm">
-                <a class="btn btn-sm btn-dark btn-filter" asp-action="Catalogue">@((activeFilter!="")? "Clear Filter" : "Filter By Category") </a>
+            <div class="btn-group btn-group-sm" style="flex-wrap: wrap; ">
+                <a class="btn btn-sm btn-dark btn-filter rounded" style="margin:0px 8px 3px 0px;" asp-action="Catalogue">@((activeFilter!="")? "Clear Filter" : "Filter By Category") </a>
                 @foreach (string category in categories)
                 {
-                    <a class="btn btn-sm btn-light border-secondary @(category.Equals(activeFilter)? "active" : null)" asp-route-filter="@category">@category</a>
+                    <a class="btn btn-sm btn-light border-secondary rounded @(category.Equals(activeFilter)? "active" : null)" style="margin:1px 1px 3px 1px;" asp-route-filter="@category">@category</a>
                 }
                 @if (categories.Count <= 0)
                 {
-                    <span class="btn btn-sm btn-outline-light active border-secondary">No Categories</span>
+                    <span class="btn btn-sm btn-outline-light active border-secondary rounded" style="margin:1px 1px 3px 1px;">No Categories</span>
                 }
             </div>
         </div>
