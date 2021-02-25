@@ -171,57 +171,62 @@
         <div class="container container-fluid justify-content-center">
             <div class="row justify-content-between">
                 <a class="btn btn-sm btn-light border-secondary @(hasPrev?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page-1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("<Prev Page")</a>
-                <span class="text-secondary">
-                    Page @(page) / @(totalPage)
-                </span>
+                @*<span class="text-secondary">
+                        Page @(page) / @(totalPage)
+                    </span>*@
                 <span>
                     <form class="col" method="GET" asp-action="Catalogue" asp-route-page="@(page)" asp-route-filter="@(activeFilter)">
                         <div class="input-group input-group-sm">
                             <div class="input-group-prepend">
-                                <label class="input-group-text">Per Page</label>
+                                <label class="input-group-text bg-light border-secondary">
+                                    Page @(page) / @(totalPage)
+                                </label>
                             </div>
-                            <select name="perPage" id="perPage" class="custom-select" style="max-width: 200px;" onchange="submit();">
+                            <select name="perPage" id="perPage" class="custom-select bg-light border-secondary" style="max-width: 200px;" onchange="submit();">
                                 @if (perPage == 5)
                                 {
-                                    <option value="5" selected>5</option>
+                                    <option value="5" selected>5 Per Page</option>
                                 }
                                 else
                                 {
-                                    <option value="5">5</option>
+                                    <option value="5">5 Per Page</option>
                                 }
                                 @if (perPage == 10)
                                 {
-                                    <option value="10" selected>10</option>
+                                    <option value="10" selected>10 Per Page</option>
                                 }
                                 else
                                 {
-                                    <option value="10">10</option>
+                                    <option value="10">10 Per Page</option>
                                 }
                                 @if (perPage == 25)
                                 {
-                                    <option value="25" selected>25</option>
+                                    <option value="25" selected>25 Per Page</option>
                                 }
                                 else
                                 {
-                                    <option value="25">25</option>
+                                    <option value="25">25 Per Page</option>
                                 }
                                 @if (perPage == 50)
                                 {
-                                    <option value="50" selected>50</option>
+                                    <option value="50" selected>50 Per Page</option>
                                 }
                                 else
                                 {
-                                    <option value="50">50</option>
+                                    <option value="50">50 Per Page</option>
                                 }
                                 @if (perPage == 100)
                                 {
-                                    <option value="100" selected>100</option>
+                                    <option value="100" selected>100 Per Page</option>
                                 }
                                 else
                                 {
-                                    <option value="100">100</option>
+                                    <option value="100">100 Per Page</option>
                                 }
                             </select>
+                            @*<div class="input-group-append">
+                                    <label class="input-group-text bg-light border-secondary">Per Page</label>
+                                </div>*@
                         </div>
                     </form>
                 </span>
