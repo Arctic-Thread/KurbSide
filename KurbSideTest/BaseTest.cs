@@ -93,21 +93,6 @@ namespace KurbSideTest
             string loginEmail;
             string loginPassword = "Password12345";
 
-            switch (accountType)
-            {
-                case AccountType.MEMBER:
-                    loginEmail = "member@kurbsi.de";
-                    break;
-                case AccountType.BUSINESS:
-                    loginEmail = "business@kurbsi.de";
-                    break;
-                case AccountType.TEST:
-                    loginEmail = "test@kurbsi.de";
-                    break;
-                default:
-                    throw new NotImplementedException("KurbSideTest.BaseTest.KSUnitTestLogin - Account Type Not Implemented");
-            }
-
             // Fields & Buttons
             string navbarLoginButtonID = "navbar-login";
             string loginEmailFieldID = "Input_Email";
@@ -118,8 +103,26 @@ namespace KurbSideTest
             string homePageTitle = "Home Page - KurbSide";
             string loginPageTitle = "Log in - KurbSide";
 
+            switch (accountType)
+            {
+                case AccountType.MEMBER:
+                    loginEmail = "member@kurbsi.de";
+                    break;
+                case AccountType.BUSINESS:
+                    homePageTitle = "Business Dashboard - KurbSide";
+                    loginEmail = "business@kurbsi.de";
+                    break;
+                case AccountType.TEST:
+                    homePageTitle = "Business Dashboard - KurbSide";
+                    loginEmail = "test@kurbsi.de";
+                    break;
+                default:
+                    throw new NotImplementedException("KurbSideTest.BaseTest.KSUnitTestLogin - Account Type Not Implemented");
+            }
+
             //Act
             KSClick(navbarLoginButtonID);
+            KSTitleContains(loginPageTitle);
             KSSendKeys(loginEmailFieldID, loginEmail);
             KSSendKeys(loginPasswordFieldID, loginPassword);
             KSClick(loginButtonID);
