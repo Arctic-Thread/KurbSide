@@ -118,7 +118,7 @@ namespace KurbSide.Models
 
             if (string.IsNullOrEmpty(Postal))
             {
-                yield return new ValidationResult("Your Businessses Postal Code is required.", new[] { nameof(Postal) });
+                yield return new ValidationResult("Your Businesses Postal Code is required.", new[] { nameof(Postal) });
             }
             else
             {
@@ -213,12 +213,12 @@ namespace KurbSide.Models
 
             if (string.IsNullOrEmpty(ContactFirst))
             {
-                yield return new ValidationResult("Your Business Contacts First Name is is required.", new[] { nameof(ContactFirst) });
+                yield return new ValidationResult("Your Business Contacts First Name is required.", new[] { nameof(ContactFirst) });
             }
 
             if (string.IsNullOrEmpty(ContactLast))
             {
-                yield return new ValidationResult("Your Business Contacts First Name is is required.", new[] { nameof(ContactLast) });
+                yield return new ValidationResult("Your Business Contacts First Name is required.", new[] { nameof(ContactLast) });
             }
         }
     }
