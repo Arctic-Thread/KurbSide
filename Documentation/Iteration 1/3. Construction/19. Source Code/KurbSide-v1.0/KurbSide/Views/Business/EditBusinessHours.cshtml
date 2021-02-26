@@ -1,0 +1,232 @@
+﻿@model KurbSide.Models.BusinessHours
+
+@{
+    ViewData["Title"] = "Business Hours";
+}
+<link href="~/css/Business/BusinessHours.css" rel="stylesheet" />
+<script src="~/js/Business/BusinessHours.js"></script>
+
+<vc:business-head />
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" asp-controller="Business" asp-action="EditBusinessHours" asp-route-id="@Model.BusinessId">
+            <div class="container container-fluid justify-content-center">
+
+                <input type="hidden" asp-for="BusinessId" />
+                @* Monday *@
+                <div class="form-row mb-3 vertical-center-align">
+                    <div class="col-md-2">
+                        <div class="form-check custom-control custom-checkbox checkbox-lg">
+                            <input class="form-check-input custom-control-input" type="checkbox" id="chkMonday" name="chkMonday" />
+                            <label class="form-check-label custom-control-label" for="chkMonday">Monday</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="MonOpen" class="control-label"></label>*@
+                        <input type="time" asp-for="MonOpen" class="form-control" disabled />
+                    </div>
+
+                    <div>
+                        -
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="MonClose" class="control-label"></label>*@
+                        <input type="time" asp-for="MonClose" class="form-control" disabled />
+                    </div>
+
+                    <div class="col-md-2.5">
+                        <span asp-validation-for="MonOpen" class="text-danger"></span>
+                        <span asp-validation-for="MonClose" class="text-danger"></span>
+                    </div>
+                </div>
+
+                @*Tuesday*@
+                <div class="form-row mb-3 vertical-center-align">
+                    <div class="col-md-2">
+                        <div class="form-check custom-control custom-checkbox checkbox-lg">
+                            <input class="form-check-input custom-control-input" type="checkbox" id="chkTuesday" name="chkTuesday" />
+                            <label class="form-check-label custom-control-label" for="chkTuesday">Tuesday</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="TuesOpen" class="control-label"></label>*@
+                        <input type="time" asp-for="TuesOpen" class="form-control" disabled />
+                    </div>
+
+                    <div>
+                        -
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="TuesClose" class="control-label"></label>*@
+                        <input type="time" asp-for="TuesClose" class="form-control" disabled />
+                    </div>
+
+                    <div class="col-md-2.5">
+                        <span asp-validation-for="TuesOpen" class="text-danger"></span>
+                        <span asp-validation-for="TuesClose" class="text-danger"></span>
+                    </div>
+                </div>
+
+                @*Wednesday*@
+                <div class="form-row mb-3 vertical-center-align">
+                    <div class="col-md-2">
+                        <div class="form-check custom-control custom-checkbox checkbox-lg">
+                            <input class="form-check-input custom-control-input" type="checkbox" id="chkWednesday" name="chkWednesday" />
+                            <label class="form-check-label custom-control-label" for="chkWednesday">Wednesday</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="WedOpen" class="control-label"></label>*@
+                        <input type="time" asp-for="WedOpen" class="form-control" disabled />
+                    </div>
+
+                    <div>
+                        -
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="WedClose" class="control-label"></label>*@
+                        <input type="time" asp-for="WedClose" class="form-control" disabled />
+                    </div>
+
+                    <div class="col-md-2.5">
+                        <span asp-validation-for="WedOpen" class="text-danger"></span>
+                        <span asp-validation-for="WedClose" class="text-danger"></span>
+                    </div>
+                </div>
+
+                @*Thursday*@
+                <div class="form-row mb-3 vertical-center-align">
+                    <div class="col-md-2">
+                        <div class="form-check custom-control custom-checkbox checkbox-lg">
+                            <input class="form-check-input custom-control-input" type="checkbox" id="chkThursday" name="chkThursday" />
+                            <label class="form-check-label custom-control-label" for="chkThursday">Thursday</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="ThuOpen" class="control-label"></label>*@
+                        <input type="time" asp-for="ThuOpen" class="form-control" disabled />
+                    </div>
+
+                    <div>
+                        -
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="ThuClose" class="control-label"></label>*@
+                        <input type="time" asp-for="ThuClose" class="form-control" disabled />
+                    </div>
+
+                    <div class="col-md-2.5">
+                        <span asp-validation-for="ThuOpen" class="text-danger"></span>
+                        <span asp-validation-for="ThuClose" class="text-danger"></span>
+                    </div>
+                </div>
+
+                @*Friday*@
+                <div class="form-row mb-3 vertical-center-align">
+                    <div class="col-md-2">
+                        <div class="form-check custom-control custom-checkbox checkbox-lg">
+                            <input class="form-check-input custom-control-input" type="checkbox" id="chkFriday" name="chkFriday" />
+                            <label class="form-check-label custom-control-label" for="chkFriday">Friday</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="FriOpen" class="control-label"></label>*@
+                        <input type="time" asp-for="FriOpen" class="form-control" disabled />
+                    </div>
+
+                    <div>
+                        -
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="FriClose" class="control-label"></label>*@
+                        <input type="time" asp-for="FriClose" class="form-control" disabled />
+                    </div>
+
+                    <div class="col-md-2.5">
+                        <span asp-validation-for="FriOpen" class="text-danger"></span>
+                        <span asp-validation-for="FriClose" class="text-danger"></span>
+                    </div>
+                </div>
+
+                @*Saturday*@
+                <div class="form-row mb-3 vertical-center-align">
+                    <div class="col-md-2">
+                        <div class="form-check custom-control custom-checkbox checkbox-lg">
+                            <input class="form-check-input custom-control-input" type="checkbox" id="chkSaturday" name="chkSaturday" />
+                            <label class="form-check-label custom-control-label" for="chkSaturday">Saturday</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="SatOpen" class="control-label"></label>*@
+                        <input type="time" asp-for="SatOpen" class="form-control" disabled />
+                    </div>
+
+                    <div>
+                        -
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="SatClose" class="control-label"></label>*@
+                        <input type="time" asp-for="SatClose" class="form-control" disabled />
+                    </div>
+
+                    <div class="col-md-2.5">
+                        <span asp-validation-for="SatOpen" class="text-danger"></span>
+                        <span asp-validation-for="SatClose" class="text-danger"></span>
+                    </div>
+                </div>
+
+                @*Sunday*@
+                <div class="form-row mb-3 vertical-center-align">
+                    <div class="col-md-2">
+                        <div class="form-check custom-control custom-checkbox checkbox-lg">
+                            <input class="form-check-input custom-control-input" type="checkbox" id="chkSunday" name="chkSunday" />
+                            <label class="form-check-label custom-control-label" for="chkSunday">Sunday</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="SunOpen" class="control-label"></label>*@
+                        <input type="time" asp-for="SunOpen" class="form-control" disabled />
+                    </div>
+
+                    <div>
+                        -
+                    </div>
+
+                    <div class="col-md-2.5">
+                        @*<label asp-for="SunClose" class="control-label"></label>*@
+                        <input type="time" asp-for="SunClose" class="form-control" disabled />
+                    </div>
+
+                    <div class="col-md-2.5">
+                        <span asp-validation-for="SunOpen" class="text-danger"></span>
+                        <span asp-validation-for="SunClose" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+                <div class="row justify-content-between">
+                    <a class="btn btn-sm btn-secondary" asp-action="Index">Back to Dashboard</a>
+                    <button class="btn btn-sm btn-success" type="submit">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

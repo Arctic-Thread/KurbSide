@@ -1,0 +1,17 @@
+﻿@{ 
+    string message = (string)TempData["sysMessage"];
+}
+@{
+    //HACK Disable debug messages from showing
+}
+@if (message != null && !message.ToString().StartsWith("Debug"))
+{
+    var statusMessageClass = message.ToString().StartsWith("Error") ? "danger" : "success";
+    statusMessageClass = message.ToString().StartsWith("Denied") ? "warning" : statusMessageClass;
+    statusMessageClass = message.ToString().StartsWith("Debug") ? "warning" : statusMessageClass;
+
+    <div id="sysMessage" class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        @message
+    </div>
+}
