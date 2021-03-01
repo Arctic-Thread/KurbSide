@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,16 +17,19 @@ namespace KurbSide.Controllers
     {
         private readonly KSContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ILogger<Business> _logger;
 
-        public BusinessController(KSContext context, UserManager<IdentityUser> userManager)
+        public BusinessController(KSContext context, UserManager<IdentityUser> userManager, ILogger<Business> logger)
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
 
         #region BusinessRU
         public async Task<IActionResult> IndexAsync()
         {
+            //Check that the accessing user is a business type account
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
@@ -45,6 +49,7 @@ namespace KurbSide.Controllers
 
         public async Task<IActionResult> EditBusiness()
         {
+            //Check that the accessing user is a business type account
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
@@ -65,16 +70,17 @@ namespace KurbSide.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditBusiness(Guid id, Business business)
         {
+            //Check that the accessing user is a business type account
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
 
             if (!isAllowed) return RedirectToAction("Index");
 
+            //Check that the business being edited is the signed in business
             if (id != business.BusinessId)
             {
-                //TODO Remove Debug messages
-                TempData["sysMessage"] = $"Debug: Id Mismatch. Edit not performed.";
+                _logger.LogDebug("ID Mismatch. Edit not performed.");
                 return RedirectToAction("Index");
             }
 
@@ -89,18 +95,16 @@ namespace KurbSide.Controllers
                     }
                     catch (DbUpdateConcurrencyException)
                     {
-                        TempData["sysMessage"] = $"Error: Business does not exist, Update Failed.";
+                        _logger.LogError("Business does not exist, Update Failed.");
                         return RedirectToAction("Index");
                     }
-                    //TODO more debug messages!
-                    TempData["sysMessage"] = $"Debug: Edit succeeded. {business.BusinessId}";
+                    _logger.LogDebug($"Edit succeeded. {business.BusinessId}");
                     return RedirectToAction("Index");
                 }
             }
             catch (Exception ex)
             {
-                //TODO even more debug messages!
-                TempData["sysMessage"] = $"Error: {ex.GetBaseException().Message}. Edit not performed.";
+                _logger.LogError($"Error: {ex.GetBaseException().Message}. Edit not performed.");
                 return RedirectToAction("Index");
             }
 
@@ -111,8 +115,9 @@ namespace KurbSide.Controllers
         #endregion
 
         #region ItemCRUD
-        public async Task<IActionResult> Catalogue(string? filter, int page = 1, int perPage = 5)
+        public async Task<IActionResult> Catalogue(string filter = "", int page = 1, int perPage = 5)
         {
+            //Check that the accessing user is a business type account
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
@@ -123,28 +128,37 @@ namespace KurbSide.Controllers
                 .Where(b => b.AspNetId.Equals(user.Id))
                 .FirstOrDefaultAsync();
 
+            //Retreive items associated with the editing business
+            //  skip items that are marked as removed
+            //  TODO separate items to a separate list somewhere to be re-added
             var items = await _context.Item
                 .Where(i => i.BusinessId.Equals(business.BusinessId))
                 .Include(i => i.Business)
-                .Where(i => i.Removed==false)
+                .Where(i => i.Removed == false)
                 .OrderByDescending(i => i.Category)
                 .ToListAsync();
 
+            //Retreive the user-defined categories
             var categories = items
                 .Select(i => i.Category)
                 .Distinct()
                 .ToList();
 
-            if (filter != null)
+            //Filtering functions
+            if (!string.IsNullOrEmpty(filter))
             {
                 TempData["catalogueFilter"] = filter;
+                //sort by category if the search term/filter
+                //  is contained in the categories list
                 if (categories.Contains(filter))
                 {
                     items = items
                         .Where(i => i.Category.Equals(filter))
                         .ToList();
                 }
-            else
+                //sort by name if the search term/filter
+                //  is not contained in the categories list
+                else
                 {
                     items = items
                         .Where(i => i.ItemName.ToLower().Contains(filter.ToLower()))
@@ -152,11 +166,12 @@ namespace KurbSide.Controllers
                 }
             }
 
-            TempData["itemCategories"] = categories;
-            //return View(items);
-
+            //Create the paginated list for return
             var paginatedList = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
 
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["itemCategories"] = categories;
             TempData["currentPage"] = page;
             TempData["totalPage"] = paginatedList.TotalPages;
             TempData["perPage"] = perPage;
@@ -167,6 +182,7 @@ namespace KurbSide.Controllers
         }
         public async Task<IActionResult> RemoveItem(Guid id)
         {
+            //Check that the accessing user is a business type 
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
@@ -184,11 +200,10 @@ namespace KurbSide.Controllers
 
             try
             {
-                //HACK throw an exception forcing items to be hidden instead of removed
-                //throw new Exception("Test Exception, force hide");
-                _context.Item.Remove(item);
-                //TODO even more debug messages!
-                TempData["sysMessage"] = $"Debug: Item not present in any orders, Removed From Database.";
+                //Throw an exception forcing items to be hidden instead of removed
+                throw new Exception("");
+                //_context.Item.Remove(item);
+                //_logger.LogDebug("Debug: Item not present in any orders, Removed From Database.");
             }
             catch (Exception)
             {
@@ -197,13 +212,10 @@ namespace KurbSide.Controllers
                     if (item == null) throw new Exception();
                     item.Removed = true;
                     _context.Item.Update(item);
-                    //TODO even more debug messages!
-                    TempData["sysMessage"] = $"Debug: Item is present in orders, Marked as Hidden/Removed.";
+                    _logger.LogDebug("Debug: Item is present in orders, Marked as Hidden/Removed.");
                 }
                 catch (Exception)
-                {
-                    //TempData["sysMessage"] = $"Error: Item does not exist or does not belong to buisness.";
-                }
+                { }
             }
             finally
             {
@@ -217,16 +229,17 @@ namespace KurbSide.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddItem(Guid id, Item item)
         {
+            //Check that the accessing user is a business type account
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
 
             if (!isAllowed) return RedirectToAction("index");
 
+            //Ensure that the business can only add items for themselves
             if (id != item.BusinessId)
             {
-                //TODO Remove Debug messages
-                TempData["sysMessage"] = $"Debug: Id Mismatch. Edit not performed.";
+                _logger.LogDebug("Debug: Id Mismatch. Edit not performed.");
                 return RedirectToAction("index");
             }
 
@@ -236,28 +249,25 @@ namespace KurbSide.Controllers
                 {
                     _context.Item.Add(item);
                     await _context.SaveChangesAsync();
-                    
-                    //TODO more debug messages!
-                    TempData["sysMessage"] = $"Debug: Add succeeded. {item.ItemId}";
+                    _logger.LogDebug("Debug: Add succeeded. {item.ItemId}");
                     return RedirectToAction("catalogue");
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
-                TempData["sysMessage"] = $"Error: Business does not exist, Add Failed.";
+                _logger.LogError("Error: Business does not exist, Add Failed.");
                 return RedirectToAction("index");
             }
             catch (Exception ex)
             {
-                //TODO even more debug messages!
-
-                TempData["sysMessage"] = $"Error: {ex.GetBaseException().Message}. Add not performed.";
+                _logger.LogError($"Error: {ex.GetBaseException().Message}. Add not performed.");
                 return RedirectToAction("index");
             }
             return View(item);
         }
         public async Task<IActionResult> AddItem()
         {
+            //Check that the accessing user is a business type account
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
@@ -281,16 +291,17 @@ namespace KurbSide.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditItem(Guid id, Item item)
         {
+            //Check that the accessing user is a business type account
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
 
             if (!isAllowed) return RedirectToAction("Index");
 
+            //Ensure that the business can only edit items for themselves
             if (id != item.BusinessId)
             {
-                //TODO Remove Debug messages
-                TempData["sysMessage"] = $"Debug: Id Mismatch. Update not performed.";
+                _logger.LogDebug("Debug: Id Mismatch. Update not performed.");
                 return RedirectToAction("Index");
             }
 
@@ -300,21 +311,18 @@ namespace KurbSide.Controllers
                 {
                     _context.Item.Update(item);
                     await _context.SaveChangesAsync();
-
-                    //TODO more debug messages!
-                    TempData["sysMessage"] = $"Debug: Update succeeded. {item.ItemId}";
+                    _logger.LogDebug($"Debug: Update succeeded. {item.ItemId}");
                     return RedirectToAction("Catalogue");
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
-                TempData["sysMessage"] = $"Error: Business does not exist, Update Failed.";
+                _logger.LogError($"Error: Business does not exist, Update Failed.");
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                //TODO even more debug messages!
-                TempData["sysMessage"] = $"Error: {ex.GetBaseException().Message}. Update not performed.";
+                _logger.LogError($"Error: {ex.GetBaseException().Message}. Update not performed.");
                 return RedirectToAction("Index");
             }
 
@@ -322,6 +330,7 @@ namespace KurbSide.Controllers
         }
         public async Task<IActionResult> EditItem(Guid id)
         {
+            //Check that the accessing user is a business type account
             var user = await GetCurrentUserAsync();
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
@@ -337,7 +346,7 @@ namespace KurbSide.Controllers
                 .Where(i => i.ItemId.Equals(id))
                 .FirstOrDefaultAsync();
 
-            if (item==null)
+            if (item == null)
             {
                 return RedirectToAction("Index");
             }
