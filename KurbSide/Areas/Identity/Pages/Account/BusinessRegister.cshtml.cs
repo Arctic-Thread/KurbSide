@@ -69,46 +69,59 @@ namespace KurbSide.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             //Business Information
-            [Required]
+            [MaxLength(100, ErrorMessage = "The entered Business Name is too long. 250 characters max.")]
+            [Required(ErrorMessage = "You must enter a Business Name.")]
             [Display(Name = "Business name", Prompt = "Business Name")]
             public string BusinessName { get; set; }
-            [Required]
+            [Required(ErrorMessage = "You must enter a Phone Number.")]
+            [RegularExpression(@"^\(?([2-9][0-9]{2})\)?[-. ]?([2-9](?!11)[0-9]{2})[-. ]?([0-9]{4})(x[0-9]{1,4})?$", ErrorMessage = "You must enter a valid Phone Number. e.g. (519)-123-1234x1234")]
             [Phone]
             [Display(Name = "Phone Number", Prompt = "Phone Number")]
             public string PhoneNumber { get; set; }
 
             //Primary Contact
-            [Required]
+            [Required(ErrorMessage = "You must enter a Phone Number.")]
+            [RegularExpression(@"^\(?([2-9][0-9]{2})\)?[-. ]?([2-9](?!11)[0-9]{2})[-. ]?([0-9]{4})(x[0-9]{1,4})?$", ErrorMessage = "You must enter a valid Phone Number. e.g. (519)-123-1234x1234")]
             [Phone]
             [Display(Name = "Phone Number", Prompt = "Phone Number")]
             public string ContactPhone { get; set; }
-            [Required]
+            [MaxLength(100, ErrorMessage = "The entered Contact First Name is too long. 100 characters max.")]
+            [Required(ErrorMessage = "You must enter your Business Contacts First Name.")]
             [Display(Name = "First Name", Prompt = "First Name")]
             public string ContactFirst { get; set; }
-            [Required]
+            [MaxLength(100, ErrorMessage = "The entered Contact Last Name is too long. 100 characters max.")]
+            [Required(ErrorMessage = "You must enter your Business Contacts Last Name.")]
             [Display(Name = "Last Name", Prompt = "Last Name")]
             public string ContactLast { get; set; }
 
             //Business Address
-            [Required]
+            [MaxLength(250, ErrorMessage = "The entered Address is too long. 250 characters max.")]
+            [Required(ErrorMessage = "You must enter your Businesses Address.")]
             [Display(Name = "Street Address", Prompt = "Street Address")]
             public string Street { get; set; }
+            [MaxLength(250, ErrorMessage = "The entered Address Line 2 can be no longer than 250 characters.")]
             [Display(Name = "Street Address Line 2", Prompt = "Street Address Line 2")]
             public string StreetLn2 { get; set; }
-            [Required]
+            //TODO Change this. Longest city name in the world is 176 characters. Longest in Canada is 68.
+            [MaxLength(50, ErrorMessage = "The entered City is too long. 50 characters max.")]
             [Display(Name = "City", Prompt = "City")]
             public string City { get; set; }
-            [Required]
+            [Required(ErrorMessage = "You must enter your Businesses Postal Code.")]
+            [RegularExpression(@"^(?i)[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ]([ ]|[-])?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$", ErrorMessage = "You must enter a valid postal code. e.g. K1A 0A9")]
             [Display(Name = "Postal Code", Prompt = "Postal Code")]
             public string Postal { get; set; }
-            [Required]
+            [MaxLength(2, ErrorMessage = "The entered Province is too long. 2 characters max.")]
+            [Required(ErrorMessage = "You must enter your Businesses Province.")]
             [Display(Name = "Province", Prompt = "Province")]
             public string ProvinceCode { get; set; }
-            [Required]
+            [MaxLength(2, ErrorMessage = "The entered Country Code is too long. 2 characters max.")]
+            [Required(ErrorMessage = "You must enter your Businesses Country.")]
             [Display(Name = "Country", Prompt = "Country")]
             public string CountryCode { get; set; }
 
             //Future Use
+            [Required(ErrorMessage = "You must enter your Business Number.")]
+            [RegularExpression(@"^([0-9]{9})$", ErrorMessage = "Your Business Number must be 9 digits in length.")]
             [Display(Name = "Business Number", Prompt = "Business Number")]
             public string BusinessNumber { get; set; }
 
