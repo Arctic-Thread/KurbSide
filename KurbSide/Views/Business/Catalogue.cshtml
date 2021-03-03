@@ -63,7 +63,7 @@
     <div class="card-body row">
         <div class="col">
             <div class="btn-group btn-group-sm" style="flex-wrap: wrap; ">
-                <a class="btn btn-sm btn-dark btn-filter rounded" style="margin:0px 8px 3px 0px;" asp-action="Catalogue" asp-route-perPage="@(perPage)">@((activeFilter!="")? "Clear Filter" : "Filter By Category") </a>
+                <a class="btn btn-sm btn-dark btn-filter rounded" style="margin:0px 1px 3px 0px;" asp-action="Catalogue" asp-route-perPage="@(perPage)">@((activeFilter!="")? "Clear Filter" : "Filter By Category") </a>
                 @foreach (string category in categories)
                 {
                     <a class="btn btn-sm btn-light border-secondary rounded @(category.Equals(activeFilter)? "active" : null)" style="margin:1px 1px 3px 1px;" asp-route-filter="@category" asp-route-perPage="@(perPage)">@category</a>
