@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using KurbSide.Models;
 using Microsoft.AspNetCore.Identity;
+using Geocoding;
+using Geocoding.Google;
+using System.Net;
+using System.Xml.Linq;
 
 namespace KurbSide.Controllers
 {
@@ -44,8 +48,22 @@ namespace KurbSide.Controllers
             return View();
         }
 
-        public IActionResult PayPalTest()
+        public async Task<IActionResult> PayPalTestAsync(string address1 = "108 University Ave, Waterloo, ON Canada N2J 2W2", string address2 = "299 Doon Valley Dr, Kitchener, ON Canada N2G 4M4")
         {
+
+            {
+                Service.GeoCode geoCode = new Service.GeoCode();
+
+                Service.Location location1 = await geoCode.GetLocationAsync(address1);
+                Service.Location location2 = await geoCode.GetLocationAsync(address2);
+
+                double distance = geoCode.CalculateDistance(location1, location2);
+
+                TempData["ln1"] = $"{location1.address}, {location2.address}";
+                TempData["ln2"] = $"{distance}";
+
+            }
+
             return View("PayPalTest/PayPalTest");
         }
 
