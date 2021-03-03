@@ -151,10 +151,12 @@
                             <br />@item.Upc
                         </td>
                         <td class="align-middle">
-                            <div class="btn-group-vertical btn-group-sm">
-                                <a class="btn btn-width btn-warning" asp-controller="business" asp-action="editItem" id="catalogue-EditItem" asp-route-id="@item.ItemId">Edit</a>
-                                <a class="btn btn-width btn-danger" asp-controller="business" asp-action="removeItem" id="catalogue-DeleteItem" asp-route-id="@item.ItemId">Remove</a>
-                            </div>
+                            <form method="post" asp-controller="business" asp-action="removeItem" asp-route-id="@item.ItemId" onSubmit="return confirm('Are you sure you want to delete @(item.ItemName)?') ">
+                                <div class="btn-group-vertical btn-group-sm">
+                                    <a class="btn btn-width btn-warning" asp-controller="business" asp-action="editItem" id="catalogue-EditItem" asp-route-id="@item.ItemId">Edit</a>
+                                    <input type="submit" class="btn btn-width btn-danger" id="catalogue-DeleteItem" value="Remove" />
+                                </div>
+                            </form>
                         </td>
                     </tr>
                 }

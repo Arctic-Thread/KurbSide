@@ -19,7 +19,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="post" asp-controller="Business" asp-action="EditItem" asp-route-id="@Model.BusinessId">
+        <form method="post" asp-controller="Business" asp-action="EditItem" asp-route-id="@Model.BusinessId" onsubmit="return confirm('Are you sure you would like to save these changes to @(Model.ItemName)?')">
             <input hidden type="text" asp-for="BusinessId" />
             <input hidden type="text" asp-for="ItemId" />
             <input hidden type="text" asp-for="Removed" />
