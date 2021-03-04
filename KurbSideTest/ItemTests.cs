@@ -76,6 +76,9 @@ namespace KurbSideTest
 
             KSClick("catalogue-saveItem");
 
+            var confirm_edit = _driver.SwitchTo().Alert();
+            confirm_edit.Accept();
+
             IWebElement itemFounds = _driver.FindElement(By.XPath("//td[contains(.,'Test Item Pls Delete Edit')]"));
 
             Assert.AreEqual("Test Item Pls Delete Edit", itemFounds.Text);//checks to make sure that there are items in the list
@@ -93,6 +96,9 @@ namespace KurbSideTest
             KSClick("navbar-catalogue"); //Clicks the catalogue button in the nav bar
 
             KSClick("catalogue-DeleteItem");
+
+            var confirm_delete = _driver.SwitchTo().Alert();
+            confirm_delete.Accept();
 
             IReadOnlyList<IWebElement> itemNames = _driver.FindElements(By.Id("catalogue-allItems"));//gets all the items and store them in a list
 
