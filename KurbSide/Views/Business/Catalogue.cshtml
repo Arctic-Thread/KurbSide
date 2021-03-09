@@ -161,20 +161,9 @@
                 }
             </tbody>
         </table>
-        @*<div class="container container-fluid justify-content-center">
-                <div class="row justify-content-between">
-                    <a class="btn btn-sm btn-light border-secondary @(hasPrev?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page-1)" asp-route-filter="@(activeFilter)" asp-route-perPage="">@("<Prev Page")</a>
-                    <span class="text-secondary">Page @(page) / @(totalPage)  <small>(@(perPage) Per Page)</small></span>
-                    <a class="btn btn-sm btn-light border-secondary @(hasNext?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page+1)" asp-route-filter="@(activeFilter)">@("Next Page>")</a>
-                </div>
-            </div>
-            <hr />*@
         <div class="container container-fluid justify-content-center">
             <div class="row justify-content-between">
                 <a class="btn btn-sm btn-light border-secondary @(hasPrev?null:"disabled")" asp-action="Catalogue" asp-route-page="@(page-1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("<Prev Page")</a>
-                @*<span class="text-secondary">
-                        Page @(page) / @(totalPage)
-                    </span>*@
                 <span>
                     <form class="col" method="GET" asp-action="Catalogue" asp-route-page="@(page)" asp-route-filter="@(activeFilter)">
                         <div class="input-group input-group-sm">
@@ -225,9 +214,6 @@
                                     <option value="100">100 Per Page</option>
                                 }
                             </select>
-                            @*<div class="input-group-append">
-                                    <label class="input-group-text bg-light border-secondary">Per Page</label>
-                                </div>*@
                         </div>
                     </form>
                 </span>

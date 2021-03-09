@@ -65,7 +65,7 @@ namespace KurbSide.Areas.Identity.Pages.Account
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password", Prompt = "Confirm Password")]
-            [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
             //Business Information
@@ -275,6 +275,20 @@ namespace KurbSide.Areas.Identity.Pages.Account
 
                         _context.BusinessHours.Add(businessHours);
                         await _context.SaveChangesAsync();
+
+                        //Force EST for now.
+                        var est = _context.TimeZones
+                            .Where(tz => tz.Offset.Equals("-05:00"))
+                            .Select(tz => tz.TimeZoneId)
+                            .FirstOrDefault();
+                        var userPrefs = new AccountSettings
+                        {
+                            AspNetId = user.Id,
+                            TimeZoneId = est
+                        };
+                        _context.AccountSettings.Add(userPrefs);
+                        await _context.SaveChangesAsync();
+
                     }
 
                     _logger.LogInformation("User created a new account with password.");

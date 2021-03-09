@@ -9,8 +9,15 @@ namespace KurbSide.Models
 {
     public partial class TimeZones
     {
+        public TimeZones()
+        {
+            AccountSettings = new HashSet<AccountSettings>();
+        }
+
         public Guid TimeZoneId { get; set; }
         public string Offset { get; set; }
         public string Label { get; set; }
+
+        public virtual ICollection<AccountSettings> AccountSettings { get; set; }
     }
 }

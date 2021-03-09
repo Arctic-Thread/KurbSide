@@ -10,8 +10,9 @@ namespace KurbSide.Models
     public partial class AccountSettings
     {
         public string AspNetId { get; set; }
-        public int? TimeZone { get; set; }
+        public Guid? TimeZoneId { get; set; }
 
         public virtual AspNetUsers AspNet { get; set; }
+        public virtual TimeZones TimeZone { get; set; }
     }
 }

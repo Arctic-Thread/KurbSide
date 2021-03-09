@@ -51,13 +51,18 @@ namespace KurbSide.Models
                 entity.HasKey(e => e.AspNetId)
                     .HasName("PK__AccountS__9C3F232B503271E8");
 
-                entity.Property(e => e.TimeZone).HasDefaultValueSql("((9))");
+                entity.Property(e => e.TimeZoneId).HasColumnName("TimeZoneID");
 
                 entity.HasOne(d => d.AspNet)
                     .WithOne(p => p.AccountSettings)
                     .HasForeignKey<AccountSettings>(d => d.AspNetId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__AccountSe__AspNe__76619304");
+
+                entity.HasOne(d => d.TimeZone)
+                    .WithMany(p => p.AccountSettings)
+                    .HasForeignKey(d => d.TimeZoneId)
+                    .HasConstraintName("FK__AccountSe__TimeZ__7EF6D905");
             });
 
             modelBuilder.Entity<AspNetRoleClaims>(entity =>
