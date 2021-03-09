@@ -145,6 +145,9 @@ namespace KurbSide.Areas.Identity.Pages.Account
                 {
                     //Create the member
                     {
+                        string address = $"{Input.Street} {Input.City} {Input.ProvinceCode} {Input.CountryCode} {Input.Postal}";
+                        Service.Location location = await Service.GeoCode.GetLocationAsync(address);
+
                         var newMember = new Member
                         {
                             AspNetId = user.Id,
@@ -159,7 +162,10 @@ namespace KurbSide.Areas.Identity.Pages.Account
                             CountryCode = Input.CountryCode,
                             PhoneNumber = Input.Phone,
                             Gender = Input.Gender,
-                            Birthday = Input.Birthday
+                            Birthday = Input.Birthday,
+
+                            Lng = location.lng,
+                            Lat = location.lat
                         };
 
                         _context.Member.Add(newMember);

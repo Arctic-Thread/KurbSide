@@ -5,6 +5,8 @@
 
     var ln1 = (string)TempData["ln1"];
     var ln2 = (string)TempData["ln2"];
+    var ln3 = (string)TempData["ln3"];
+    var ln4 = (string)TempData["ln4"];
 }
 <!DOCTYPE html>
 
@@ -19,10 +21,12 @@
     <p>@(ln2)</p>
 
     <form asp-controller="home" asp-action="paypaltest">
-        <input type="text" name="address1"/>
-        <input type="text" name="address2"/>
+        <input type="text" name="address1" value="@(ln3)"/>
+        <input type="text" name="address2" value="@(ln4)"/>
         <input type="submit" name="submit"/>
     </form>
+
+    <hr />
 
     <script src="https://www.paypal.com/sdk/js?client-id=AUPzX4RZX9uXei_PDOlXbUg_6cY9O6lAHonu4R2h2-W07J77wpC6K3I39vVT6vFhI54uXtct5pQLuThz&currency=CAD">
     </script>

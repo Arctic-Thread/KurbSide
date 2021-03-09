@@ -146,6 +146,9 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
                     .Where(m => m.AspNetId.Equals(user.Id))
                     .FirstOrDefaultAsync();
 
+                string address = $"{Input.Street} {Input.City} {Input.ProvinceCode} {Input.CountryCode} {Input.Postal}";
+                Service.Location location = await Service.GeoCode.GetLocationAsync(address);
+
                 member.PhoneNumber = Input.Phone;
                 member.FirstName = Input.FirstName;
                 member.LastName = Input.LastName;
@@ -157,6 +160,8 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
                 member.Postal = Input.Postal;
                 member.CountryCode = Input.CountryCode;
                 member.ProvinceCode = Input.ProvinceCode;
+                member.Lng = location.lng;
+                member.Lat = location.lat;
 
                 StatusMessage = "Your profile has been updated";
                 _context.Member.Update(member);

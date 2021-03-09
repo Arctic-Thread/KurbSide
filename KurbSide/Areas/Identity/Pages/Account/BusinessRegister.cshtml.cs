@@ -232,6 +232,9 @@ namespace KurbSide.Areas.Identity.Pages.Account
                 {
                     //Create the business
                     {
+                        string address = $"{Input.Street} {Input.City} {Input.ProvinceCode} {Input.CountryCode} {Input.Postal}";
+                        Service.Location location = await Service.GeoCode.GetLocationAsync(address);
+
                         var newBusiness = new Business
                         {
                             AspNetId = user.Id,
@@ -247,7 +250,10 @@ namespace KurbSide.Areas.Identity.Pages.Account
                             BusinessNumber = Input.BusinessNumber,
                             ContactPhone = Input.ContactPhone,
                             ContactFirst = Input.ContactFirst,
-                            ContactLast = Input.ContactLast
+                            ContactLast = Input.ContactLast,
+
+                            Lat = location.lat,
+                            Lng = location.lng
                         };
 
                         _context.Business.Add(newBusiness);
