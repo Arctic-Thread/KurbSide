@@ -48,19 +48,20 @@ namespace KurbSide.Controllers
             return View();
         }
 
-        public async Task<IActionResult> PayPalTestAsync(string address1 = "108 University Ave, Waterloo, ON Canada N2J 2W2", string address2 = "299 Doon Valley Dr, Kitchener, ON Canada N2G 4M4")
+        public async Task<IActionResult> PayPalTestAsync(string address1 = "108 University Ave Waterloo ON CA N2J 2W2", string address2 = "299 Doon Valley Dr Kitchener ON CA N2G 4M4")
         {
 
             {
-                Service.GeoCode geoCode = new Service.GeoCode();
+                Service.Location location1 = await Service.GeoCode.GetLocationAsync(address1);
+                Service.Location location2 = await Service.GeoCode.GetLocationAsync(address2);
 
-                Service.Location location1 = await geoCode.GetLocationAsync(address1);
-                Service.Location location2 = await geoCode.GetLocationAsync(address2);
-
-                double distance = geoCode.CalculateDistance(location1, location2);
+                //var distance = await Service.GeoCode.CalculateDistanceAsync(location1, location2);
+                var distance = Service.GeoCode.CalculateDistanceLocal(location1, location2);
 
                 TempData["ln1"] = $"{location1.address}, {location2.address}";
-                TempData["ln2"] = $"{distance}";
+                TempData["ln2"] = $"{distance.distance}m, {distance.time} sec";
+                TempData["ln3"] = $"{address1}";
+                TempData["ln4"] = $"{address2}";
 
             }
 

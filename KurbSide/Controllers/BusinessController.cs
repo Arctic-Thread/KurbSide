@@ -90,6 +90,12 @@ namespace KurbSide.Controllers
                 {
                     try
                     {
+                        string address = $"{business.Street} {business.City} {business.ProvinceCode} {business.CountryCode} {business.Postal}";
+                        Service.Location location = await Service.GeoCode.GetLocationAsync(address);
+
+                        business.Lng = location.lng;
+                        business.Lat = location.lat;
+
                         _context.Update(business);
                         await _context.SaveChangesAsync();
                     }

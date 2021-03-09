@@ -47,7 +47,7 @@ namespace KurbSide.Areas.Identity.Pages.Account
 
         public string ReturnUrl { get; set; }
 
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        //public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public class InputModel
         {
@@ -214,7 +214,7 @@ namespace KurbSide.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ViewData["CountryCode"] = new SelectList(_context.Country, "CountryCode", "FullName", "CA");
             ViewData["ProvinceCode"] = new SelectList(_context.Province, "ProvinceCode", "FullName", "ON");
@@ -223,7 +223,7 @@ namespace KurbSide.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
@@ -232,6 +232,9 @@ namespace KurbSide.Areas.Identity.Pages.Account
                 {
                     //Create the business
                     {
+                        string address = $"{Input.Street} {Input.City} {Input.ProvinceCode} {Input.CountryCode} {Input.Postal}";
+                        Service.Location location = await Service.GeoCode.GetLocationAsync(address);
+
                         var newBusiness = new Business
                         {
                             AspNetId = user.Id,
@@ -247,7 +250,10 @@ namespace KurbSide.Areas.Identity.Pages.Account
                             BusinessNumber = Input.BusinessNumber,
                             ContactPhone = Input.ContactPhone,
                             ContactFirst = Input.ContactFirst,
-                            ContactLast = Input.ContactLast
+                            ContactLast = Input.ContactLast,
+
+                            Lat = location.lat,
+                            Lng = location.lng
                         };
 
                         _context.Business.Add(newBusiness);
