@@ -63,7 +63,7 @@
     <div class="card-body row">
         <div class="col">
             <div class="btn-group btn-group-sm" style="flex-wrap: wrap; ">
-                <a class="btn btn-sm btn-dark btn-filter rounded" style="margin:0px 1px 3px 0px;" asp-action="Catalogue" asp-route-perPage="@(perPage)">@((activeFilter!="")? "Clear Filter" : "Filter By Category") </a>
+                <a class="btn btn-sm btn-dark btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-action="Catalogue" asp-route-perPage="@(perPage)">@((activeFilter!="")? "Clear Filter" : "Filter By Category") </a>
                 @foreach (string category in categories)
                 {
                     <a class="btn btn-sm btn-light border-secondary rounded @(category.Equals(activeFilter)? "active" : null)" style="margin:1px 1px 3px 1px;" asp-route-filter="@category" asp-route-perPage="@(perPage)">@category</a>
@@ -116,10 +116,7 @@
             <tbody>
                 @foreach (Item item in Model)
                 {
-                    <tr>
-                        @*<td class="align-middle">
-                                @item.ItemId
-                            </td>*@
+                    <tr title="@item.ItemId">
                         <td class="align-middle" id="catalogue-allItems">
                             @item.ItemName
                         </td>
@@ -133,22 +130,24 @@
                                 @item.Details
                             </td>*@
                         <td class="align-middle">
-                            <img class="@(item.Sku == null ? "none":"qrcode")" src="https://bwipjs-api.metafloor.com/?bcid=datamatrix&text=@item.Sku" />
+                            <img class="@(item.Sku == null ? "none":"qrcode")" src="https://bwip-js.herokuapp.com/?bcid=datamatrix&text=@item.Sku" />
                             @item.Sku
                         </td>
                         <td class="align-middle">
-                            <div class="@(item.Upc == null ? "none":null)"></div>
-
-                            @if (item.Upc != null) switch (item.Upc.Length)
-                                {
-                                    case 13:
-                                        <img class="barcode" src="https://bwipjs-api.metafloor.com/?bcid=ean13&text=@item.Upc" />
-                                        break;
-                                    default:
-                                        <img class="barcode" src="https://bwipjs-api.metafloor.com/?bcid=upca&text=@item.Upc" />
-                                        break;
-                                }
-                            <br />@item.Upc
+                            <span class="@(item.Upc == null ? "none":null)">
+                                @if (item.Upc != null) switch (item.Upc.Length)
+                                    {
+                                        case 13:
+                                            <img class="barcode" src="https://bwip-js.herokuapp.com/?bcid=ean13&text=@item.Upc" />
+                                            <br />
+                                            break;
+                                        default:
+                                            <img class="barcode" src="https://bwip-js.herokuapp.com/?bcid=upca&text=@item.Upc" />
+                                            <br />
+                                            break;
+                                    }
+                            </span>
+                            @item.Upc
                         </td>
                         <td class="align-middle">
                             <form method="post" asp-controller="business" asp-action="removeItem" asp-route-id="@item.ItemId" onSubmit="return confirm('Are you sure you want to delete @(item.ItemName)?') ">
