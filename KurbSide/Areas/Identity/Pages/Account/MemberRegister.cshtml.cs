@@ -73,18 +73,22 @@ namespace KurbSide.Areas.Identity.Pages.Account
             [Phone]
             [Display(Name = "Phone Number", Prompt = "Phone Number")]
             public string Phone { get; set; }
+
             [MaxLength(100, ErrorMessage = "The entered First Name is too long. 100 characters max.")]
             [Required(ErrorMessage = "You must enter your First Name.")]
             [Display(Name = "First Name", Prompt = "First Name")]
             public string FirstName { get; set; }
+
             [MaxLength(100, ErrorMessage = "The entered Last Name is too long. 100 characters max.")]
             [Required(ErrorMessage = "You must enter your Last Name.")]
             [Display(Name = "Last Name", Prompt = "Last Name")]
             public string LastName { get; set; }
+
             [MaxLength(10, ErrorMessage = "The entered Gender is too long. 10 characters max.")]
             [Required(ErrorMessage = "You must enter your Gender")]
             [Display(Name = "Gender", Prompt = "Gender")]
             public string Gender { get; set; }
+
             [Required(ErrorMessage = "You must enter your Birthday")]
             [Display(Name = "Birthday", Prompt = "Birthday")]
             public DateTime Birthday { get; set; }
@@ -94,21 +98,26 @@ namespace KurbSide.Areas.Identity.Pages.Account
             [Required(ErrorMessage = "You must enter your Businesses Address.")]
             [Display(Name = "Street Address", Prompt = "Street Address")]
             public string Street { get; set; }
+
             [MaxLength(250, ErrorMessage = "The entered Address Line 2 can be no longer than 250 characters.")]
             [Display(Name = "Street Address Line 2", Prompt = "Street Address Line 2")]
             public string StreetLn2 { get; set; }
+
             //TODO Change this. Longest city name in the world is 176 characters. Longest in Canada is 68.
             [MaxLength(50, ErrorMessage = "The entered City is too long. 50 characters max.")]
             [Display(Name = "City", Prompt = "City")]
             public string City { get; set; }
+
             [Required(ErrorMessage = "You must enter your Postal Code.")]
             [RegularExpression(@"^(?i)[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ]([ ]|[-])?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$", ErrorMessage = "You must enter a valid postal code. e.g. K1A 0A9")]
             [Display(Name = "Postal Code", Prompt = "Postal Code")]
             public string Postal { get; set; }
+
             [MaxLength(2, ErrorMessage = "The entered Province is too long. 2 characters max.")]
             [Required(ErrorMessage = "You must enter your Businesses Province.")]
             [Display(Name = "Province", Prompt = "Province")]
             public string ProvinceCode { get; set; }
+
             [MaxLength(2, ErrorMessage = "The entered Country Code is too long. 2 characters max.")]
             [Required(ErrorMessage = "You must enter your Businesses Country.")]
             [Display(Name = "Country", Prompt = "Country")]
