@@ -2,6 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
+// Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
+// If you have enabled NRTs for your project, then un-comment the following line:
+// #nullable disable
+
 namespace KurbSide.Models
 {
     public partial class KSContext : DbContext
@@ -15,6 +19,7 @@ namespace KurbSide.Models
         {
         }
 
+        public virtual DbSet<AccountSettings> AccountSettings { get; set; }
         public virtual DbSet<AspNetRoleClaims> AspNetRoleClaims { get; set; }
         public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
@@ -28,6 +33,7 @@ namespace KurbSide.Models
         public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<Member> Member { get; set; }
         public virtual DbSet<Province> Province { get; set; }
+        public virtual DbSet<TimeZones> TimeZones { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -40,6 +46,20 @@ namespace KurbSide.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<AccountSettings>(entity =>
+            {
+                entity.HasKey(e => e.AspNetId)
+                    .HasName("PK__AccountS__9C3F232B503271E8");
+
+                entity.Property(e => e.TimeZone).HasDefaultValueSql("((9))");
+
+                entity.HasOne(d => d.AspNet)
+                    .WithOne(p => p.AccountSettings)
+                    .HasForeignKey<AccountSettings>(d => d.AspNetId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__AccountSe__AspNe__76619304");
+            });
+
             modelBuilder.Entity<AspNetRoleClaims>(entity =>
             {
                 entity.HasIndex(e => e.RoleId);
@@ -287,11 +307,61 @@ namespace KurbSide.Models
 
                 entity.Property(e => e.MemberId).HasDefaultValueSql("(newid())");
 
+                entity.Property(e => e.Birthday)
+                    .HasColumnType("date")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.City)
+                    .IsRequired()
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.CountryCode)
+                    .HasMaxLength(2)
+                    .HasDefaultValueSql("('CA')");
+
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Gender).HasMaxLength(10);
+
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.PhoneNumber)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Postal)
+                    .IsRequired()
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.ProvinceCode)
+                    .HasMaxLength(2)
+                    .HasDefaultValueSql("('ON')");
+
+                entity.Property(e => e.Street)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.StreetLn2).HasMaxLength(255);
+
                 entity.HasOne(d => d.AspNet)
                     .WithMany(p => p.Member)
                     .HasForeignKey(d => d.AspNetId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Member__AspNetId__5DCAEF64");
+
+                entity.HasOne(d => d.CountryCodeNavigation)
+                    .WithMany(p => p.Member)
+                    .HasForeignKey(d => d.CountryCode)
+                    .HasConstraintName("FK__Member__CountryC__7D0E9093");
+
+                entity.HasOne(d => d.ProvinceCodeNavigation)
+                    .WithMany(p => p.Member)
+                    .HasForeignKey(d => d.ProvinceCode)
+                    .HasConstraintName("FK__Member__Province__7E02B4CC");
             });
 
             modelBuilder.Entity<Province>(entity =>
@@ -320,6 +390,26 @@ namespace KurbSide.Models
                     .HasForeignKey(d => d.CountryCode)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Province__Countr__208CD6FA");
+            });
+
+            modelBuilder.Entity<TimeZones>(entity =>
+            {
+                entity.HasKey(e => e.TimeZoneId)
+                    .HasName("PK__TimeZone__78D387CF4C5A0161");
+
+                entity.Property(e => e.TimeZoneId)
+                    .HasColumnName("TimeZoneID")
+                    .HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.Label)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Offset)
+                    .IsRequired()
+                    .HasMaxLength(25)
+                    .IsUnicode(false);
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -7,12 +7,11 @@ using System.Collections.Generic;
 
 namespace KurbSide.Models
 {
-    public partial class AspNetUserRoles
+    public partial class AccountSettings
     {
-        public string UserId { get; set; }
-        public string RoleId { get; set; }
+        public string AspNetId { get; set; }
+        public int? TimeZone { get; set; }
 
-        public virtual AspNetRoles Role { get; set; }
-        public virtual AspNetUsers User { get; set; }
+        public virtual AspNetUsers AspNet { get; set; }
     }
 }
