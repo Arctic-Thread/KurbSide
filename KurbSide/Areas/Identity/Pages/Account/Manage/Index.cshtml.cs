@@ -30,18 +30,16 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
         [Display(Name = "Kurbside Business ID")]
         public string BusinessId { get; set; }
 
+        [Display(Name = "Kurbside Member ID")]
+        public string MemberId { get; set; }
+
         [TempData]
         public string StatusMessage { get; set; }
 
         [BindProperty]
         public InputModel Input { get; set; }
 
-        public class InputModel
-        {
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
-        }
+        public class InputModel {}
 
         private async Task LoadAsync(IdentityUser user)
         {
@@ -50,15 +48,16 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
                 .FirstOrDefaultAsync();
+            var member = await _context.Member
+                .Where(m => m.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
 
             Username = userName;
 
-            BusinessId = business==null? "" : business.BusinessId.ToString();
+            BusinessId = business == null ? "" : business.BusinessId.ToString();
+            MemberId = member == null ? "" : member.MemberId.ToString();
 
-            Input = new InputModel
-            {
-                PhoneNumber = phoneNumber
-            };
+            Input = new InputModel ();
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -87,19 +86,8 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
-                }
-            }
-
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Your account has been updated";
             return RedirectToPage();
         }
     }
