@@ -26,6 +26,7 @@ namespace KurbSide.Models
         public string Details { get; set; }
         [KSMinValue(0.01, ErrorMessage = "The entered price is too low. The minimum price is $0.01.")]
         [KSMaxValue(2147483647d, ErrorMessage = "The entered Price is too high. $2,147,483,647 max. ")]
+        [Range(0.0, 2147483647d, ErrorMessage = "The entered price is too low. The minimum price is $0.01.")]
         [Required(ErrorMessage = "You must enter the products price.")]
         public double? Price { get; set; }
         [Display(Name = "SKU")]

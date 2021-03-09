@@ -104,5 +104,99 @@ namespace KurbSideTest
 
             Assert.IsTrue(itemNames.Count == 0);//checks to make sure that there are no items in the list
         }
+
+        /// <summary>
+        /// This test inputs invalid data into the item field and checks if the errors are caught
+        /// </summary>
+        [Test]
+        public void UC15_AddItem_InvalidInfo_ShouldPass()
+        {
+            string ItemNameTest = "N";
+            string PriceTest = "-89";
+            string UpcTest = "10111";
+            string CategoryTest = "a";
+
+            string ItemErrrorMsg = "The entered Product Name is too short. A minimum of 2 characters is required.";
+            string PriceErrorMsg = "The entered price is too low. The minimum price is $0.01.";
+            string CategoryErrorMsg = "The entered Product Category is too short. A minimum of 2 characters is required.";
+            string UpcErrorMsg = "The entered UPC/EAN is too short. 11 numbers min.";
+            
+            bool AddFailed = false;
+
+            KSUnitTestLogin(AccountType.BUSINESS);
+
+            KSClick("navbar-catalogue"); //Clicks the catalogue button in the nav bar
+
+            KSClick("catalogue-AddItem");
+
+            KSSendKeys("ItemName", ItemNameTest);
+            KSSendKeys("Price", PriceTest);
+            KSSendKeys("Category", CategoryTest);
+            KSSendKeys("Upc", UpcTest);
+
+            KSClick("catalogue-SubmitItem");
+
+            string ItemMsg = _driver.FindElement(By.XPath("//span[contains(.,'The entered Product Name is too short. A minimum of 2 characters is required.')]")).Text;
+            string PriceMsg = _driver.FindElement(By.XPath("(//span[contains(.,'The entered price is too low. The minimum price is $0.01.')])")).Text;
+            string UpcMsg = _driver.FindElement(By.XPath("(//span[contains(.,'The entered UPC/EAN is too short. 11 numbers min.')])")).Text;
+            string CategoryMsg = _driver.FindElement(By.XPath("(//span[contains(.,'The entered Product Category is too short. A minimum of 2 characters is required.')])")).Text;
+
+            if (ItemMsg==ItemErrrorMsg && PriceMsg==PriceErrorMsg && UpcMsg == UpcErrorMsg && CategoryMsg==CategoryErrorMsg)
+            {
+                AddFailed = true;
+            }
+
+            Assert.AreEqual(AddFailed, true);//checks to make sure that there are items in the list
+        }
+        /// <summary>
+        /// Test for inputing invalid info when you are editing a field
+        /// </summary>
+        [Test]
+        public void UC15_EditItem_InvalidInfo_ShouldPass()
+        {
+            string ItemNameTest = "N";
+            string PriceTest = "-89";
+            string UpcTest = "10111";
+            string CategoryTest = "a";
+
+            string ItemErrrorMsg = "The entered Product Name is too short. A minimum of 2 characters is required.";
+            string PriceErrorMsg = "The entered price is too low. The minimum price is $0.01.";
+            string CategoryErrorMsg = "The entered Product Category is too short. A minimum of 2 characters is required.";
+            string UpcErrorMsg = "The entered UPC/EAN is too short. 11 numbers min.";
+
+            bool AddFailed = false;
+
+            KSUnitTestLogin(AccountType.BUSINESS);
+
+            KSClick("navbar-catalogue"); //Clicks the catalogue button in the nav bar
+
+            KSClick("catalogue-EditItem");
+
+            _driver.FindElement(By.Id("ItemName")).Clear();
+            _driver.FindElement(By.Id("Price")).Clear();
+            _driver.FindElement(By.Id("Category")).Clear();
+            _driver.FindElement(By.Id("Upc")).Clear();
+
+            KSSendKeys("ItemName", ItemNameTest);
+            KSSendKeys("Price", PriceTest);
+            KSSendKeys("Category", CategoryTest);
+            KSSendKeys("Upc", UpcTest);
+
+            KSClick("catalogue-saveItem");
+            var confirm_edit = _driver.SwitchTo().Alert();
+            confirm_edit.Accept();
+
+            string ItemMsg = _driver.FindElement(By.XPath("//span[contains(.,'The entered Product Name is too short. A minimum of 2 characters is required.')]")).Text;
+            string PriceMsg = _driver.FindElement(By.XPath("(//span[contains(.,'The entered price is too low. The minimum price is $0.01.')])")).Text;
+            string UpcMsg = _driver.FindElement(By.XPath("(//span[contains(.,'The entered UPC/EAN is too short. 11 numbers min.')])")).Text;
+            string CategoryMsg = _driver.FindElement(By.XPath("(//span[contains(.,'The entered Product Category is too short. A minimum of 2 characters is required.')])")).Text;
+
+            if (ItemMsg == ItemErrrorMsg && PriceMsg == PriceErrorMsg && UpcMsg == UpcErrorMsg && CategoryMsg == CategoryErrorMsg)
+            {
+                AddFailed = true;
+            }
+
+            Assert.AreEqual(AddFailed, true);//checks to make sure that there are items in the list
+        }
     }    
 }
