@@ -144,7 +144,15 @@
                 {
                     <tr title="@item.ItemId">
                         <td class="align-middle">
-                            <img draggable="false" class="zoom" src="@item.ImageLocation" />
+                            @if (item.ImageLocation == null)
+                            {
+                                <img draggable="false" class="zoom" src="~/img/NoImageAvailable.png" />
+                            }
+                            else
+                            {
+                                <img draggable="false" class="zoom" onerror="this.onerror = null;this.src='/img/NoImageAvailable.png'" src="@item.ImageLocation" />
+                            }
+
                         </td>
                         <td class="align-middle" id="catalogue-allItems">
                             @item.ItemName
