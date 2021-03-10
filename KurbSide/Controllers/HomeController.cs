@@ -48,7 +48,7 @@ namespace KurbSide.Controllers
             return View();
         }
 
-        public async Task<IActionResult> PayPalTestAsync(string address1 = "108 University Ave Waterloo ON CA N2J 2W2", string address2 = "299 Doon Valley Dr Kitchener ON CA N2G 4M4")
+        public async Task<IActionResult> SandboxAsync(string address1 = "108 University Ave Waterloo ON CA N2J 2W2", string address2 = "299 Doon Valley Dr Kitchener ON CA N2G 4M4")
         {
 
             {
@@ -65,7 +65,7 @@ namespace KurbSide.Controllers
 
             }
 
-            return View("PayPalTest/PayPalTest");
+            return View("Sandbox/Sandbox");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

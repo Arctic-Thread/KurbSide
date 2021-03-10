@@ -20,7 +20,7 @@
     <p>@(ln1)</p>
     <p>@(ln2)</p>
 
-    <form asp-controller="home" asp-action="paypaltest">
+    <form asp-controller="Home" asp-action="Sandbox">
         <input type="text" name="address1" value="@(ln3)"/>
         <input type="text" name="address2" value="@(ln4)"/>
         <input type="submit" name="submit"/>
@@ -59,4 +59,6 @@
             }
         }).render('#paypal-button-container');
     </script>
+
+
 </body>
