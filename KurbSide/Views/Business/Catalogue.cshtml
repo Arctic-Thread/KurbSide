@@ -87,6 +87,9 @@
         <table class="table table-responsive-sm">
             <thead class="">
                 <tr>
+                    <th scope="col">
+                        &nbsp;
+                    </th>
                     @*<th scope="col">
                             @Html.DisplayNameFor(modelItem => modelItem.ItemId)
                         </th>*@
@@ -117,6 +120,9 @@
                 @foreach (Item item in Model)
                 {
                     <tr title="@item.ItemId">
+                        <td class="align-middle">
+                            <img src="@item.ImageLocation" height="50"/>
+                        </td>
                         <td class="align-middle" id="catalogue-allItems">
                             @item.ItemName
                         </td>

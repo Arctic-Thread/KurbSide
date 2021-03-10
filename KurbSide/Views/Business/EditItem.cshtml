@@ -23,7 +23,7 @@
             <input hidden type="text" asp-for="BusinessId" />
             <input hidden type="text" asp-for="ItemId" />
             <input hidden type="text" asp-for="Removed" />
-
+            <h5 class="card-title text-sm-center align-content-center">Edit @Model.ItemName</h5>
             <div class="container container-fluid">
                 <div class="row">
                     <div class="col">
@@ -51,10 +51,10 @@
                             <span asp-validation-for="Details" class="text-danger"></span>
                         </div>
 
-                        <div class="form-group">
-                            <label for="CurrentImage">Current Image</label>
+                        <!--<div class="form-group">
+                            <label for="CurrentImage">Current Image</label>-->
                             @*//TODO Make this pretty*@
-                            @if (Model.ImageLocation == null)
+                            <!--@if (Model.ImageLocation == null)
                             {
                                 <img id="CurrentImage" src="~/img/NoImageAvailable.png" alt="No Image Available For @Model.ItemName" />
                             }
@@ -62,7 +62,7 @@
                             {
                                 <img id="CurrentImage" src="@(Model.ImageLocation)" alt="Image of @Model.ItemName" />
                             }
-                        </div>
+                        </div>-->
                     </div>
 
                     <div class="col">
@@ -86,7 +86,8 @@
 
                         <div class="form-group">
                             <label for="itemImage">Item Image</label>
-                            <input type="file" class="form-control" accept=".jpe, .jpg, .jpeg, .bmp, .gif, .png" name="itemImage" />
+                            <input type="file" class="form-control-file" accept=".jpe, .jpg, .jpeg, .bmp, .gif, .png" name="itemImage"
+                                   onchange="document.getElementById('imagePreview').src = window.URL.createObjectURL(this.files[0])">
                         </div>
                     </div>
 
@@ -96,7 +97,10 @@
                     <button class="btn btn-sm btn-success" type="submit" id="catalogue-saveItem">Save Item</button>
                 </div>
             </div>
-
+            <hr />
+            <div class="card-title text-sm-center align-content-center">
+                <img src="@Model.ImageLocation" alt="No Item Image Uploaded" height="300" id="imagePreview" class="align-self-center" />
+            </div>
         </form>
     </div>
 </div>

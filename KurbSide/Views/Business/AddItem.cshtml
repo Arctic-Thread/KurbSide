@@ -20,6 +20,8 @@
 <div class="card">
     <div class="card-body">
         <form method="post" enctype="multipart/form-data" asp-controller="Business" asp-action="AddItem" asp-route-id="@Model.BusinessId">
+            <h5 class="card-title text-sm-center align-content-center">Add Item</h5>
+
             <input hidden type="text" asp-for="BusinessId" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -51,7 +53,7 @@
                         </div>
 
                         @*//TODO Make this pretty*@
-                        <img id="imagePreview" alt="Preview of Image" width="300" height="300" />
+                        @*<img id="imagePreview" alt="Preview of Image" width="300" height="300" />*@
 
                     </div>
 
@@ -89,7 +91,11 @@
                     <button class="btn btn-sm btn-success" id="catalogue-SubmitItem" type="submit">Add Item</button>
                 </div>
             </div>
-
+            <br />
+            <hr />
+            <div class="card-title text-sm-center align-content-center">
+                <img src="@Model.ImageLocation" alt="No Item Image Uploaded" height="300" id="imagePreview" class="align-self-center" />
+            </div>
         </form>
     </div>
 </div>
