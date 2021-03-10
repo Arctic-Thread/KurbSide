@@ -29,12 +29,12 @@ namespace KurbSide.Service
             {
                 if (!validImageFileExtensions.Contains(fileToUpload.ContentType)) // If the file extension is not valid (in validImageFileExtensions)
                 {
-                    return "Invalid File Type";
+                    return "Error: Invalid File Type";
                 }
 
                 if (fileToUpload.Length > 20971520) // If File size is greater than 20MB
                 {
-                    return "Image Size Is Too Large";
+                    return "Error: Image Size Is Too Large";
                 }
 
                 using (var client = new HttpClient())
@@ -64,19 +64,19 @@ namespace KurbSide.Service
                             }
                             else
                             {
-                                return "Something Went Wrong";
+                                return "Error: Something Went Wrong";
                             }
                         }
                         else
                         {
-                            return rawResponse.ReasonPhrase;
+                            return "Error: " + rawResponse.ReasonPhrase;
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                return ex.GetBaseException().Message;
+                return "Error: " + ex.GetBaseException().Message;
             }
         }
     }

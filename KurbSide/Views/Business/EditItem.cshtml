@@ -19,7 +19,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="post" asp-controller="Business" asp-action="EditItem" asp-route-id="@Model.BusinessId" onsubmit="return confirm('Are you sure you would like to save these changes to @(Model.ItemName)?')">
+        <form method="post" enctype="multipart/form-data" asp-controller="Business" asp-action="EditItem" asp-route-id="@Model.BusinessId" onsubmit="return confirm('Are you sure you would like to save these changes to @(Model.ItemName)?')">
             <input hidden type="text" asp-for="BusinessId" />
             <input hidden type="text" asp-for="ItemId" />
             <input hidden type="text" asp-for="Removed" />
@@ -51,10 +51,21 @@
                             <span asp-validation-for="Details" class="text-danger"></span>
                         </div>
 
+                        <div class="form-group">
+                            <label for="CurrentImage">Current Image</label>
+                            @*//TODO Make this pretty*@
+                            @if (Model.ImageLocation == null)
+                            {
+                                <img id="CurrentImage" src="~/img/NoImageAvailable.png" alt="No Image Available For @Model.ItemName" />
+                            }
+                            else
+                            {
+                                <img id="CurrentImage" src="@(Model.ImageLocation)" alt="Image of @Model.ItemName" />
+                            }
+                        </div>
                     </div>
 
                     <div class="col">
-
                         <div class="form-group">
                             <label asp-for="Category" class=""></label>
                             <input type="text" asp-for="Category" class="form-control" />
@@ -73,12 +84,10 @@
                             <span asp-validation-for="Upc" class="text-danger"></span>
                         </div>
 
-                        @*<div class="form-group">
-                    <label asp-for="ImageLocation" class=""></label>
-                    <input type="text" asp-for="ImageLocation" class="form-control" placeholder="FUTURE USE" disabled />
-                    <span asp-validation-for="ImageLocation"></span>
-                </div>*@
-
+                        <div class="form-group">
+                            <label for="itemImage">Item Image</label>
+                            <input type="file" class="form-control" accept=".jpe, .jpg, .jpeg, .bmp, .gif, .png" name="itemImage" />
+                        </div>
                     </div>
 
                 </div>

@@ -1,5 +1,6 @@
 ﻿using KurbSide.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using KurbSide.Service;
 
 namespace KurbSide.Controllers
 {
@@ -233,7 +235,7 @@ namespace KurbSide.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddItem(Guid id, Item item)
+        public async Task<IActionResult> AddItem(Guid id, Item item, IFormFile itemImage)
         {
             //Check that the accessing user is a business type account
             var user = await GetCurrentUserAsync();
@@ -253,6 +255,20 @@ namespace KurbSide.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    if(itemImage != null) // If the business has added an image, it is uploaded to imgur and the link is prepped to be saved to the DB
+                    {
+                        string linkToImage = await KSImgur.KSUploadImageToImgur(itemImage);
+                        if(!linkToImage.StartsWith("Error: "))
+                        {
+                            item.ImageLocation = linkToImage;
+
+                        }
+                        else
+                        {
+                            TempData["sysMessage"] = linkToImage + ", Image not added";
+                        }
+                    }
+
                     _context.Item.Add(item);
                     await _context.SaveChangesAsync();
                     _logger.LogDebug("Debug: Add succeeded. {item.ItemId}");
@@ -295,7 +311,7 @@ namespace KurbSide.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditItem(Guid id, Item item)
+        public async Task<IActionResult> EditItem(Guid id, Item item, IFormFile itemImage)
         {
             //Check that the accessing user is a business type account
             var user = await GetCurrentUserAsync();
@@ -315,6 +331,28 @@ namespace KurbSide.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    if(itemImage != null) // If the business has added an image, it is uploaded to imgur and the link is prepped to be saved to the DB
+                    {
+                        string linkToImage = await KSImgur.KSUploadImageToImgur(itemImage);
+                        if (!linkToImage.StartsWith("Error: "))
+                        {
+                            item.ImageLocation = linkToImage;
+
+                        }
+                        else
+                        {
+                            TempData["sysMessage"] = linkToImage + ", Image not changed";
+                        }
+
+                        item.ImageLocation = linkToImage;
+                    }
+                    else // If they are not adding a new image, it uses the pre-existing image.
+                    {
+                        var existingItem = await _context.Item.Where(i => i.ItemId == item.ItemId).FirstOrDefaultAsync();
+                        string linkToImage = existingItem.ImageLocation;
+                        item.ImageLocation = linkToImage;
+                    }
+
                     _context.Item.Update(item);
                     await _context.SaveChangesAsync();
                     _logger.LogDebug($"Debug: Update succeeded. {item.ItemId}");

@@ -19,7 +19,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="post" asp-controller="Business" asp-action="AddItem" asp-route-id="@Model.BusinessId">
+        <form method="post" enctype="multipart/form-data" asp-controller="Business" asp-action="AddItem" asp-route-id="@Model.BusinessId">
             <input hidden type="text" asp-for="BusinessId" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -50,6 +50,9 @@
                             <span asp-validation-for="Details" class="text-danger"></span>
                         </div>
 
+                        @*//TODO Make this pretty*@
+                        <img id="imagePreview" alt="Preview of Image" width="300" height="300" />
+
                     </div>
 
                     <div class="col">
@@ -72,12 +75,12 @@
                             <span asp-validation-for="Upc" class="text-danger"></span>
                         </div>
 
-                        @*<div class="form-group">
-                            <label asp-for="ImageLocation" class=""></label>
-                            <input type="text" asp-for="ImageLocation" class="form-control" placeholder="FUTURE USE" disabled />
-                            <span asp-validation-for="ImageLocation"></span>
-                        </div>*@
-
+                        @*//TODO Make this pretty*@
+                        <div class="form-group">
+                            <label for="itemImage">Item Image</label>
+                            <input type="file" class="form-control-file" accept=".jpe, .jpg, .jpeg, .bmp, .gif, .png" name="itemImage"
+                                   onchange="document.getElementById('imagePreview').src = window.URL.createObjectURL(this.files[0])">
+                        </div>
                     </div>
 
                 </div>
