@@ -61,4 +61,15 @@
     </script>
 
 
+    <br />
+    <br />
+    <form asp-action="UploadImageToImgur" enctype="multipart/form-data" method="post">
+        <div class="form-group">
+            <input type="file" class="form-control" accept="image/*" name="formImage" />
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">upload</button>
+        </div>
+    </form>
 </body>
