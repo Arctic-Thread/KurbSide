@@ -216,6 +216,10 @@ namespace KurbSide.Models
                     .HasMaxLength(2)
                     .HasDefaultValueSql("('ON')");
 
+                entity.Property(e => e.StoreIdentifier)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Street)
                     .IsRequired()
                     .HasMaxLength(255);

@@ -17,6 +17,9 @@ namespace KurbSide.Models
         [MaxLength(100, ErrorMessage = "The entered Business Name is too long. 250 characters max.")]
         [Required(ErrorMessage = "You must enter a Business Name.")]
         public string BusinessName { get; set; }
+        [MaxLength(30, ErrorMessage = "The entered Store Identifier is too long. 30 characters max.")]
+        [Display(Name = "Store Identifier", Prompt = "Store Identifier")]
+        public string StoreIdentifier { get; set; }
         [Display(Name = "Phone Number")]
         [Required(ErrorMessage = "You must enter a Phone Number.")]
         [RegularExpression(@"^\(?([2-9][0-9]{2})\)?[-. ]?([2-9](?!11)[0-9]{2})[-. ]?([0-9]{4})(x[0-9]{1,4})?$", ErrorMessage = "You must enter a valid Phone Number. e.g. (519)-123-1234x1234")]

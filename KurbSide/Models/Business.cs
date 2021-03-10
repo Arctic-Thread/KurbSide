@@ -32,6 +32,7 @@ namespace KurbSide.Models
         public string ContactLast { get; set; }
         public double Lat { get; set; }
         public double Lng { get; set; }
+        public string StoreIdentifier { get; set; }
 
         public virtual AspNetUsers AspNet { get; set; }
         public virtual Country CountryCodeNavigation { get; set; }

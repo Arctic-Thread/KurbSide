@@ -21,6 +21,12 @@
                         </div>
 
                         <div class="form-group">
+                            <label asp-for="StoreIdentifier" class=""></label>
+                            <input type="text" asp-for="StoreIdentifier" class="form-control" />
+                            <span asp-validation-for="StoreIdentifier" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
                             <label asp-for="PhoneNumber" class=""></label>
                             <input type="text" asp-for="PhoneNumber" class="form-control" />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
