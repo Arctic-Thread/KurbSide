@@ -67,16 +67,17 @@
         -webkit-transition-timing-function: ease;
     }
 
-        .zoom:hover {
-            transform: scale(3);
-            border-style: solid;
-            border-width: 1px;
-            border-radius: 3px;
-            border-color: #555;
-            z-index: 999999 !important;
-            position: relative;
-            background-color: white;
-        }
+    .zoom:hover {
+        transform: scale(2.75);
+        /*border-style: solid;*/
+        /*border-width: 0.5px;*/
+        border-radius: 3px;
+        /*border-color: #888;*/
+        z-index: 999999 !important;
+        position: relative;
+        background-color: white;
+        box-shadow: rgba(0,0,0,0.25) 0px 0px 3px;
+    }
 </style>
 
 <vc:business-head />
@@ -143,7 +144,7 @@
                 {
                     <tr title="@item.ItemId">
                         <td class="align-middle">
-                            <img class="zoom" src="@item.ImageLocation" />
+                            <img draggable="false" class="zoom" src="@item.ImageLocation" />
                         </td>
                         <td class="align-middle" id="catalogue-allItems">
                             @item.ItemName
