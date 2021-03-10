@@ -333,18 +333,18 @@ namespace KurbSide.Controllers
                 {
                     if(itemImage != null) // If the business has added an image, it is uploaded to imgur and the link is prepped to be saved to the DB
                     {
-                        string linkToImage = await KSImgur.KSUploadImageToImgur(itemImage);
-                        if (!linkToImage.StartsWith("Error: "))
+                        string uploadResults = await KSImgur.KSUploadImageToImgur(itemImage);
+                        if (!uploadResults.StartsWith("Error: "))
                         {
-                            item.ImageLocation = linkToImage;
-
+                            item.ImageLocation = uploadResults;
                         }
                         else
                         {
-                            TempData["sysMessage"] = linkToImage + ", Image not changed";
+                            var existingItem = await _context.Item.Where(i => i.ItemId == item.ItemId).FirstOrDefaultAsync();
+                            string existingImage = existingItem.ImageLocation;
+                            item.ImageLocation = existingImage;
+                            TempData["sysMessage"] = uploadResults + ", Image not changed";
                         }
-
-                        item.ImageLocation = linkToImage;
                     }
                     else // If they are not adding a new image, it uses the pre-existing image.
                     {
