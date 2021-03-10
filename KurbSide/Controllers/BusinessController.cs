@@ -188,7 +188,7 @@ namespace KurbSide.Controllers
 
             return View(paginatedList);
         }
-        public async Task<IActionResult> RemoveItem(Guid id)
+        public async Task<IActionResult> RemoveItem(Guid id, string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type 
             var user = await GetCurrentUserAsync();
@@ -230,7 +230,7 @@ namespace KurbSide.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("Catalogue");
+            return RedirectToAction("Catalogue", new {filter, page, perPage});
         }
 
         [HttpPost]
