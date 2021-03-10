@@ -25,14 +25,12 @@ namespace KurbSide.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly KSContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        private IWebHostEnvironment _hostingEnvironment;
 
         public HomeController(ILogger<HomeController> logger, KSContext context, UserManager<IdentityUser> userManager, IWebHostEnvironment environment)
         {
             _logger = logger;
             _context = context;
             _userManager = userManager;
-            _hostingEnvironment = environment;
         }
 
         public async Task<IActionResult> Index()
@@ -76,49 +74,11 @@ namespace KurbSide.Controllers
             return View("Sandbox/Sandbox");
         }
 
-        /// <summary>
-        /// Uploads an image in a form to the Imgur via their API
-        /// </summary>
-        /// <remarks>
-        /// TODO It has literally zero validation or error checking.
-        /// You can add any file type, any size, viruses, etc.
-        /// <br/> Liam De Rivers
-        /// </remarks>
-        /// <param name="formImage">The image to be uploaded from the form</param>
-        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> UploadImageToImgur(IFormFile formImage)
+        public async Task<IActionResult> UploadImage(IFormFile formImage)
         {
-            using (var client = new HttpClient())
-            {
-                string imgurApiUrl = "https://api.imgur.com/3/";
-                string imgurSecret = Environment.GetEnvironmentVariable("imgur_api_secret");
-                string imgurClientID = "Client-ID 1f6dd4de0fc6655";
-
-                client.BaseAddress = new Uri(imgurApiUrl);
-                client.DefaultRequestHeaders.Add("Authorization", imgurClientID);
-                client.DefaultRequestHeaders.Add("Token", imgurSecret);
-
-                try
-                {
-                    MultipartFormDataContent formData = new MultipartFormDataContent(); // The form to be uploaded to the Imgur API
-
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await formImage.CopyToAsync(memoryStream); // Saves the entire image file (creation date, author etc.) to memory
-                        var rawContents = memoryStream.ToArray(); // rawContents is the image contents alone
-                        HttpContent imageContents = new StringContent(Convert.ToBase64String(rawContents)); // imageContents is an httpContent entity containing the image contents
-                        formData.Add(imageContents, "image"); // Add the imageContents to the "form"
-
-                        HttpResponseMessage rawResponse = await client.PostAsync("image", formData); // The raw response from the Imgur API
-                        var responseContent = await rawResponse.Content.ReadAsStringAsync(); // The response content from the Imgur API
-                        var jsonResponseContent = JsonConvert.DeserializeObject<dynamic>(responseContent); // "Json-ified" response content
-                        ViewData["linkToImage"] = jsonResponseContent["data"]["link"]; // The link to the image
-                        return View("Sandbox/Sandbox_Image");
-                    }
-                }
-                catch (Exception) { throw; }
-            }
+            ViewData["linkToImage"] = await Service.KSImgur.KSUploadImageToImgur(formImage);
+            return View("Sandbox/Sandbox_Image");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
