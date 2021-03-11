@@ -79,14 +79,14 @@ namespace KurbSide.Areas.Identity.Pages.Account
             public string StoreIdentifier { get; set; }
 
             [Required(ErrorMessage = "You must enter a Phone Number.")]
-            [RegularExpression(@"^\(?([2-9][0-9]{2})\)?[-. ]?([2-9](?!11)[0-9]{2})[-. ]?([0-9]{4})(x[0-9]{1,4})?$", ErrorMessage = "You must enter a valid Phone Number. e.g. (519)-123-1234x1234")]
+            [RegularExpression(@"^\(?([2-9][0-9]{2})\)?[-. ]?([2-9](?!11)[0-9]{2})[-. ]?([0-9]{4})(x[0-9]{1,4})?$", ErrorMessage = "You must enter a valid Phone Number. e.g. (519)-885-0300x1234")]
             [Phone]
             [Display(Name = "Phone Number", Prompt = "Phone Number")]
             public string PhoneNumber { get; set; }
 
             //Primary Contact
             [Required(ErrorMessage = "You must enter a Phone Number.")]
-            [RegularExpression(@"^\(?([2-9][0-9]{2})\)?[-. ]?([2-9](?!11)[0-9]{2})[-. ]?([0-9]{4})(x[0-9]{1,4})?$", ErrorMessage = "You must enter a valid Phone Number. e.g. (519)-123-1234x1234")]
+            [RegularExpression(@"^\(?([2-9][0-9]{2})\)?[-. ]?([2-9](?!11)[0-9]{2})[-. ]?([0-9]{4})(x[0-9]{1,4})?$", ErrorMessage = "You must enter a valid Phone Number. e.g. (519)-885-0300x1234")]
             [Phone]
             [Display(Name = "Phone Number", Prompt = "Phone Number")]
             public string ContactPhone { get; set; }
