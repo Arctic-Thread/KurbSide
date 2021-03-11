@@ -22,8 +22,7 @@ namespace KurbSide.Models
         public string StoreIdentifier { get; set; }
         [Display(Name = "Phone Number")]
         [Required(ErrorMessage = "You must enter a Phone Number.")]
-        [RegularExpression(@"^\(?([2-9][0-9]{2})\)?[-. ]?([2-9](?!11)[0-9]{2})[-. ]?([0-9]{4})(x[0-9]{1,4})?$", ErrorMessage = "You must enter a valid Phone Number. e.g. (519)-885-0300
-            ")]
+        [RegularExpression(@"^\(?([2-9][0-9]{2})\)?[-. ]?([2-9](?!11)[0-9]{2})[-. ]?([0-9]{4})(x[0-9]{1,4})?$", ErrorMessage = "You must enter a valid Phone Number. e.g. (519)-885-0300x1234")]
         public string PhoneNumber { get; set; }
         public TimeSpan? OpenTime { get; set; }
         public TimeSpan? CloseTime { get; set; }
