@@ -311,7 +311,7 @@ namespace KurbSide.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditItem(Guid id, Item item, IFormFile itemImage)
+        public async Task<IActionResult> EditItem(Guid id, Item item, IFormFile itemImageEdit)
         {
             //Check that the accessing user is a business type account
             var user = await GetCurrentUserAsync();
@@ -331,9 +331,9 @@ namespace KurbSide.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if(itemImage != null) // If the business has added an image, it is uploaded to imgur and the link is prepped to be saved to the DB
+                    if(itemImageEdit != null) // If the business has added an image, it is uploaded to imgur and the link is prepped to be saved to the DB
                     {
-                        string uploadResults = await KSImgur.KSUploadImageToImgur(itemImage);
+                        string uploadResults = await KSImgur.KSUploadImageToImgur(itemImageEdit);
                         if (!uploadResults.StartsWith("Error: "))
                         {
                             item.ImageLocation = uploadResults;
