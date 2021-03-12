@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KurbSide.Service;
+using KurbSide.Utilities;
 
 namespace KurbSide.Controllers
 {
@@ -32,19 +33,16 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             //Check that the accessing user is a business type account
-            var user = await GetCurrentUserAsync();
-            var accountType = GetAccountType(user);
-            var isAllowed = accountType.Equals("business");
-
-            if (!isAllowed)
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await _context.Business.FirstOrDefaultAsync(b => b.AspNetId.Equals(user.Id));
 
             return View(business);
         }
@@ -52,11 +50,15 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> EditBusiness()
         {
             //Check that the accessing user is a business type account
-            var user = await GetCurrentUserAsync();
-            var accountType = GetAccountType(user);
-            var isAllowed = accountType.Equals("business");
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
 
-            if (!isAllowed) return RedirectToAction("Index");
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
 
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
@@ -73,11 +75,14 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> EditBusiness(Guid id, Business business)
         {
             //Check that the accessing user is a business type account
-            var user = await GetCurrentUserAsync();
-            var accountType = GetAccountType(user);
-            var isAllowed = accountType.Equals("business");
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
 
-            if (!isAllowed) return RedirectToAction("Index");
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
 
             //Check that the business being edited is the signed in business
             if (id != business.BusinessId)
@@ -126,11 +131,15 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> Catalogue(string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await GetCurrentUserAsync();
-            var accountType = GetAccountType(user);
-            var isAllowed = accountType.Equals("business");
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
 
-            if (!isAllowed) return RedirectToAction("Index");
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
 
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
@@ -190,12 +199,16 @@ namespace KurbSide.Controllers
         }
         public async Task<IActionResult> RemoveItem(Guid id, string filter = "", int page = 1, int perPage = 5)
         {
-            //Check that the accessing user is a business type 
-            var user = await GetCurrentUserAsync();
-            var accountType = GetAccountType(user);
-            var isAllowed = accountType.Equals("business");
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
 
-            if (!isAllowed) return RedirectToAction("Index");
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
 
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
@@ -238,11 +251,14 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> AddItem(Guid id, Item item, IFormFile itemImage)
         {
             //Check that the accessing user is a business type account
-            var user = await GetCurrentUserAsync();
-            var accountType = GetAccountType(user);
-            var isAllowed = accountType.Equals("business");
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
 
-            if (!isAllowed) return RedirectToAction("Index");
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
 
             //Ensure that the business can only add items for themselves
             if (id != item.BusinessId)
@@ -290,11 +306,15 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> AddItem()
         {
             //Check that the accessing user is a business type account
-            var user = await GetCurrentUserAsync();
-            var accountType = GetAccountType(user);
-            var isAllowed = accountType.Equals("business");
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
 
-            if (!isAllowed) return RedirectToAction("Index");
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
 
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
@@ -314,11 +334,15 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> EditItem(Guid id, Item item, IFormFile itemImageEdit)
         {
             //Check that the accessing user is a business type account
-            var user = await GetCurrentUserAsync();
-            var accountType = GetAccountType(user);
-            var isAllowed = accountType.Equals("business");
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
 
-            if (!isAllowed) return RedirectToAction("Index");
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
 
             //Ensure that the business can only edit items for themselves
             if (id != item.BusinessId)
@@ -375,11 +399,15 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> EditItem(Guid id)
         {
             //Check that the accessing user is a business type account
-            var user = await GetCurrentUserAsync();
-            var accountType = GetAccountType(user);
-            var isAllowed = accountType.Equals("business");
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
 
-            if (!isAllowed) return RedirectToAction("Index");
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
 
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
@@ -402,11 +430,16 @@ namespace KurbSide.Controllers
         #region Business Hours
         public async Task<IActionResult> EditBusinessHours()
         {
-            var user = await GetCurrentUserAsync();
-            var accountType = GetAccountType(user);
-            var isAllowed = accountType.Equals("business");
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
 
-            if (!isAllowed) return RedirectToAction("Index");
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
 
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
@@ -428,11 +461,15 @@ namespace KurbSide.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditBusinessHours(Guid id, BusinessHours businessHours)
         {
-            var user = await GetCurrentUserAsync();
-            var accountType = GetAccountType(user);
-            var isAllowed = accountType.Equals("business");
+            //Check that the accessing user is a business type account
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
 
-            if (!isAllowed) return RedirectToAction("Index");
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
 
             if (id != businessHours.BusinessId)
             {
@@ -466,36 +503,6 @@ namespace KurbSide.Controllers
             }
             return View(businessHours);
         }
-        #endregion
-
-        #region CurrentUserUtils
-        //Current User Utils 1.0
-        private Task<IdentityUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
-
-        private async Task<string> GetLoggedInEmailAsync()
-        {
-            var user = await GetCurrentUserAsync();
-            return user == null ? "" : user.Email;
-        }
-
-        private string GetAccountType(IdentityUser? IUser)
-        {
-            if (IUser == null) return "";
-
-            bool hasBusiness = _context.Business.Where(b => b.AspNetId.Equals(IUser.Id)).Count() > 0;
-            bool hasMember = _context.Member.Where(b => b.AspNetId.Equals(IUser.Id)).Count() > 0;
-
-            /*
-             * HACK maybe make this an enum rather than a string to prevent future issues
-             *      actually nevermind because C# enums aren't like Java enums
-             *      for now keeping it standard to lowercase strings works :)
-             */
-            if (hasBusiness) return "business";
-            else if (hasMember) return "member";
-            else return "";
-
-        }
-        //End Current User Utils 1.0
         #endregion
     }
 }

@@ -5,7 +5,7 @@ using KurbSide.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
-namespace KurbSide.Service
+namespace KurbSide.Utilities
 {
     public class KSCurrentUser
     {
@@ -18,10 +18,12 @@ namespace KurbSide.Service
             /// A Business Account
             /// </summary>
             BUSINESS,
+
             /// <summary>
             /// A Member Account
             /// </summary>
             MEMBER,
+
             /// <summary>
             /// A Visitor (Not logged in)
             /// </summary>
@@ -34,9 +36,7 @@ namespace KurbSide.Service
         /// <code>Example: KSGetCurrentUserAsync(_userManager, HttpContext)</code>
         /// </summary>
         /// <remarks>
-        /// TODO Still have to implement this everywhere.
-        /// <br/>
-        /// -Liam De Rivers
+        /// Liam De Rivers
         /// </remarks>
         /// <param name="userManager">The IdentityUser UserManager.</param>
         /// <param name="httpContext">The HttpContext of the current session.</param>
@@ -54,9 +54,7 @@ namespace KurbSide.Service
         /// <code>Example: KSGetLoggedInEmailAsync(_userManager, HttpContext)</code>
         /// </summary>
         /// <remarks>
-        /// TODO Still have to implement this everywhere.
-        /// <br/>
-        /// -Liam De Rivers
+        /// Liam De Rivers
         /// </remarks>
         /// <param name="userManager">The IdentityUser UserManager.</param>
         /// <param name="httpContext">The HttpContext of the current session.</param>
@@ -74,14 +72,11 @@ namespace KurbSide.Service
         /// </code>
         /// </summary>
         /// <remarks>
-        /// TODO Still have to implement this everywhere.
-        /// <br/>
-        /// -Liam De Rivers
+        /// Liam De Rivers
         /// </remarks>
         /// <param name="KSContext">The KurbSide context.</param>
         /// <param name="userManager">The IdentityUser UserManager.</param>
         /// <param name="httpContext">The HttpContext of the current session.</param>
-        
         /// <returns>The currently logged in users <see cref="AccountType"/>.</returns>
         public static async Task<AccountType> KSGetAccountType(KSContext KSContext, UserManager<IdentityUser> userManager, HttpContext httpContext)
         {
