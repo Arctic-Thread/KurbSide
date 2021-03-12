@@ -27,10 +27,10 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
 
         public string Username { get; set; }
 
-        [Display(Name = "Kurbside Business ID")]
+        [Display(Name = "KurbSide Business ID")]
         public string BusinessId { get; set; }
 
-        [Display(Name = "Kurbside Member ID")]
+        [Display(Name = "KurbSide Member ID")]
         public string MemberId { get; set; }
 
         [TempData]

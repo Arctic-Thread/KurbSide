@@ -35,7 +35,7 @@ namespace KurbSide.Controllers
 
             if (!isAllowed)
             {
-                return RedirectToAction("index", "home");
+                return RedirectToAction("Index", "Home");
             }
 
             //Get the current logged in member, and prepare location var

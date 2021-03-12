@@ -39,7 +39,7 @@ namespace KurbSide.Controllers
             if (!isAllowed)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
-                return RedirectToAction("index", "home");
+                return RedirectToAction("Index", "Home");
             }
 
             var business = await _context.Business
@@ -56,7 +56,7 @@ namespace KurbSide.Controllers
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
 
-            if (!isAllowed) return RedirectToAction("index");
+            if (!isAllowed) return RedirectToAction("Index");
 
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
@@ -136,7 +136,7 @@ namespace KurbSide.Controllers
                 .Where(b => b.AspNetId.Equals(user.Id))
                 .FirstOrDefaultAsync();
 
-            //Retreive items associated with the editing business
+            //Retrieve items associated with the editing business
             //  skip items that are marked as removed
             //  TODO separate items to a separate list somewhere to be re-added
             var items = await _context.Item
@@ -146,7 +146,7 @@ namespace KurbSide.Controllers
                 .OrderByDescending(i => i.Category)
                 .ToListAsync();
 
-            //Retreive the user-defined categories
+            //Retrieve the user-defined categories
             var categories = items
                 .Select(i => i.Category)
                 .Distinct()
@@ -242,13 +242,13 @@ namespace KurbSide.Controllers
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
 
-            if (!isAllowed) return RedirectToAction("index");
+            if (!isAllowed) return RedirectToAction("Index");
 
             //Ensure that the business can only add items for themselves
             if (id != item.BusinessId)
             {
                 _logger.LogDebug("Debug: Id Mismatch. Edit not performed.");
-                return RedirectToAction("index");
+                return RedirectToAction("Index");
             }
 
             try
@@ -272,18 +272,18 @@ namespace KurbSide.Controllers
                     _context.Item.Add(item);
                     await _context.SaveChangesAsync();
                     _logger.LogDebug("Debug: Add succeeded. {item.ItemId}");
-                    return RedirectToAction("catalogue");
+                    return RedirectToAction("Catalogue");
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
                 _logger.LogError("Error: Business does not exist, Add Failed.");
-                return RedirectToAction("index");
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error: {ex.GetBaseException().Message}. Add not performed.");
-                return RedirectToAction("index");
+                return RedirectToAction("Index");
             }
             return View(item);
         }
@@ -294,7 +294,7 @@ namespace KurbSide.Controllers
             var accountType = GetAccountType(user);
             var isAllowed = accountType.Equals("business");
 
-            if (!isAllowed) return RedirectToAction("index");
+            if (!isAllowed) return RedirectToAction("Index");
 
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
