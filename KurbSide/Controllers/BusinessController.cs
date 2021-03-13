@@ -364,7 +364,7 @@ namespace KurbSide.Controllers
                         }
                         else
                         {
-                            var existingItem = await _context.Item.Where(i => i.ItemId == item.ItemId).FirstOrDefaultAsync();
+                            var existingItem = await _context.Item.AsNoTracking().Where(i => i.ItemId == item.ItemId).FirstOrDefaultAsync();
                             string existingImage = existingItem.ImageLocation;
                             item.ImageLocation = existingImage;
                             TempData["sysMessage"] = uploadResults + ", Image not changed";
@@ -372,9 +372,9 @@ namespace KurbSide.Controllers
                     }
                     else // If they are not adding a new image, it uses the pre-existing image.
                     {
-                        var existingItem = await _context.Item.Where(i => i.ItemId == item.ItemId).FirstOrDefaultAsync();
-                        string linkToImage = existingItem.ImageLocation;
-                        item.ImageLocation = linkToImage;
+                        var existingItem = await _context.Item.AsNoTracking().Where(i => i.ItemId == item.ItemId).FirstOrDefaultAsync();
+                        string existingImage = existingItem.ImageLocation;
+                        item.ImageLocation = existingImage;
                     }
 
                     _context.Item.Update(item);
