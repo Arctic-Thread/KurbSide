@@ -60,7 +60,7 @@
             <div class="form-group">
                 <label asp-for="Input.StreetLn2" hidden></label>
                 <input asp-for="Input.StreetLn2" class="form-control" />
-                <span asp-validation-for="Input.Street" class="text-danger"></span>
+                <span asp-validation-for="Input.StreetLn2" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.City" hidden></label>
@@ -75,10 +75,12 @@
             <div class="form-group">
                 <label asp-for="Input.ProvinceCode" hidden></label>
                 <select asp-for="Input.ProvinceCode" class="form-control" asp-items="ViewBag.ProvinceCode"></select>
+                <span asp-validation-for="Input.ProvinceCode" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.CountryCode" hidden></label>
                 <select asp-for="Input.CountryCode" class="form-control" asp-items="ViewBag.CountryCode"></select>
+                <span asp-validation-for="Input.CountryCode" class="text-danger"></span>
                 <p class="text-center text-secondary font-italic">
                     <small>
                         Don't see your Country or Province? We're expanding to more markets and hope to serve you soon!

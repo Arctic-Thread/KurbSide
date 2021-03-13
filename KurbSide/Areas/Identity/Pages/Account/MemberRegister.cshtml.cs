@@ -105,6 +105,7 @@ namespace KurbSide.Areas.Identity.Pages.Account
 
             //TODO Change this. Longest city name in the world is 176 characters. Longest in Canada is 68.
             [MaxLength(50, ErrorMessage = "The entered City is too long. 50 characters max.")]
+            [Required(ErrorMessage = "You must enter your City.")]
             [Display(Name = "City", Prompt = "City")]
             public string City { get; set; }
 
@@ -114,12 +115,12 @@ namespace KurbSide.Areas.Identity.Pages.Account
             public string Postal { get; set; }
 
             [MaxLength(2, ErrorMessage = "The entered Province is too long. 2 characters max.")]
-            [Required(ErrorMessage = "You must enter your Businesses Province.")]
+            [Required(ErrorMessage = "You must enter your Province.")]
             [Display(Name = "Province", Prompt = "Province")]
             public string ProvinceCode { get; set; }
 
             [MaxLength(2, ErrorMessage = "The entered Country Code is too long. 2 characters max.")]
-            [Required(ErrorMessage = "You must enter your Businesses Country.")]
+            [Required(ErrorMessage = "You must enter your Country.")]
             [Display(Name = "Country", Prompt = "Country")]
             public string CountryCode { get; set; }
         }
