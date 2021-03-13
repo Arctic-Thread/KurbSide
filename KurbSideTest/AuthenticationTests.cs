@@ -213,7 +213,7 @@ namespace KurbSideTest
             string homePageTitle = "Home Page - KurbSide";
 
             // Expected Result
-            string expectedResult = "× You have been logged out of your account.";
+            string expectedResult = "You have been logged out of your account.";
 
             //Act
             KSUnitTestLogin(AccountType.TEST);
@@ -223,7 +223,7 @@ namespace KurbSideTest
             string result = _driver.FindElement(By.Id(sysMessageID)).Text;
 
             //Assert
-            Assert.AreEqual(expectedResult, result);
+            Assert.That(result.Contains(expectedResult));
         }
 
         /// <summary>
