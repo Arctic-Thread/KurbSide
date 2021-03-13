@@ -273,5 +273,141 @@ namespace KurbSideTest
             //Assert
             Assert.AreEqual(expectedResult, result);
         }
+        /// <summary>
+        /// Test for the member registration page using a valid member 
+        /// </summary>
+        [Test]
+        public void UC04_RegisterAsMember_ShouldPass()
+        {
+
+            string email = randomString + "TESTMEMBER@mail.com";
+            string firstName = randomString + "FIRSTNAME";
+            string lastName = randomString + "LASTNAME";
+            string contactPhoneNumber = "519-885-0300";
+            string password = randomString + "PASSWORD12345";
+            string gender = "male";
+            string birthdayYear = "1999";
+            string birthMonth = "09";
+            string birthday = "09";
+
+            string memberAddress = randomString + "ADDRESS1";
+            string memberAddress2 = randomString + "ADDRESS2";
+            string city = randomString + "CITY";
+            string postalCode = "A1B-2C3";
+            string province = "ONTARIO";
+            string country = "Canada";
+
+            string navbarRegisterButtonID = "navbar-register";
+            string registerAsMemberID = "register-page-member-register";
+            string sysMessageID = "sysMessage";
+
+            string homePageTitle = "Home Page - KurbSide";
+            string registerPageTitle = "Register - KurbSide";
+            string memberRegisterPageTitle = "Register for KurbSide - KurbSide";
+            string registrationConfirmationPageTitle = "Register confirmation - KurbSide";
+
+            // Expected Result
+            string expectedResult = $"×\r\nWe've sent an email to {email}, Please confirm your account to continue.";
+
+            KSTitleContains(homePageTitle); // Wait until home page is visible
+            KSClick(navbarRegisterButtonID); // Click the register button in navbar
+            KSTitleContains(registerPageTitle); // Wait until register page is visible
+            KSClick(registerAsMemberID); // Click "Register as a Member" button
+            KSTitleContains(memberRegisterPageTitle); // Wait until business registration page is visible
+
+            KSSendKeys("Input_Email",email);
+            KSSendKeys("Input_Password", password);
+            KSSendKeys("Input_ConfirmPassword",password);
+            KSSendKeys("Input_Phone",contactPhoneNumber);
+            KSSendKeys("Input_FirstName",firstName);
+            KSSendKeys("Input_LastName",lastName);
+            KSSendKeys("Input_Gender",gender);
+            KSSendKeys("Input_Birthday",birthdayYear);
+            KSSendKeys("Input_Birthday",Keys.Tab);
+            KSSendKeys("Input_Birthday", birthMonth);
+            KSSendKeys("Input_Birthday", birthday);
+            KSSendKeys("Input_Street", memberAddress);
+            KSSendKeys("Input_StreetLn2", memberAddress2);                      
+            KSSendKeys("Input_City",city);                     
+            KSSendKeys("Input_Postal",postalCode);
+            KSSendKeys("Input_ProvinceCode",province);
+            KSSendKeys("Input_CountryCode",country);
+
+            KSClick("memberSubmit");
+
+            KSTitleContains(registrationConfirmationPageTitle); // Wait until confirmation page is visible
+
+            string result = _driver.FindElement(By.Id(sysMessageID)).Text;
+
+            //Assert
+            Assert.AreEqual(expectedResult, result);
+        }
+        
+        [Test]
+        public void UC04_RegisterAsMember_InvalidInfo_ShouldPass()
+        {
+
+            string email = randomString + "TESTMEMBER@mail.com";
+            string firstName = randomString + "FIRSTNAME";
+            string lastName = randomString + "LASTNAME";
+            string contactPhoneNumber = "519-885-0300";
+            string password = randomString + "Test";
+            string gender = "attack helicopter";
+            string birthdayYear = "2100";
+            string birthMonth = "45";
+            string birthday = "89";
+
+            string memberAddress = randomString + "ADDRESS1";
+            string memberAddress2 = randomString + "ADDRESS2";
+            string city = randomString + "CITY";
+            string postalCode = "A1B-2C3";
+            string province = "ONTARIO";
+            string country = "Canada";
+
+            string navbarRegisterButtonID = "navbar-register";
+            string registerAsMemberID = "register-page-member-register";
+            string sysMessageID = "sysMessage";
+
+            string homePageTitle = "Home Page - KurbSide";
+            string registerPageTitle = "Register - KurbSide";
+            string memberRegisterPageTitle = "Register for KurbSide - KurbSide";
+            string registrationConfirmationPageTitle = "Register confirmation - KurbSide";
+
+            // Expected Result
+            string expectedResult = $"×\r\nWe've sent an email to {email}, Please confirm your account to continue.";
+
+            KSTitleContains(homePageTitle); // Wait until home page is visible
+            KSClick(navbarRegisterButtonID); // Click the register button in navbar
+            KSTitleContains(registerPageTitle); // Wait until register page is visible
+            KSClick(registerAsMemberID); // Click "Register as a Member" button
+            KSTitleContains(memberRegisterPageTitle); // Wait until business registration page is visible
+
+            KSSendKeys("Input_Email",email);
+            KSSendKeys("Input_Password", password);
+            KSSendKeys("Input_ConfirmPassword",password);
+            KSSendKeys("Input_Phone",contactPhoneNumber);
+            KSSendKeys("Input_FirstName",firstName);
+            KSSendKeys("Input_LastName",lastName);
+            KSSendKeys("Input_Gender",gender);
+            KSSendKeys("Input_Birthday",birthdayYear);
+            KSSendKeys("Input_Birthday",Keys.Tab);
+            KSSendKeys("Input_Birthday", birthMonth);
+            KSSendKeys("Input_Birthday", birthday);
+            KSSendKeys("Input_Street", memberAddress);
+            KSSendKeys("Input_StreetLn2", memberAddress2);                      
+            KSSendKeys("Input_City",city);                     
+            KSSendKeys("Input_Postal",postalCode);
+            KSSendKeys("Input_ProvinceCode",province);
+            KSSendKeys("Input_CountryCode",country);
+
+            KSClick("memberSubmit");
+
+            KSTitleContains(registrationConfirmationPageTitle); // Wait until confirmation page is visible
+
+            string result = _driver.FindElement(By.Id(sysMessageID)).Text;
+
+            //Assert
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }

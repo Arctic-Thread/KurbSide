@@ -152,7 +152,7 @@ namespace KurbSideTest
         /// Test for inputing invalid info when you are editing a field
         /// </summary>
         [Test]
-        public void UC15_EditItem_InvalidInfo_ShouldPass()
+        public void UC16_EditItem_InvalidInfo_ShouldPass()
         {
             string ItemNameTest = "N";
             string PriceTest = "-89";
