@@ -241,7 +241,7 @@ namespace KurbSideTest
 
             // Fields & Buttons
             string navbarAccountSettingsID = "navbar-account-settings";
-            string accountSettingschangePasswordID = "change-password";
+            string accountSettingsChangePasswordID = "change-password";
             string currentPasswordID = "Input_OldPassword";
             string newPasswordID = "Input_NewPassword";
             string confirmNewPasswordID = "Input_ConfirmPassword";
@@ -249,17 +249,17 @@ namespace KurbSideTest
             string sysMessageID = "sysMessage";
 
             // Titles
-            string accountSettingsPageTitle = "Profile - KurbSide";
+            string accountSettingsPageTitle = "My Account - KurbSide";
             string changePasswordPageTitle = "Change password - KurbSide";
 
             // Expected Result
-            string expectedResult = "× Your password has been changed.";
+            string expectedResult = "Your password has been changed.";
 
             //Act
             KSUnitTestLogin(AccountType.TEST);
             KSClick(navbarAccountSettingsID); // Click the logout button.
             KSTitleContains(accountSettingsPageTitle); // Wait until account settings page is visible.
-            KSClick(accountSettingschangePasswordID); // Click the change password button / "Password" link in account settings.
+            KSClick(accountSettingsChangePasswordID); // Click the change password button / "Password" link in account settings.
             KSTitleContains(changePasswordPageTitle); // Wait until account settings page is visible.
 
             KSSendKeys(currentPasswordID, loginPassword); // Enter the current password.
@@ -271,7 +271,7 @@ namespace KurbSideTest
             string result = _driver.FindElement(By.Id(sysMessageID)).Text;
 
             //Assert
-            Assert.AreEqual(expectedResult, result);
+            Assert.That(result.Contains(expectedResult));
         }
         /// <summary>
         /// Test for the member registration page using a valid member 
