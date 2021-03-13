@@ -170,6 +170,119 @@ namespace KurbSideTest
             //Assert
             Assert.That(result.Contains(expectedResult));
         }
+        
+        /// <summary>
+        /// UC04 - Register as Member
+        /// Tests registering for a new member account with valid details.
+        /// </summary>
+        [Test]
+        public void UC04_Authentication_RegisterAsMember_ValidDetails_ShouldPass()
+        {
+            //Arrange
+            
+            // Registration Details
+            string email = randomString + "TESTMEMBER@mail.com";
+            string firstName = randomString + "FIRSTNAME";
+            string lastName = randomString + "LASTNAME";
+            string contactPhoneNumber = "519-885-0300";
+            string password = randomString + "PASSWORD12345";
+            string gender = "male";
+            string birthdayYear = "1999";
+            string birthMonth = "09";
+            string birthday = "09";
+
+            string memberAddress = randomString + "ADDRESS1";
+            string memberAddress2 = randomString + "ADDRESS2";
+            string city = randomString + "CITY";
+            string postalCode = "A1B-2C3";
+            string province = "ONTARIO";
+            string country = "Canada";
+
+            // Fields & Buttons
+            string navbarRegisterButtonID = "navbar-register";
+            string registerAsMemberID = "register-page-member-register";
+            string sysMessageID = "sysMessage";
+
+            // Titles
+            string homePageTitle = "Home Page - KurbSide";
+            string registerPageTitle = "Register - KurbSide";
+            string memberRegisterPageTitle = "Register for KurbSide - KurbSide";
+            string registrationConfirmationPageTitle = "Register confirmation - KurbSide";
+
+            // Expected Result
+            string expectedResult = $"We've sent an email to {email}, Please confirm your account to continue.";
+
+            // Act
+            KSTitleContains(homePageTitle); // Wait until home page is visible
+            KSClick(navbarRegisterButtonID); // Click the register button in navbar
+            KSTitleContains(registerPageTitle); // Wait until register page is visible
+            KSClick(registerAsMemberID); // Click "Register as a Member" button
+            KSTitleContains(memberRegisterPageTitle); // Wait until business registration page is visible
+
+            // Fill out the form
+            KSSendKeys("Input_Email",email);
+            KSSendKeys("Input_Password", password);
+            KSSendKeys("Input_ConfirmPassword",password);
+            KSSendKeys("Input_Phone",contactPhoneNumber);
+            KSSendKeys("Input_FirstName",firstName);
+            KSSendKeys("Input_LastName",lastName);
+            KSSendKeys("Input_Gender",gender);
+            KSSendKeys("Input_Birthday",birthdayYear);
+            KSSendKeys("Input_Birthday",Keys.Tab);
+            KSSendKeys("Input_Birthday", birthMonth);
+            KSSendKeys("Input_Birthday", birthday);
+            KSSendKeys("Input_Street", memberAddress);
+            KSSendKeys("Input_StreetLn2", memberAddress2);                      
+            KSSendKeys("Input_City",city);                     
+            KSSendKeys("Input_Postal",postalCode);
+            KSSendKeys("Input_ProvinceCode",province);
+            KSSendKeys("Input_CountryCode",country);
+
+            KSClick("memberSubmit");
+
+            KSTitleContains(registrationConfirmationPageTitle); // Wait until confirmation page is visible
+
+            string result = _driver.FindElement(By.Id(sysMessageID)).Text;
+
+            //Assert
+            Assert.That(result.Contains(expectedResult));
+        }
+        
+        /// <summary>
+        /// UC04 - Register as Member
+        /// Tests registering for a new member account with invalid details.
+        /// </summary>
+        [Test]
+        public void UC04_Authentication_RegisterAsMember_InvalidInfo_ShouldFail()
+        {
+            // Arrange
+            // Fields & Buttons
+            string navbarRegisterButtonID = "navbar-register";
+            string registerAsMemberID = "register-page-member-register";
+            string sysMessageID = "sysMessage";
+            string registerAsMemberSubmit = "memberSubmit";
+
+            // Titles
+            string homePageTitle = "Home Page - KurbSide";
+            string registerPageTitle = "Register - KurbSide";
+            string memberRegisterPageTitle = "Register for KurbSide - KurbSide";
+
+            // Expected Result
+            int numberOfExpectedErrors = 10;
+
+            //Act
+            KSTitleContains(homePageTitle); // Wait until home page is visible
+            KSClick(navbarRegisterButtonID); // Click the register button in navbar
+            KSTitleContains(registerPageTitle); // Wait until register page is visible
+            KSClick(registerAsMemberID); // Click "Register as a Member" button
+            KSTitleContains(memberRegisterPageTitle); // Wait until business registration page is visible
+            KSClick(registerAsMemberSubmit);
+
+            IReadOnlyList<IWebElement> numberOfErrors = _driver.FindElements(By.CssSelector("[id$='-error']"));
+
+            //Assert
+            Assert.IsTrue(numberOfErrors.Count == numberOfExpectedErrors);
+        }
 
         /// <summary>
         /// UC05 - Login
