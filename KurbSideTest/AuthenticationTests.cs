@@ -49,7 +49,7 @@ namespace KurbSideTest
             string email = randomString + "TESTMEMBER@mail.com";
             string firstName = randomString + "FIRSTNAME";
             string lastName = randomString + "LASTNAME";
-            string contactPhoneNumber = "123-123-1234";
+            string contactPhoneNumber = "519-885-0300";
             string password = randomString + "PASSWORD12345";
 
             string businessName = randomString + "BUSINESSNAME";
@@ -115,7 +115,7 @@ namespace KurbSideTest
             string registrationConfirmationPageTitle = "Register confirmation - KurbSide";
 
             // Expected Result
-            string expectedResult = $"× We've sent an email to {email}, Please confirm your account to continue.";
+            string expectedResult = $"We've sent an email to {email}, Please confirm your account to continue.";
 
             //Act
             KSTitleContains(homePageTitle); // Wait until home page is visible
@@ -168,7 +168,7 @@ namespace KurbSideTest
             string result = _driver.FindElement(By.Id(sysMessageID)).Text;
 
             //Assert
-            Assert.AreEqual(expectedResult, result);
+            Assert.That(result.Contains(expectedResult));
         }
 
         /// <summary>
