@@ -178,7 +178,7 @@ namespace KurbSideTest
         /// <param name="accountType">The account type to be used in the unit test.</param>
         /// <param name="testCaseNavbarLinks">The ID for the list of links in the navbar for the given account type.</param>
         //[Order(1)]
-        //[TestCase(AccountType.MEMBER, "navbar-member-links")]
+        [TestCase(AccountType.MEMBER, "navbar-member-links")]
         [TestCase(AccountType.BUSINESS, "navbar-business-links")]
         public void UC05_Authentication_Login_ShouldPass(AccountType accountType, string testCaseNavbarLinks)
         {

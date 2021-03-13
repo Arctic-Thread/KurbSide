@@ -106,6 +106,7 @@ namespace KurbSideTest
             switch (accountType)
             {
                 case AccountType.MEMBER:
+                    homePageTitle = "Stores - KurbSide";
                     loginEmail = "member@kurbsi.de";
                     break;
                 case AccountType.BUSINESS:
