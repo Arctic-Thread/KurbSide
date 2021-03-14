@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 
 namespace KurbSideTest
 {
@@ -9,30 +9,41 @@ namespace KurbSideTest
     class AuthenticationTests : BaseTest
     {
         private string randomString = RandomString(5) + "_";
-
-        //We can change the ordering when we decide on it later.
-        //[Order(1)]
+        
+        /// <summary>
+        /// UC03 - Register as Business
+        /// Tests registering as a business with invalid details.
+        /// </summary>
         [Test]
-        public void UC00_Category_ThingsUnderTest_ShouldPass()
+        public void UC03_Authentication_RegisterAsBusiness_InvalidDetails_ShouldFail()
         {
             // Arrange
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
-
-            // Login Details
-            KSUnitTestLogin(AccountType.TEST);
-
             // Fields & Buttons
+            string navbarRegisterButtonID = "navbar-register";
+            string registerAsBusinessID = "register-page-business-register";
+            string registerAsBusinessBumit = "submit";
 
             // Titles
+            string homePageTitle = "Home Page - KurbSide";
+            string registerPageTitle = "Register - KurbSide";
+            string businessRegisterPageTitle = "Register as Business - KurbSide";
 
             // Expected Result
-            var expectedResult = "";
+            int numberOfExpectedErrors = 11;
 
             //Act
-            var result = "";
-
+            KSTitleContains(homePageTitle); // Wait until home page is visible
+            KSClick(navbarRegisterButtonID); // Click the register button in navbar
+            KSTitleContains(registerPageTitle); // Wait until register page is visible
+            KSClick(registerAsBusinessID); // Click "Register as a Business" button
+            KSTitleContains(businessRegisterPageTitle); // Wait until business registration page is visible
+            KSClick(registerAsBusinessBumit);
+            
+            // Gets every IWebElement with an ID which has a suffix of "-error".
+            IReadOnlyList<IWebElement> numberOfErrors = _driver.FindElements(By.CssSelector("[id$='-error']")); 
+            
             //Assert
-            Assert.AreEqual(expectedResult, result);
+            Assert.IsTrue(numberOfErrors.Count == numberOfExpectedErrors);
         }
 
         /// <summary>
@@ -41,10 +52,9 @@ namespace KurbSideTest
         /// </summary>
         //[Order(1)]
         [Test]
-        public void UC03_Authentication_BusinessRegister_ShouldPass()
+        public void UC03_Authentication_RegisterAsBusiness_ValidDetails_ShouldPass()
         {
             // Arrange
-
             // Registration Details
             string email = randomString + "TESTMEMBER@mail.com";
             string firstName = randomString + "FIRSTNAME";
