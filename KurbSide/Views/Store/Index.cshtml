@@ -14,7 +14,7 @@
                     @foreach (var business in Model)
                     {
                         <a asp-action="ViewCatalogue" asp-route-id="@business.Item1.BusinessId" class="list-group-item list-group-item-action flex-column align-items-start">
-                            <table class="table table-borderless">
+                            <table class="table table-borderless ">
                                 <tr>
                                     <td class="align-middle">
                                         @if (business.Item1.LogoLocation == null)
@@ -26,7 +26,7 @@
                                             <img alt="@business.Item1.LogoLocation Logo" class="card-img-top mx-auto" src="@business.Item1.LogoLocation" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
                                         }
                                     </td>
-                                    <td class="align-middle">
+                                    <td class="align-middle text-right">
                                         @business.Item1.BusinessName
                                         <br />
                                         <small>@business.Item1.Street, @business.Item1.City</small>

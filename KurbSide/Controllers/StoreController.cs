@@ -10,7 +10,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using KurbSide.Utilities;
-using KurbSide.Views.Store;
 
 namespace KurbSide.Controllers
 {
