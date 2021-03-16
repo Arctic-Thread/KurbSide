@@ -1,44 +1,58 @@
 ﻿@*@model IEnumerable<Business>*@
-@using KurbSide.Views.Store
-@model KurbSide.Views.Store.BusinessListing
+@*@using KurbSide.Views.Store*@
+@*@model KurbSide.Views.Store.BusinessListing*@
+@model IEnumerable<Tuple<Business, float>>
 @{
     ViewData["Title"] = "Stores";
-
-    //var rawCategories = (IEnumerable<string>)TempData["itemCategories"];
-    //var rawFilter = (string)TempData["catalogueFilter"];
-
-    //var categories = new List<string>();
-    //var activeFilter = "";
-
-    //var page = (int)TempData["currentPage"];
-    //var perPage = (int)TempData["perPage"];
-    //var totalPage = (int)TempData["totalPage"];
-    //var hasNext = (bool)TempData["hasNextPage"];
-    //var hasPrev = (bool)TempData["hasPrevPage"];
-
-    //if (rawCategories != null)
-    //{
-    //    categories.AddRange(rawCategories);
-    //}
-    //if (rawFilter != null)
-    //{
-    //    activeFilter = rawFilter;
-    //}
 }
-@for (int i = 0; i < Model.Businesses.Count(); i++)
-{
-    <p>
-        @if (Model.Businesses.ElementAt(i).LogoLocation == null)
-        {
-        <img alt="No Logo Available For @Model.Businesses.ElementAt(i).BusinessName" class="card-img-top mx-auto" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
-        }
-        else
-        {
-        <img alt="@Model.Businesses.ElementAt(i).LogoLocation Logo" class="card-img-top mx-auto" src="@Model.Businesses.ElementAt(i).LogoLocation" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
-        }
-        <b>@Model.Businesses.ElementAt(i).BusinessName</b>
-        @Model.Businesses.ElementAt(i).Street
-        @Model.DistanceToBusiness.ElementAt(i)
-        <a asp-action="ViewCatalogue" asp-route-id="@Model.Businesses.ElementAt(i).BusinessId">LINK TO CATALOGUE</a>
-    </p>
-}
+<link href="~/css/Store/BusinessListings.css" rel="stylesheet" />
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-lg">
+
+            <div class="card">
+                <div class="card-body">
+                    @foreach (var business in Model)
+                    {
+                        <a asp-action="ViewCatalogue" asp-route-id="@business.Item1.BusinessId" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="align-middle">
+                                        @if (business.Item1.LogoLocation == null)
+                                        {
+                                            <img alt="No Logo Available For @business.Item1.BusinessName" class="card-img-top mx-auto" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
+                                        }
+                                        else
+                                        {
+                                            <img alt="@business.Item1.LogoLocation Logo" class="card-img-top mx-auto" src="@business.Item1.LogoLocation" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
+                                        }
+                                    </td>
+                                    <td class="align-middle">
+                                        @business.Item1.BusinessName
+                                        <br />
+                                        <small>@business.Item1.Street, @business.Item1.City</small>
+                                        <br />
+                                        <small class="badge badge-primary">@Math.Round(business.Item2,1)km</small>
+                                        <small class="badge badge-success">Open Until XX:XX</small>
+                                    </td>
+                                    @*<td class="align-middle">
+                                        @business.Item2.ToString()
+                                    </td>*@
+                                </tr>
+                            </table>
+                        </a>
+                    }
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-sm-3">
+            <div class="card">
+                <span class="card-body"><small>Cart Placeholder</small></span>
+            </div>
+        </div>
+    </div>
+</div>

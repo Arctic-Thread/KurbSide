@@ -339,7 +339,9 @@ namespace KurbSide.Models
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.Property(e => e.Removed).HasDefaultValueSql("('FALSE')");
+                entity.Property(e => e.Removed)
+                    .IsRequired()
+                    .HasDefaultValueSql("('FALSE')");
 
                 entity.Property(e => e.Sku)
                     .HasColumnName("SKU")

@@ -46,27 +46,15 @@ namespace KurbSide.Controllers
             var memberLocation = new Service.Location((float)member.Lat, (float)member.Lng, "");
 
             //Get all stores that exist within 'md' or Max Distance defaulting to 25km
-            //var stores = await _context.Business.Where(b =>
-            //    Service.GeoCode.CalculateDistanceLocal(
-            //        memberLocation,
-            //        new Service.Location((float)b.Lat, (float)b.Lng, "")).distance
-            //        <= md)
-            //    .ToListAsync();
-
-            var businesses = _context.Business
-                .AsEnumerable()
-                .Where(b => GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng) <= md);
-
-            var businessDistances = _context.Business
+            var business = _context.Business
                 .AsEnumerable()
                 .Where(b => GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng) <= md)
-                .Select(b => GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng));
-
-            BusinessListing businessListing = new BusinessListing(businesses, businessDistances);
-            return View(businessListing);
+                .OrderBy(b => GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng))
+                .Select(b => Tuple.Create(b, GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng)));
+            return View(business);
         }
 
-        public async Task<IActionResult> ViewCatalogue(Guid? id)
+        public async Task<IActionResult> ViewCatalogue(Guid? id, string filter = "")
         {
             var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
 
@@ -81,15 +69,51 @@ namespace KurbSide.Controllers
             {
                 return NotFound();
             }
+            var business = await _context.Business
+                .Where(i => i.BusinessId.Equals(id))
+                .FirstOrDefaultAsync();
 
-            var items = await _context.Item.Where(b => b.BusinessId == id).ToListAsync();
+            var items = await _context.Item
+                .Where(i => i.BusinessId.Equals(id))
+                //.Where(i => i.Removed != null && i.Removed == false)
+                .ToListAsync();
+
+            var categories = items
+                .Select(i => i.Category)
+                .Distinct()
+                .ToList();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                TempData["catalogueFilter"] = filter;
+
+                if (categories.Contains(filter))
+                {
+                    items = items
+                        .Where(i => i.Category.Equals(filter))
+                        .ToList();
+                }
+                else
+                {
+                    items = items
+                        .Where(i => i.ItemName.ToLower().Contains(filter.ToLower()))
+                        .ToList();
+                }
+            }
+
+            var categorizedItems = items
+                .GroupBy(i => KurbSideUtils.KSStringManipulation.KSTitleCase(i.Category))
+                .ToDictionary(i => i.Key, i => i.AsEnumerable());
 
             if (items == null) //TODO
             {
                 return NotFound();
             }
 
-            return View(items);
+            //return View(items);
+            //return View(categorizedItems);
+            TempData["itemCategories"] = categories;
+            return View(Tuple.Create(business, categorizedItems));
         }
 
         public async Task<IActionResult> ViewItem(Guid? id)
