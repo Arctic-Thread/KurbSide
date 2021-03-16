@@ -72,7 +72,7 @@ namespace KurbSide.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditBusiness(Guid id, Business business)
+        public async Task<IActionResult> EditBusiness(Guid id, Business business, IFormFile businessLogo)
         {
             //Check that the accessing user is a business type account
             var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
@@ -95,25 +95,44 @@ namespace KurbSide.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    try
+                    if(businessLogo != null) // If the business has added an image, it is uploaded to imgur and the link is prepped to be saved to the DB
                     {
-                        string address = $"{business.Street} {business.City} {business.ProvinceCode} {business.CountryCode} {business.Postal}";
-                        Service.Location location = await Service.GeoCode.GetLocationAsync(address);
-
-                        business.Lng = location.lng;
-                        business.Lat = location.lat;
-
-                        _context.Update(business);
-                        await _context.SaveChangesAsync();
+                        string uploadResults = await KSImgur.KSUploadImageToImgur(businessLogo);
+                        if (!uploadResults.StartsWith("Error: "))
+                        {
+                            business.LogoLocation = uploadResults;
+                        }
+                        else
+                        {
+                            var existingBusiness = await _context.Business.AsNoTracking().Where(b => b.BusinessId == business.BusinessId).FirstOrDefaultAsync();
+                            string existingImage = existingBusiness.LogoLocation;
+                            business.LogoLocation = existingImage;
+                            TempData["sysMessage"] = uploadResults + ", Logo not changed";
+                        }
                     }
-                    catch (DbUpdateConcurrencyException)
+                    else // If they are not adding a new image, it uses the pre-existing image.
                     {
-                        _logger.LogError("Business does not exist, Update Failed.");
-                        return RedirectToAction("Index");
+                        var existingBusiness = await _context.Business.AsNoTracking().Where(b => b.BusinessId == business.BusinessId).FirstOrDefaultAsync();
+                        string existingImage = existingBusiness.LogoLocation;
+                        business.LogoLocation = existingImage;
                     }
+                    
+                    string address = $"{business.Street} {business.City} {business.ProvinceCode} {business.CountryCode} {business.Postal}";
+                    Service.Location location = await Service.GeoCode.GetLocationAsync(address);
+
+                    business.Lng = location.lng;
+                    business.Lat = location.lat;
+
+                    _context.Update(business);
+                    await _context.SaveChangesAsync();
                     _logger.LogDebug($"Edit succeeded. {business.BusinessId}");
                     return RedirectToAction("Index");
                 }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                _logger.LogError("Business does not exist, Update Failed.");
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {

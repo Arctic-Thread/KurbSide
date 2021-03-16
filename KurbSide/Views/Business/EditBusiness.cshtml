@@ -2,11 +2,13 @@
 @{
     ViewData["Title"] = "Business Dashboard";
 }
+<script src="~/js/Business/BusinessInfo.js"></script>
+<script src="jquery-3.5.1.min.js"></script>
 <vc:business-head />
 
 <div class="card">
     <div class="card-body">
-        <form method="post" asp-controller="Business" asp-action="EditBusiness" asp-route-id="@Model.BusinessId">
+        <form method="post" enctype="multipart/form-data" asp-controller="Business" asp-action="EditBusiness" asp-route-id="@Model.BusinessId">
             <input hidden type="text" asp-for="BusinessId" />
             <input hidden type="text" asp-for="AspNetId" />
 
@@ -96,6 +98,16 @@
                             <span asp-validation-for="ContactLast" class="text-danger"></span>
                         </div>
 
+                        <label for="businessLogo">Business Logo</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input id="businessLogo" name="businessLogo" type="file" class="custom-file-input" accept=".jpe, .jpg, .jpeg, .bmp, .gif, .png">
+                                <label id="labelForBusinessLogo" for="businessLogo" class="custom-file-label"></label>
+                            </div>
+                            <div class="input-group-append">
+                                <button id="resetLogo" name="resetLogo" type="button" class="btn btn-outline-danger">Reset</button>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
