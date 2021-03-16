@@ -29,9 +29,13 @@ namespace KurbSide.Models
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<Business> Business { get; set; }
         public virtual DbSet<BusinessHours> BusinessHours { get; set; }
+        public virtual DbSet<Cart> Cart { get; set; }
+        public virtual DbSet<CartItem> CartItem { get; set; }
         public virtual DbSet<Country> Country { get; set; }
         public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<Member> Member { get; set; }
+        public virtual DbSet<Order> Order { get; set; }
+        public virtual DbSet<OrderItem> OrderItem { get; set; }
         public virtual DbSet<Province> Province { get; set; }
         public virtual DbSet<TimeZones> TimeZones { get; set; }
 
@@ -49,7 +53,7 @@ namespace KurbSide.Models
             modelBuilder.Entity<AccountSettings>(entity =>
             {
                 entity.HasKey(e => e.AspNetId)
-                    .HasName("PK__AccountS__9C3F232B129AECC6");
+                    .HasName("PK__AccountS__9C3F232B503271E8");
 
                 entity.Property(e => e.TimeZoneId).HasColumnName("TimeZoneID");
 
@@ -57,12 +61,12 @@ namespace KurbSide.Models
                     .WithOne(p => p.AccountSettings)
                     .HasForeignKey<AccountSettings>(d => d.AspNetId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__AccountSe__AspNe__4D94879B");
+                    .HasConstraintName("FK__AccountSe__AspNe__76619304");
 
                 entity.HasOne(d => d.TimeZone)
                     .WithMany(p => p.AccountSettings)
                     .HasForeignKey(d => d.TimeZoneId)
-                    .HasConstraintName("FK__AccountSe__TimeZ__6E01572D");
+                    .HasConstraintName("FK__AccountSe__TimeZ__7EF6D905");
             });
 
             modelBuilder.Entity<AspNetRoleClaims>(entity =>
@@ -166,7 +170,7 @@ namespace KurbSide.Models
             modelBuilder.Entity<Business>(entity =>
             {
                 entity.HasKey(e => new { e.AspNetId, e.BusinessId })
-                    .HasName("PK__Business__6321891DC7252BB6");
+                    .HasName("PK__Business__6321891DBA3473ED");
 
                 entity.HasIndex(e => e.BusinessId)
                     .HasName("PK_Business_Unique")
@@ -232,23 +236,23 @@ namespace KurbSide.Models
                     .WithMany(p => p.Business)
                     .HasForeignKey(d => d.AspNetId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Business__AspNet__5441852A");
+                    .HasConstraintName("FK__Business__AspNet__619B8048");
 
                 entity.HasOne(d => d.CountryCodeNavigation)
                     .WithMany(p => p.Business)
                     .HasForeignKey(d => d.CountryCode)
-                    .HasConstraintName("FK__Business__Countr__5535A963");
+                    .HasConstraintName("FK__Business__Countr__25518C17");
 
                 entity.HasOne(d => d.ProvinceCodeNavigation)
                     .WithMany(p => p.Business)
                     .HasForeignKey(d => d.ProvinceCode)
-                    .HasConstraintName("FK__Business__Provin__5629CD9C");
+                    .HasConstraintName("FK__Business__Provin__2645B050");
             });
 
             modelBuilder.Entity<BusinessHours>(entity =>
             {
                 entity.HasKey(e => e.BusinessId)
-                    .HasName("PK__Business__F1EAA36E2F65C2E2");
+                    .HasName("PK__Business__F1EAA36E6DDC9C5A");
 
                 entity.Property(e => e.BusinessId).ValueGeneratedNever();
 
@@ -257,13 +261,55 @@ namespace KurbSide.Models
                     .HasPrincipalKey<Business>(p => p.BusinessId)
                     .HasForeignKey<BusinessHours>(d => d.BusinessId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BusinessH__Busin__571DF1D5");
+                    .HasConstraintName("FK__BusinessH__Busin__3A4CA8FD");
+            });
+
+            modelBuilder.Entity<Cart>(entity =>
+            {
+                entity.Property(e => e.CartId).ValueGeneratedNever();
+
+                entity.Property(e => e.ExpiryDate)
+                    .HasColumnType("date")
+                    .HasDefaultValueSql("(dateadd(week,(1),getdate()))");
+
+                entity.HasOne(d => d.Business)
+                    .WithMany(p => p.Cart)
+                    .HasPrincipalKey(p => p.BusinessId)
+                    .HasForeignKey(d => d.BusinessId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Cart__BusinessId__3FD07829");
+
+                entity.HasOne(d => d.Member)
+                    .WithMany(p => p.Cart)
+                    .HasPrincipalKey(p => p.MemberId)
+                    .HasForeignKey(d => d.MemberId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Cart__MemberId__1C873BEC");
+            });
+
+            modelBuilder.Entity<CartItem>(entity =>
+            {
+                entity.HasKey(e => new { e.CartId, e.ItemId })
+                    .HasName("PK__CartItem__F69B3F8FB959A6CE");
+
+                entity.HasOne(d => d.Cart)
+                    .WithMany(p => p.CartItem)
+                    .HasForeignKey(d => d.CartId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__CartItems__CartI__42ACE4D4");
+
+                entity.HasOne(d => d.Item)
+                    .WithMany(p => p.CartItem)
+                    .HasPrincipalKey(p => p.ItemId)
+                    .HasForeignKey(d => d.ItemId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__CartItems__ItemI__43A1090D");
             });
 
             modelBuilder.Entity<Country>(entity =>
             {
                 entity.HasKey(e => e.CountryCode)
-                    .HasName("PK__Country__5D9B0D2D8B36BC02");
+                    .HasName("PK__Country__5D9B0D2D68D0B277");
 
                 entity.Property(e => e.CountryCode).HasMaxLength(2);
 
@@ -275,7 +321,11 @@ namespace KurbSide.Models
             modelBuilder.Entity<Item>(entity =>
             {
                 entity.HasKey(e => new { e.ItemId, e.BusinessId })
-                    .HasName("PK__Item__8D6029BD0D3F4FDB");
+                    .HasName("PK__Item__8D6029BDE38285EF");
+
+                entity.HasIndex(e => e.ItemId)
+                    .HasName("UQ__Item__727E838A99EA667C")
+                    .IsUnique();
 
                 entity.Property(e => e.ItemId).HasDefaultValueSql("(newid())");
 
@@ -304,13 +354,13 @@ namespace KurbSide.Models
                     .HasPrincipalKey(p => p.BusinessId)
                     .HasForeignKey(d => d.BusinessId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Item__BusinessId__5812160E");
+                    .HasConstraintName("FK__Item__BusinessId__5224328E");
             });
 
             modelBuilder.Entity<Member>(entity =>
             {
                 entity.HasKey(e => new { e.AspNetId, e.MemberId })
-                    .HasName("PK__Member__0CF0279AF1071D9B");
+                    .HasName("PK__Member__0CF0279A19B8FADE");
 
                 entity.HasIndex(e => e.MemberId)
                     .HasName("PK_Member_Unique")
@@ -362,23 +412,66 @@ namespace KurbSide.Models
                     .WithMany(p => p.Member)
                     .HasForeignKey(d => d.AspNetId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Member__AspNetId__59063A47");
+                    .HasConstraintName("FK__Member__AspNetId__5DCAEF64");
 
                 entity.HasOne(d => d.CountryCodeNavigation)
                     .WithMany(p => p.Member)
                     .HasForeignKey(d => d.CountryCode)
-                    .HasConstraintName("FK__Member__CountryC__17036CC0");
+                    .HasConstraintName("FK__Member__CountryC__7D0E9093");
 
                 entity.HasOne(d => d.ProvinceCodeNavigation)
                     .WithMany(p => p.Member)
                     .HasForeignKey(d => d.ProvinceCode)
-                    .HasConstraintName("FK__Member__Province__17F790F9");
+                    .HasConstraintName("FK__Member__Province__7E02B4CC");
+            });
+
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.Property(e => e.OrderId).ValueGeneratedNever();
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnType("date")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.DiscountTotal)
+                    .HasColumnType("decimal(19, 4)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.GrandTotal).HasColumnType("decimal(19, 4)");
+
+                entity.Property(e => e.Status).HasMaxLength(25);
+
+                entity.Property(e => e.SubTotal).HasColumnType("decimal(19, 4)");
+
+                entity.Property(e => e.Tax).HasColumnType("decimal(19, 4)");
+
+                entity.HasOne(d => d.Member)
+                    .WithMany(p => p.Order)
+                    .HasPrincipalKey(p => p.MemberId)
+                    .HasForeignKey(d => d.MemberId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Orders__MemberId__251C81ED");
+            });
+
+            modelBuilder.Entity<OrderItem>(entity =>
+            {
+                entity.HasKey(e => new { e.OrderId, e.ItemId })
+                    .HasName("PK__OrderIte__64B7B3F76F9E0A93");
+
+                entity.Property(e => e.Discount).HasColumnType("decimal(19, 4)");
+
+                entity.HasOne(d => d.Item)
+                    .WithMany(p => p.OrderItem)
+                    .HasPrincipalKey(p => p.ItemId)
+                    .HasForeignKey(d => d.ItemId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__OrderItem__ItemI__3CF40B7E");
             });
 
             modelBuilder.Entity<Province>(entity =>
             {
                 entity.HasKey(e => e.ProvinceCode)
-                    .HasName("PK__Province__11D9FAD444C24F17");
+                    .HasName("PK__Province__11D9FAD43C8ED12D");
 
                 entity.Property(e => e.ProvinceCode).HasMaxLength(2);
 
@@ -400,13 +493,13 @@ namespace KurbSide.Models
                     .WithMany(p => p.Province)
                     .HasForeignKey(d => d.CountryCode)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Province__Countr__59FA5E80");
+                    .HasConstraintName("FK__Province__Countr__208CD6FA");
             });
 
             modelBuilder.Entity<TimeZones>(entity =>
             {
                 entity.HasKey(e => e.TimeZoneId)
-                    .HasName("PK__TimeZone__78D387CF3CD4A123");
+                    .HasName("PK__TimeZone__78D387CF4C5A0161");
 
                 entity.Property(e => e.TimeZoneId)
                     .HasColumnName("TimeZoneID")

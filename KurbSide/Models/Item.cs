@@ -9,6 +9,12 @@ namespace KurbSide.Models
 {
     public partial class Item
     {
+        public Item()
+        {
+            CartItem = new HashSet<CartItem>();
+            OrderItem = new HashSet<OrderItem>();
+        }
+
         public Guid ItemId { get; set; }
         public Guid BusinessId { get; set; }
         public string ItemName { get; set; }
@@ -21,5 +27,7 @@ namespace KurbSide.Models
         public bool? Removed { get; set; }
 
         public virtual Business Business { get; set; }
+        public virtual ICollection<CartItem> CartItem { get; set; }
+        public virtual ICollection<OrderItem> OrderItem { get; set; }
     }
 }

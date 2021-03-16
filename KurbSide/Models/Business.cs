@@ -11,6 +11,7 @@ namespace KurbSide.Models
     {
         public Business()
         {
+            Cart = new HashSet<Cart>();
             Item = new HashSet<Item>();
         }
 
@@ -39,6 +40,7 @@ namespace KurbSide.Models
         public virtual Country CountryCodeNavigation { get; set; }
         public virtual Province ProvinceCodeNavigation { get; set; }
         public virtual BusinessHours BusinessHours { get; set; }
+        public virtual ICollection<Cart> Cart { get; set; }
         public virtual ICollection<Item> Item { get; set; }
     }
 }
