@@ -33,6 +33,7 @@ namespace KurbSide.Models
         public double Lat { get; set; }
         public double Lng { get; set; }
         public string StoreIdentifier { get; set; }
+        public string LogoLocation { get; set; }
 
         public virtual AspNetUsers AspNet { get; set; }
         public virtual Country CountryCodeNavigation { get; set; }
