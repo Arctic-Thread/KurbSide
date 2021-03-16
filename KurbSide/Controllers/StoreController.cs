@@ -10,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using KurbSide.Utilities;
+using KurbSide.Views.Store;
 
 namespace KurbSide.Controllers
 {
@@ -51,19 +52,73 @@ namespace KurbSide.Controllers
             //        new Service.Location((float)b.Lat, (float)b.Lng, "")).distance
             //        <= md)
             //    .ToListAsync();
-            var stores = _context.Business
-                .AsEnumerable()
-                .Where(b => getDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng) <= md);
 
-            var storeDistances = _context.Business
+            var businesses = _context.Business
                 .AsEnumerable()
-                .Where(b => getDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng) <= md)
-                .Select(b => getDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng));
+                .Where(b => GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng) <= md);
 
-            return View(Tuple.Create(stores, storeDistances));
+            var businessDistances = _context.Business
+                .AsEnumerable()
+                .Where(b => GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng) <= md)
+                .Select(b => GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng));
+
+            BusinessListing businessListing = new BusinessListing(businesses, businessDistances);
+            return View(businessListing);
         }
 
-        public static float getDistance(double lat1, double lng1, double lat2, double lng2)
+        public async Task<IActionResult> ViewCatalogue(Guid? id)
+        {
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a member they can not access the store.
+            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a member.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (id == null) //TODO
+            {
+                return NotFound();
+            }
+
+            var items = await _context.Item.Where(b => b.BusinessId == id).ToListAsync();
+
+            if (items == null) //TODO
+            {
+                return NotFound();
+            }
+
+            return View(items);
+        }
+
+        public async Task<IActionResult> ViewItem(Guid? id)
+        {
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a member they can not access the store.
+            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a member.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (id == null) //TODO
+            {
+                return NotFound();
+            }
+
+            var item = await _context.Item.FirstOrDefaultAsync(i => i.ItemId == id);
+
+            if (item == null) //TODO
+            {
+                return NotFound();
+            }
+
+            return View(item);
+        }
+
+        public static float GetDistance(double lat1, double lng1, double lat2, double lng2)
         {
             var location1 = new Service.Location((float)lat1, (float)lng1, "");
             var location2 = new Service.Location((float)lat2, (float)lng2, "");

@@ -1,0 +1,15 @@
+﻿@model KurbSide.Models.Item
+@{
+    ViewData["Title"] = Model.ItemName;
+}
+
+<h1>@Model.ItemName</h1>
+
+@if (Model.ImageLocation == null)
+{
+    <img id="itemImage" alt="No image available for @Model.ItemName" src="~/img/NoImageAvailable.png" />
+}
+else
+{
+    <img id="itemImage" alt="Image of @Model.ItemName" onerror="this.onerror = null;this.src='/img/NoImageAvailable.png';" src="@Model.ImageLocation" />
+}

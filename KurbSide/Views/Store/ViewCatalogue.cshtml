@@ -1,0 +1,29 @@
+﻿@model List<KurbSide.Models.Item>
+@{
+    ViewData["Title"] = "ViewCatalogue";
+}
+<link href="~/css/Store/BusinessListings.css" rel="stylesheet" />
+<h1>View Catalogue</h1>
+
+@foreach (var item in Model)
+{
+    <a asp-action="ViewItem" asp-route-id="@item.ItemId" class="list-group-item list-group-item-action flex-column align-items-start">
+        <table>
+            <tr>
+                <td>
+                    @if (item.ImageLocation == null)
+                    {
+                        <img id="itemImage" alt="No image available for @item.ItemName" draggable="false" class="zoom" src="~/img/NoImageAvailable.png" />
+                    }
+                    else
+                    {
+                        <img id="itemImage" alt="Image of @item.ItemName" draggable="false" class="zoom" onerror="this.onerror = null;this.src='/img/NoImageAvailable.png';" src="@item.ImageLocation" />
+                    }
+                </td>
+                <td>
+                    @item.ItemName
+                </td>
+            </tr>
+        </table>
+    </a>
+}

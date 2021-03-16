@@ -1,5 +1,6 @@
 ﻿@*@model IEnumerable<Business>*@
-@model Tuple<IEnumerable<Business>, IEnumerable<float>>
+@using KurbSide.Views.Store
+@model KurbSide.Views.Store.BusinessListing
 @{
     ViewData["Title"] = "Stores";
 
@@ -24,10 +25,12 @@
     //    activeFilter = rawFilter;
     //}
 }
-@for (int i = 0; i < Model.Item1.Count(); i++)
+@for (int i = 0; i < Model.Businesses.Count(); i++)
 {
-    <p>
-        @Model.Item1.ElementAt(i).BusinessName
-        @Model.Item2.ElementAt(i)
-    </p>
+<p>
+    @Model.Businesses.ElementAt(i).BusinessName
+    @Model.Businesses.ElementAt(i).Street
+    @Model.DistanceToBusiness.ElementAt(i)
+    <a asp-action="ViewCatalogue" asp-route-id="@Model.Businesses.ElementAt(i).BusinessId">LINK TO CATALOGUE</a>
+</p>
 }
