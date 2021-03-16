@@ -4,94 +4,143 @@
     ViewData["Title"] = "Register for KurbSide";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 class="text-center"><img src="/img/brand/kurbside/vector/Full Logo.svg" alt="KurbSide by Arctic Thread Logo"  width="75" height="75"/> @ViewData["Title"]</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h4>Create a new account.</h4>
+<form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+    <div class="row justify-content-center align-items-center jumbotron">
+        <div >
+            <h4>Personal Information.</h4>
             <hr />
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Input.Email" hidden></label>
-                <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Password" hidden></label>
-                <input asp-for="Input.Password" class="form-control" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.ConfirmPassword" hidden></label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" />
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Phone" hidden></label>
-                <input asp-for="Input.Phone" class="form-control" />
-                <span asp-validation-for="Input.Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.FirstName" hidden></label>
-                <input asp-for="Input.FirstName" class="form-control" />
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.LastName" hidden></label>
-                <input asp-for="Input.LastName" class="form-control" />
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Gender" hidden></label>
-                <input asp-for="Input.Gender" class="form-control" />
-                <span asp-validation-for="Input.Gender" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Birthday" hidden></label>
-                <input asp-for="Input.Birthday" class="form-control" type="date" />
-                <span asp-validation-for="Input.Birthday" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Street" hidden></label>
-                <input asp-for="Input.Street" class="form-control" />
-                <span asp-validation-for="Input.Street" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.StreetLn2" hidden></label>
-                <input asp-for="Input.StreetLn2" class="form-control" />
-                <span asp-validation-for="Input.StreetLn2" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.City" hidden></label>
-                <input asp-for="Input.City" class="form-control" />
-                <span asp-validation-for="Input.City" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Postal" hidden></label>
-                <input asp-for="Input.Postal" class="form-control" />
-                <span asp-validation-for="Input.Postal" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.ProvinceCode" hidden></label>
-                <select asp-for="Input.ProvinceCode" class="form-control" asp-items="ViewBag.ProvinceCode"></select>
-                <span asp-validation-for="Input.ProvinceCode" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.CountryCode" hidden></label>
-                <select asp-for="Input.CountryCode" class="form-control" asp-items="ViewBag.CountryCode"></select>
-                <span asp-validation-for="Input.CountryCode" class="text-danger"></span>
-                <p class="text-center text-secondary font-italic">
-                    <small>
-                        Don't see your Country or Province? We're expanding to more markets and hope to serve you soon!
-                    </small>
-                </p>
+            <!--<div asp-validation-summary="All" class="text-danger"></div>-->
+            <div>
+                <div class="form-group">
+                    <span class="row">
+                        <span class="col">
+                            <label asp-for="Input.FirstName" hidden></label>
+                            <input asp-for="Input.FirstName" class="form-control"/>
+                            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                        </span>
+                        <span class="col">
+                            <label asp-for="Input.LastName" hidden></label>
+                            <input asp-for="Input.LastName" class="form-control"/>
+                            <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                        </span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <span class="row">
+                        <span class="col">
+                            <label asp-for="Input.Password" hidden></label>
+                            <input asp-for="Input.Password" class="form-control"/>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </span>
+                        <span class="col">
+                            <label asp-for="Input.ConfirmPassword" hidden></label>
+                            <input asp-for="Input.ConfirmPassword" class="form-control"/>
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <span class="row">
+                        <span class="col">
+                            <label asp-for="Input.Email" hidden></label>
+                            <input asp-for="Input.Email" class="form-control"/>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </span>
+                        <span class="col">
+                            <label asp-for="Input.Phone" hidden></label>
+                            <input asp-for="Input.Phone" class="form-control"/>
+                            <span asp-validation-for="Input.Phone" class="text-danger"></span>
+                        </span>
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <span class="row">
+                        <span class="col">
+                            <label asp-for="Input.Gender" hidden></label>
+                            <input asp-for="Input.Gender" class="form-control"/>
+                            <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                            <p class="text-left text-secondary font-italic">
+                                <small>
+                                    Select from the following genders: Male/Female/Other
+                                </small>
+                            </p>
+                        </span>
+                        <span class="col">
+                            <label asp-for="Input.Birthday" hidden></label>
+                            <input asp-for="Input.Birthday" class="form-control" type="date"/>
+                            <span asp-validation-for="Input.Birthday" class="text-danger"></span>
+                            <p class="text-left text-secondary font-italic">
+                                <small>
+                                    Please enter your birthday
+                                </small>
+                            </p>
+                        </span>
+                    </span>
+                </div>
+                <h4>Address Information.</h4>
+                <hr />
+                <div class="form-group">
+                    <span class="row">
+                        <span class="col">
+                            <label asp-for="Input.Street" hidden></label>
+                            <input asp-for="Input.Street" class="form-control"/>
+                            <span asp-validation-for="Input.Street" class="text-danger"></span>
+                        </span>
+                        <span class="col">
+                            <label asp-for="Input.StreetLn2" hidden></label>
+                            <input asp-for="Input.StreetLn2" class="form-control"/>
+                            <span asp-validation-for="Input.StreetLn2" class="text-danger"></span>
+                        </span>
+                    </span>
+                </div>
+                <div class="form-group">
+
+                </div>
+                <div class="form-group">
+                    
+                </div>
+                <div class="form-group">
+                    <span class="row">
+                        <span class="col">
+                            <label asp-for="Input.City" hidden></label>
+                            <input asp-for="Input.City" class="form-control"/>
+                            <span asp-validation-for="Input.City" class="text-danger"></span>
+                        </span>
+                        <span class="col">
+                            <label asp-for="Input.Postal" hidden></label>
+                            <input asp-for="Input.Postal" class="form-control"/>
+                            <span asp-validation-for="Input.Postal" class="text-danger"></span>
+                        </span>
+                    </span>
+                </div>
+                <div class="form-group">
+                    <span class="row">
+                        <span class="col">
+                            <label asp-for="Input.CountryCode" hidden></label>
+                            <select asp-for="Input.CountryCode" class="form-control" asp-items="ViewBag.CountryCode"></select>
+                            <span asp-validation-for="Input.CountryCode" class="text-danger"></span>
+                            <p class="text-left text-secondary font-italic">
+                                <small>
+                                    Don't see your Country or Province? We're expanding to more markets and hope to serve you soon!
+                                </small>
+                            </p>
+                        </span>
+                        <span class="col">
+                            <label asp-for="Input.ProvinceCode" hidden></label>
+                            <select asp-for="Input.ProvinceCode" class="form-control" asp-items="ViewBag.ProvinceCode"></select>
+                            <span asp-validation-for="Input.ProvinceCode" class="text-danger"></span>
+                        </span>
+                    </span>
+                    </div>
             </div>
             <button type="submit" id="memberSubmit" class="btn btn-primary">Register</button>
-        </form>
+        </div>
     </div>
-</div>
-
+ 
+</form>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
