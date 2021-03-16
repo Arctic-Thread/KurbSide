@@ -14,7 +14,7 @@
                     @foreach (var business in Model)
                     {
                         <a asp-action="ViewCatalogue" asp-route-id="@business.Item1.BusinessId" class="list-group-item list-group-item-action flex-column align-items-start">
-                            <table class="table table-borderless ">
+                            <table class="table table-borderless">
                                 <tr>
                                     <td class="align-middle">
                                         @if (business.Item1.LogoLocation == null)
@@ -31,12 +31,9 @@
                                         <br />
                                         <small>@business.Item1.Street, @business.Item1.City</small>
                                         <br />
-                                        <small class="badge badge-primary">@Math.Round(business.Item2,1)km</small>
+                                        <small class="badge badge-primary">@Math.Round(business.Item2, 1)km</small>
                                         <small class="badge badge-success">Open Until XX:XX</small>
                                     </td>
-                                    @*<td class="align-middle">
-                                        @business.Item2.ToString()
-                                    </td>*@
                                 </tr>
                             </table>
                         </a>
