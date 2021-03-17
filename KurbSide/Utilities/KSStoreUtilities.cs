@@ -9,9 +9,8 @@ namespace KurbSide.Utilities
 {
     public class KSStoreUtilities
     {
-        public static async Task<string> CheckIfOpenForBusiness(BusinessHours businessHours)
+        public static string CheckIfOpenForBusiness(BusinessHours businessHours)
         {
-
             DayOfWeek currentDayOfWeek = DateTime.Now.DayOfWeek;
 
             switch (currentDayOfWeek)
