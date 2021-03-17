@@ -1,15 +1,46 @@
-﻿@model KurbSide.Models.Item
-@{
+﻿@model Tuple<Business,Item>
+{
     ViewData["Title"] = Model.ItemName;
 }
 
-<h1>@Model.ItemName</h1>
+<h1>@Model.Item2.ItemName</h1>
 
-@if (Model.ImageLocation == null)
-{
-    <img id="itemImage" alt="No image available for @Model.ItemName" src="~/img/NoImageAvailable.png" />
-}
-else
-{
-    <img id="itemImage" alt="Image of @Model.ItemName" onerror="this.onerror = null;this.src='/img/NoImageAvailable.png';" src="@Model.ImageLocation" />
-}
+<hr/>
+
+<div row justify-content-center align-items-center jumbotron>
+    <div class="card-group">
+        <div class="card align-items-center"  >
+            @if (Model.Item2.ImageLocation == null)
+            {
+                <img id="itemImage" alt="No image available for @Model.Item2.ItemName" src="~/img/NoImageAvailable.png" width="100%"/>
+            }
+            else
+            {
+                <img id="itemImage" alt="Image of @Model.Item2.ItemName" onerror="this.onerror = null;this.src='/img/NoImageAvailable.png';" src="@Model.Item2.ImageLocation" width="100%"/>
+            }
+
+        </div>
+        <div class="card">
+            <div class="card-body text-right" >
+                <h5>$@Html.DisplayFor(model => model.Item2.Price)</h5>
+                <hr/>
+                <button type="button" class="btn btn-warning btn-lg btn-block">Add to cart</button>
+                <hr/>
+                <p><!--<img alt="@Model.Item1.BusinessName Logo" class="card-img-top mx-auto" src="@Model.Item1.LogoLocation" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />-->Sold by </p>
+            </div>
+
+        </div>
+    </div>
+    <div>
+        
+    </div>
+
+
+
+
+
+
+
+
+
+</div>
