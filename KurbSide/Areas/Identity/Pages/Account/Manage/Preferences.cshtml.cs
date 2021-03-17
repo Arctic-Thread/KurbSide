@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 
 namespace KurbSide.Areas.Identity.Pages.Account.Manage
 {
@@ -16,15 +17,18 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly KSContext _context;
+        private readonly ILogger<AccountSettings> _logger;
 
         public PreferencesModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            KSContext context)
+            KSContext context,
+            ILogger<AccountSettings> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _logger = logger;
         }
 
         [TempData]
@@ -36,62 +40,67 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
         public class InputModel
         {
             [Display(Name = "Time Zone")]
-            public Guid? TimeZoneID { get; set; }
+            public Guid? TimeZoneId { get; set; }
         }
 
-        private async Task LoadAsync(IdentityUser iUser)
+        private async Task LoadAsync(IdentityUser currentUser)
         {
-            var user = await _context.AccountSettings
-                .Where(m => m.AspNetId.Equals(iUser.Id))
+            var accountSettings = await _context.AccountSettings
+                .Where(a => a.AspNetId.Equals(currentUser.Id))
                 .FirstOrDefaultAsync();
 
             Input = new InputModel
             {
-                TimeZoneID = user.TimeZoneId,
+                TimeZoneId = accountSettings.TimeZoneId,
             };
 
-            ViewData["TimeZoneID"] = new SelectList(_context.TimeZones, "TimeZoneId", "Label", user.TimeZoneId);
+            ViewData["TimeZoneId"] = new SelectList(_context.TimeZones, "TimeZoneId", "Label", accountSettings.TimeZoneId);
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await LoadAsync(user);
+            await LoadAsync(currentUser);
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!ModelState.IsValid)
+            try
             {
-                await LoadAsync(user);
-                return Page();
-            }
+                if (!ModelState.IsValid)
+                {
+                    await LoadAsync(currentUser);
+                    return Page();
+                }
 
-            {
                 var accountSettings = await _context.AccountSettings
-                    .Where(a => a.AspNetId.Equals(user.Id))
+                    .Where(a => a.AspNetId.Equals(currentUser.Id))
                     .FirstOrDefaultAsync();
 
-                accountSettings.TimeZoneId = Input.TimeZoneID;
+                accountSettings.TimeZoneId = Input.TimeZoneId;
 
                 StatusMessage = "Your profile has been updated";
                 _context.AccountSettings.Update(accountSettings);
                 await _context.SaveChangesAsync();
             }
+            catch (Exception ex)
+            {
+                _logger.LogDebug($"{ex.GetBaseException().Message}. Error updating profile");
+            }
 
-            await _signInManager.RefreshSignInAsync(user);
+            await _signInManager.RefreshSignInAsync(currentUser);
             return RedirectToPage();
         }
     }
