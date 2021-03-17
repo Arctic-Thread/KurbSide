@@ -1,46 +1,59 @@
-﻿@model Tuple<Business,Item>
-{
-    ViewData["Title"] = Model.ItemName;
-}
+﻿@model Tuple<Business, Item>
 
-<h1>@Model.Item2.ItemName</h1>
-
-<hr/>
-
+<div class="row">
+    <div class="col">
+        <div class="card">
+            @{
+                if (Model.Item1.LogoLocation == null)
+                {
+                    <img alt="No Logo Available For @Model.Item1.BusinessName" class="card-img-top mx-auto" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
+                }
+                else
+                {
+                    <img alt="@Model.Item1.BusinessName Logo" class="card-img-top mx-auto" src="@Model.Item1.LogoLocation" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
+                }
+            }
+            <div class="card-body" style="padding: 0 0 10px 0;">
+                <h5 class="card-title text-sm-center">@Model.Item1.BusinessName <small style="opacity: .5">@Model.Item1.StoreIdentifier</small></h5>
+                <p class="text-center">@Model.Item1.Street , @Model.Item1.City </p>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
 <div row justify-content-center align-items-center jumbotron>
-    <div class="card-group">
-        <div class="card align-items-center"  >
+    <div>
+        <div class="float-left">
             @if (Model.Item2.ImageLocation == null)
             {
-                <img id="itemImage" alt="No image available for @Model.Item2.ItemName" src="~/img/NoImageAvailable.png" width="100%"/>
+                <img id="itemImage" alt="No image available for @Model.Item2.ItemName" src="~/img/NoImageAvailable.png" width="55%"/>
             }
             else
             {
-                <img id="itemImage" alt="Image of @Model.Item2.ItemName" onerror="this.onerror = null;this.src='/img/NoImageAvailable.png';" src="@Model.Item2.ImageLocation" width="100%"/>
+                <img id="itemImage" alt="Image of @Model.Item2.ItemName" onerror="this.onerror = null;this.src='/img/NoImageAvailable.png';" src="@Model.Item2.ImageLocation" width="55%"/>
             }
-
-        </div>
-        <div class="card">
-            <div class="card-body text-right" >
-                <h5>$@Html.DisplayFor(model => model.Item2.Price)</h5>
+            
+            <div class="text-left float-right" width="100%">
+                <h4 class="text-center">@Model.Item2.ItemName</h4>
                 <hr/>
-                <button type="button" class="btn btn-warning btn-lg btn-block">Add to cart</button>
+                <br/>
+                <button type="button" class="btn btn-primary btn-lg btn-block">Add to cart</button>
                 <hr/>
-                <p><!--<img alt="@Model.Item1.BusinessName Logo" class="card-img-top mx-auto" src="@Model.Item1.LogoLocation" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />-->Sold by </p>
+                <h5>Price: $@Html.DisplayFor(model => model.Item2.Price)</h5>
+                <br/>
+                <h5>Category: @Html.DisplayFor(model => model.Item2.Category)</h5>
+                <br/>
+                <h5>Available for Pick-up Before: Work in progress </h5>
+                
             </div>
-
+            
         </div>
     </div>
-    <div>
-        
-    </div>
+</div>
 
-
-
-
-
-
-
-
-
+<div>
+    <h4>Details</h4>
+    <p> @Html.DisplayFor(model => model.Item2.Details)</p>
+    <hr/>
+    <a asp-action="Catalogue" class="btn btn-primary" asp-route-id="@Model.Item1.BusinessId" id="btnBackToList">Back to store page</a>
 </div>
