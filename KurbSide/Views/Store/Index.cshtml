@@ -2,8 +2,8 @@
 @{
     ViewData["Title"] = "Stores";
 
-    var rawFilter = (string) TempData["catalogueFilter"];
-    var rawMd = (int) TempData["md"];
+    var rawFilter = (string)TempData["catalogueFilter"];
+    var rawMd = (int)TempData["md"];
 
     var activeFilter = "";
     var md = 25;
@@ -62,43 +62,84 @@
                 </div>
             </div>
             <br />
-            <div class="card">
-                <div class="card-body">
-                    @if (Model.Count() <= 0)
-                    {
-                        <span class="card">
-                            <span class="card-body"><small>No Stores Found, Please refine your search or distance.</small></span>
-                        </span>
-                    }
-                    @foreach (var business in Model)
-                    {
-                        <a asp-action="Catalogue" asp-route-id="@business.Item1.BusinessId" class="list-group-item list-group-item-action flex-column align-items-start">
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td class="align-middle">
-                                        @if (business.Item1.LogoLocation == null)
-                                        {
-                                            <img alt="No Logo Available For @business.Item1.BusinessName" class="card-img-top mx-auto" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
-                                        }
-                                        else
-                                        {
-                                            <img alt="@business.Item1.LogoLocation Logo" class="card-img-top mx-auto" src="@business.Item1.LogoLocation" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
-                                        }
-                                    </td>
-                                    <td class="align-middle text-right">
-                                        @business.Item1.BusinessName
-                                        <br />
-                                        <small>@business.Item1.Street, @business.Item1.City</small>
-                                        <br />
-                                        <small class="badge badge-primary">@Math.Round(business.Item2, 1)km</small>
-                                        <small class="badge badge-success">Open Until XX:XX</small>
-                                    </td>
-                                </tr>
-                            </table>
-                        </a>
-                    }
+            <style>
+                .card-columns {
+                    column-count: 3;
+                }
+            </style>
+            @if (Model.Count() <= 0)
+            {
+                <div class="card">
+                    <span class="card-body"><small>No Stores Found, Please refine your search or distance.</small></span>
                 </div>
+            }
+            <div class="card-columns">
+                @foreach (var business in Model)
+                {
+
+
+                    <div class="card">
+                        <div class="card-body text-center" style="width: 250px">
+                            @if (business.Item1.LogoLocation == null)
+                            {
+                                <img alt="No Logo Available For @business.Item1.BusinessName" class="card-img-top mx-auto align-self-center" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: .5em;" />
+                            }
+                            else
+                            {
+                                <img alt="@business.Item1.LogoLocation Logo" class="card-img-top mx-auto align-self-center" src="@business.Item1.LogoLocation" style="width: 100px; height: 100px; margin: .5em;" />
+                            }
+                            <h5 class="card-title">@business.Item1.BusinessName</h5>
+                            <p class="card-text">
+                                <small>@business.Item1.Street, @business.Item1.City</small>
+                            </p>
+                            <p class="card-text">
+                                <small class="badge badge-primary">@Math.Round(business.Item2, 1)km</small>
+                                <small class="badge badge-success">Open Until XX:XX</small>
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <a asp-action="Catalogue" asp-route-id="@business.Item1.BusinessId" class="btn btn-block">Visit Store</a>
+                        </div>
+                    </div>
+                }
             </div>
+            @*<div class="card">
+            <div class="card-body">
+                @if (Model.Count() <= 0)
+                {
+                    <span class="card">
+                        <span class="card-body"><small>No Stores Found, Please refine your search or distance.</small></span>
+                    </span>
+                }
+                @foreach (var business in Model)
+                {
+                    <a asp-action="Catalogue" asp-route-id="@business.Item1.BusinessId" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="align-middle">
+                                    @if (business.Item1.LogoLocation == null)
+                                    {
+                                        <img alt="No Logo Available For @business.Item1.BusinessName" class="card-img-top mx-auto" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
+                                    }
+                                    else
+                                    {
+                                        <img alt="@business.Item1.LogoLocation Logo" class="card-img-top mx-auto" src="@business.Item1.LogoLocation" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
+                                    }
+                                </td>
+                                <td class="align-middle text-right">
+                                    @business.Item1.BusinessName
+                                    <br />
+                                    <small>@business.Item1.Street, @business.Item1.City</small>
+                                    <br />
+                                    <small class="badge badge-primary">@Math.Round(business.Item2, 1)km</small>
+                                    <small class="badge badge-success">Open Until XX:XX</small>
+                                </td>
+                            </tr>
+                        </table>
+                    </a>
+                }
+            </div>
+        </div>*@
         </div>
         <vc:cart />
     </div>
