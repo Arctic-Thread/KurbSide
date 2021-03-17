@@ -1,16 +1,75 @@
 ﻿@model IEnumerable<Tuple<Business, float>>
 @{
     ViewData["Title"] = "Stores";
+
+    var rawFilter = (string) TempData["catalogueFilter"];
+    var rawMd = (int) TempData["md"];
+
+    var activeFilter = "";
+    var md = 25;
+
+    if (rawMd != null)
+    {
+        md = rawMd;
+    }
+    if (rawFilter != null)
+    {
+        activeFilter = rawFilter;
+    }
 }
 <link href="~/css/Store/BusinessListings.css" rel="stylesheet" />
-
 <div class="container">
     <div class="row">
-
+        <div class="col">
+            <vc:member-head />
+        </div>
+    </div>
+    <div class="row">
         <div class="col-lg">
-
+            <div class="card">
+                <div class="row card-body">
+                    <form method="POST" class="col w-auto" asp-controller="Store" asp-action="Index">
+                        <div class="col input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text text-dark bg-white border-dark">Show me stores within </span>
+                            </div>
+                            <input type="number" id="md" name="md" class="form-control border-secondary" placeholder="@md" value="@md" onchange="submit()">
+                            <input type="hidden" id="filter" name="filter" value="@activeFilter">
+                            <div class="input-group-append">
+                                <span class="input-group-text text-dark bg-white border-dark"> kilometers (km)</span>
+                            </div>
+                        </div>
+                    </form>
+                    <form method="POST" class="col w-auto" id="searchFrm" asp-controller="Store" asp-action="Index">
+                        <div class="col input-group input-group-sm">
+                            <input type="text" id="filter2" name="filter" class="form-control border-secondary" placeholder="Search Stores" value="@activeFilter">
+                            <input type="hidden" id="md2" name="md" value="@md">
+                            <div class="input-group-append">
+                                <input type="submit" class="input-group-text btn-dark text-light bg-dark border-dark" id="btnGroupAddon" value="Search" />
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(activeFilter))
+                            {
+                                <div class="input-group-append">
+                                    <button class="input-group-text btn btn-dark text-light bg-danger border-dark" id="rstbtn">Reset</button>
+                                </div>
+                            }
+                        </div>
+                        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+                        <script>
+                            $('#rstbtn').on('click', function () { $('#filter2').val(""); $("#searchFrm").submit(); })
+                        </script>
+                    </form>
+                </div>
+            </div>
+            <br />
             <div class="card">
                 <div class="card-body">
+                    @if (Model.Count() <= 0)
+                    {
+                        <span class="card">
+                            <span class="card-body"><small>No Stores Found, Please refine your search or distance.</small></span>
+                        </span>
+                    }
                     @foreach (var business in Model)
                     {
                         <a asp-action="ViewCatalogue" asp-route-id="@business.Item1.BusinessId" class="list-group-item list-group-item-action flex-column align-items-start">
@@ -40,13 +99,7 @@
                     }
                 </div>
             </div>
-
         </div>
-
-        <div class="col-sm-3">
-            <div class="card">
-                <span class="card-body"><small>Cart Placeholder</small></span>
-            </div>
-        </div>
+        <vc:cart />
     </div>
 </div>

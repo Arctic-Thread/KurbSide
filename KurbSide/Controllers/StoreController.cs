@@ -27,11 +27,11 @@ namespace KurbSide.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> IndexAsync(int md = 25)
+        public async Task<IActionResult> IndexAsync(int md = 25, string filter = "")
         {
             var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
             var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
-            
+
             //If the currently logged in user is not a member they can not access the store.
             if (accountType != KSCurrentUser.AccountType.MEMBER)
             {
@@ -44,13 +44,27 @@ namespace KurbSide.Controllers
 
             var memberLocation = new Service.Location((float)member.Lat, (float)member.Lng, "");
 
-            //Get all stores that exist within 'md' or Max Distance defaulting to 25km
             var business = _context.Business
-                .AsEnumerable()
+                .AsEnumerable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                TempData["catalogueFilter"] = filter;
+
+                business = business
+                    .Where(i => i.BusinessName.ToLower().Contains(filter.ToLower()))
+                    .ToList();
+            }
+
+
+            //Get all stores that exist within 'md' or Max Distance defaulting to 25km
+            var rtnbusiness = business
                 .Where(b => GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng) <= md)
                 .OrderBy(b => GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng))
                 .Select(b => Tuple.Create(b, GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng)));
-            return View(business);
+
+            TempData["md"] = md;
+            return View(rtnbusiness);
         }
 
         public async Task<IActionResult> ViewCatalogue(Guid? id, string filter = "")
