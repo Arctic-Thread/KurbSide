@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using KurbSide.Utilities;
 
 namespace KurbSide.ViewComponents
 {
@@ -24,7 +24,7 @@ namespace KurbSide.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var user = await GetCurrentUserAsync();
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
 
             var member = await _context.Member
                 .Where(m => m.AspNetId.Equals(user.Id))
@@ -33,9 +33,5 @@ namespace KurbSide.ViewComponents
 
             return await Task.FromResult((IViewComponentResult)View("Default", member));
         }
-
-        //Current User Utils 1.0
-        private Task<IdentityUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
-        //End Current User Utils 1.0
     }
 }
