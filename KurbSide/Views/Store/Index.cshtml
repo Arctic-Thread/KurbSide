@@ -93,7 +93,7 @@
                             <p class="card-text">
                                 <small class="badge badge-primary">@Math.Round(business.Item2, 1)km</small>
                                 @{
-                                    var businessStatus = KurbSide.Utilities.KSStoreUtilities.CheckIfOpenForBusiness(business.Item1.BusinessHours);
+                                    var businessStatus = KurbSide.Utilities.KSStoreUtilities.CheckIfOpenForBusiness(business.Item1.BusinessHours, DateTime.Now.DayOfWeek);
 
                                     if (businessStatus.StartsWith("Open"))
                                     {

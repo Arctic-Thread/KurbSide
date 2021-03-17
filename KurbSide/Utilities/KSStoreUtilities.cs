@@ -1,19 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using KurbSide.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace KurbSide.Utilities
 {
     public class KSStoreUtilities
     {
-        public static string CheckIfOpenForBusiness(BusinessHours businessHours)
+        /// <summary>
+        /// Checks if a business is currently open or closed on the specified day.
+        /// </summary>
+        /// <remarks>
+        /// TODO might go crazy with some for loops allowing the ability to check
+        ///  different days of the week in the future if we're feeling up to it.
+        /// -Liam De Rivers
+        /// </remarks>
+        /// <param name="businessHours">The business hours of the business</param>
+        /// <param name="dayToCheck">The day of the week to check</param>
+        /// <returns>The status of the business at the current time, on the specified day time.</returns>
+        public static string CheckIfOpenForBusiness(BusinessHours businessHours, DayOfWeek dayToCheck)
         {
-            DayOfWeek currentDayOfWeek = DateTime.Now.DayOfWeek;
-
-            switch (currentDayOfWeek)
+            switch (dayToCheck)
             {
                 case DayOfWeek.Sunday:
                     if (businessHours.SunOpen < DateTime.Now.TimeOfDay &&

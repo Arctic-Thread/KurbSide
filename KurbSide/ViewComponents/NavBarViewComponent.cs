@@ -39,7 +39,7 @@ namespace KurbSide.ViewComponents
                     .FirstOrDefaultAsync();
 
                 TempData["loggedInBusiness"] = business;
-                TempData["openForBusiness"] = KSStoreUtilities.CheckIfOpenForBusiness(business.BusinessHours);
+                TempData["openForBusiness"] = KSStoreUtilities.CheckIfOpenForBusiness(business.BusinessHours, DateTime.Now.DayOfWeek);
             }
             else if (accountType == KSCurrentUser.AccountType.MEMBER)
             {
