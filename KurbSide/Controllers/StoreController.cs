@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using KurbSide.Service;
 using KurbSide.Utilities;
 
 namespace KurbSide.Controllers
@@ -42,29 +43,28 @@ namespace KurbSide.Controllers
             //Get the current logged in member, and prepare location var
             var member = await _context.Member.FirstOrDefaultAsync(m => m.AspNetId.Equals(user.Id));
 
-            var memberLocation = new Service.Location((float)member.Lat, (float)member.Lng, "");
+            var memberLocation = new Location((float)member.Lat, (float)member.Lng, "");
 
-            var business = _context.Business
+            var businesses = _context.Business
                 .AsEnumerable();
 
             if (!string.IsNullOrWhiteSpace(filter))
             {
                 TempData["catalogueFilter"] = filter;
 
-                business = business
+                businesses = businesses
                     .Where(i => i.BusinessName.ToLower().Contains(filter.ToLower()))
                     .ToList();
             }
 
-
             //Get all stores that exist within 'md' or Max Distance defaulting to 25km
-            var rtnbusiness = business
-                .Where(b => GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng) <= md)
-                .OrderBy(b => GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng))
-                .Select(b => Tuple.Create(b, GetDistance(b.Lat, b.Lng, memberLocation.lat, memberLocation.lng)));
+            var businessListings = businesses
+                .Where(b => GetDistance(new Location(b.Lat, b.Lng, b.Street), memberLocation) <= md)
+                .OrderBy(b => GetDistance(new Location(b.Lat, b.Lng, b.Street), memberLocation))
+                .Select(b => Tuple.Create(b, GetDistance(new Location(b.Lat, b.Lng, b.Street), memberLocation)));
 
             TempData["md"] = md;
-            return View(rtnbusiness);
+            return View(businessListings);
         }
 
         public async Task<IActionResult> Catalogue(Guid? id, string filter = "")
@@ -82,6 +82,7 @@ namespace KurbSide.Controllers
             {
                 return NotFound();
             }
+
             var business = await _context.Business
                 .Where(i => i.BusinessId.Equals(id))
                 .FirstOrDefaultAsync();
@@ -155,12 +156,6 @@ namespace KurbSide.Controllers
             return View(item);
         }
 
-        public static float GetDistance(double lat1, double lng1, double lat2, double lng2)
-        {
-            var location1 = new Service.Location((float)lat1, (float)lng1, "");
-            var location2 = new Service.Location((float)lat2, (float)lng2, "");
-
-            return Service.GeoCode.CalculateDistanceLocal(location1, location2).distance / 1000;
-        }
+        public static double GetDistance(Location location1, Location location2) => GeoCode.CalculateDistanceLocal(location1, location2).distance / 1000;
     }
 }

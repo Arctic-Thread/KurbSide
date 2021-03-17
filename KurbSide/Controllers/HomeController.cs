@@ -42,7 +42,6 @@ namespace KurbSide.Controllers
             {
                 KSCurrentUser.AccountType.BUSINESS => RedirectToAction("Index", "Business"),
                 KSCurrentUser.AccountType.MEMBER => RedirectToAction("Index", "Store"),
-                //_ => View(),
                 _ => RedirectToPage("/Account/Register", new { area = "Identity" })
             };
         }
