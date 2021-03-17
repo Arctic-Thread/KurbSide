@@ -34,11 +34,12 @@ namespace KurbSide.ViewComponents
             if (accountType == KSCurrentUser.AccountType.BUSINESS)
             {
                 var business = await _context.Business
+                    .Include(b => b.BusinessHours)
                     .Where(b => b.AspNetId.Equals(user.Id))
                     .FirstOrDefaultAsync();
 
                 TempData["loggedInBusiness"] = business;
-                TempData["openForBusiness"] = await KSStoreUtilities.CheckIfOpenForBusiness(_context, business);
+                TempData["openForBusiness"] = await KSStoreUtilities.CheckIfOpenForBusiness(business.BusinessHours);
             }
             else if (accountType == KSCurrentUser.AccountType.MEMBER)
             {

@@ -9,10 +9,8 @@ namespace KurbSide.Utilities
 {
     public class KSStoreUtilities
     {
-        public static async Task<string> CheckIfOpenForBusiness(KSContext context, Business business)
+        public static async Task<string> CheckIfOpenForBusiness(BusinessHours businessHours)
         {
-            var businessHours = await context.BusinessHours
-                .FirstOrDefaultAsync(b => b.BusinessId == business.BusinessId);
 
             DayOfWeek currentDayOfWeek = DateTime.Now.DayOfWeek;
 
@@ -22,7 +20,7 @@ namespace KurbSide.Utilities
                     if (businessHours.SunOpen < DateTime.Now.TimeOfDay &&
                         DateTime.Now.TimeOfDay < businessHours.SunClose)
                     {
-                        return "Open Until: " + businessHours.SunClose;
+                        return "Open Until: " + Convert.ToDateTime(businessHours.SunClose.ToString()).ToString("t");
                     }
                     else
                     {
@@ -33,7 +31,7 @@ namespace KurbSide.Utilities
                     if (businessHours.MonOpen < DateTime.Now.TimeOfDay &&
                         DateTime.Now.TimeOfDay < businessHours.MonClose)
                     {
-                        return "Open Until: " + businessHours.MonClose;
+                        return "Open Until: " + Convert.ToDateTime(businessHours.MonClose.ToString()).ToString("t");
                     }
                     else
                     {
@@ -44,7 +42,7 @@ namespace KurbSide.Utilities
                     if (businessHours.TuesOpen < DateTime.Now.TimeOfDay &&
                         DateTime.Now.TimeOfDay < businessHours.TuesClose)
                     {
-                        return "Open Until: " + businessHours.TuesClose;
+                        return "Open Until: " + Convert.ToDateTime(businessHours.TuesClose.ToString()).ToString("t");
                     }
                     else
                     {
@@ -55,7 +53,7 @@ namespace KurbSide.Utilities
                     if (businessHours.WedOpen < DateTime.Now.TimeOfDay &&
                         DateTime.Now.TimeOfDay < businessHours.WedClose)
                     {
-                        return "Open Until: " + businessHours.WedClose;
+                        return "Open Until: " + Convert.ToDateTime(businessHours.WedClose.ToString()).ToString("t");
                     }
                     else
                     {
@@ -66,7 +64,7 @@ namespace KurbSide.Utilities
                     if (businessHours.ThuOpen < DateTime.Now.TimeOfDay &&
                         DateTime.Now.TimeOfDay < businessHours.ThuClose)
                     {
-                        return "Open Until: " + businessHours.ThuClose;
+                        return "Open Until: " + Convert.ToDateTime(businessHours.WedClose.ToString()).ToString("t");
                     }
                     else
                     {
@@ -77,7 +75,7 @@ namespace KurbSide.Utilities
                     if (businessHours.FriOpen < DateTime.Now.TimeOfDay &&
                         DateTime.Now.TimeOfDay < businessHours.FriClose)
                     {
-                        return "Open Until: " + businessHours.FriClose;
+                        return "Open Until " + Convert.ToDateTime(businessHours.FriClose.ToString()).ToString("t");
                     }
                     else
                     {
@@ -88,7 +86,7 @@ namespace KurbSide.Utilities
                     if (businessHours.SatOpen < DateTime.Now.TimeOfDay &&
                         DateTime.Now.TimeOfDay < businessHours.SatClose)
                     {
-                        return "Open Until: " + businessHours.SatClose;
+                        return "Open Until " + Convert.ToDateTime(businessHours.SatClose.ToString()).ToString("t");
                     }
                     else
                     {

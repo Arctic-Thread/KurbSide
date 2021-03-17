@@ -67,7 +67,7 @@
                     column-count: 3;
                 }
             </style>
-            @if (Model.Count() <= 0)
+            @if (!Model.Any())
             {
                 <div class="card">
                     <span class="card-body"><small>No Stores Found, Please refine your search or distance.</small></span>
@@ -76,8 +76,6 @@
             <div class="card-columns">
                 @foreach (var business in Model)
                 {
-
-
                     <div class="card">
                         <div class="card-body text-center" style="width: 250px">
                             @if (business.Item1.LogoLocation == null)
@@ -94,7 +92,18 @@
                             </p>
                             <p class="card-text">
                                 <small class="badge badge-primary">@Math.Round(business.Item2, 1)km</small>
-                                <small class="badge badge-success">Open Until XX:XX</small>
+                                @{
+                                    var businessStatus = await KurbSide.Utilities.KSStoreUtilities.CheckIfOpenForBusiness(business.Item1.BusinessHours);
+
+                                    if (businessStatus.StartsWith("Open"))
+                                    {
+                                        <small class="badge badge-success">@businessStatus</small>
+                                    }
+                                    else
+                                    {
+                                        <small class="badge badge-danger">@businessStatus</small>
+                                    }
+                                }
                             </p>
                         </div>
                         <div class="card-footer">

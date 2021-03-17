@@ -46,6 +46,7 @@ namespace KurbSide.Controllers
             var memberLocation = new Location((float)member.Lat, (float)member.Lng, "");
 
             var businesses = _context.Business
+                .Include(b => b.BusinessHours)
                 .AsEnumerable();
 
             if (!string.IsNullOrWhiteSpace(filter))
