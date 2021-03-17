@@ -6,6 +6,7 @@
 }
 <ul class="nav nav-pills flex-column">
     <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">My Account</a></li>
+    <li class="nav-item"><a class="nav-link @ManageNavPages.PreferencesNavClass(ViewContext)" id="preferences" asp-page="./Preferences">Preferences</a></li>
     @if (isMemberAccount)
     {
         <li class="nav-item"><a class="nav-link @ManageNavPages.MemberProfileNavClass(ViewContext)" id="profile" asp-page="./MemberProfile">Member Profile</a></li>
