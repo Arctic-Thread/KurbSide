@@ -19,9 +19,9 @@ namespace KurbSide.Controllers
     {
         private readonly KSContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly ILogger<Business> _logger;
+        private readonly ILogger<Item> _logger;
 
-        public StoreController(KSContext context, UserManager<IdentityUser> userManager, ILogger<Business> logger)
+        public StoreController(KSContext context, UserManager<IdentityUser> userManager, ILogger<Item> logger)
         {
             _context = context;
             _userManager = userManager;
@@ -43,7 +43,7 @@ namespace KurbSide.Controllers
             //Get the current logged in member, and prepare location var
             var member = await _context.Member.FirstOrDefaultAsync(m => m.AspNetId.Equals(user.Id));
 
-            var memberLocation = new Location((float)member.Lat, (float)member.Lng, "");
+            var memberLocation = new Location(member.Lat, member.Lng, "");
 
             var businesses = _context.Business
                 .Include(b => b.BusinessHours)
@@ -57,6 +57,9 @@ namespace KurbSide.Controllers
                     .Where(i => i.BusinessName.ToLower().Contains(filter.ToLower()))
                     .ToList();
             }
+
+            if (md <= 0)
+                md = 5;
 
             //Get all stores that exist within 'md' or Max Distance defaulting to 25km
             var businessListings = businesses
@@ -79,9 +82,10 @@ namespace KurbSide.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (id == null) //TODO
+            if (id == null)
             {
-                return NotFound();
+                _logger.LogDebug("Business ID Not found.");
+                return RedirectToAction("Index");
             }
 
             var business = await _context.Business
@@ -120,19 +124,23 @@ namespace KurbSide.Controllers
                 .GroupBy(i => KurbSideUtils.KSStringManipulation.KSTitleCase(i.Category))
                 .ToDictionary(i => i.Key, i => i.AsEnumerable());
 
-            if (items == null) //TODO
+            if (!items.Any())
             {
-                return NotFound();
+                return RedirectToAction("Index");
             }
 
-            //return View(items);
-            //return View(categorizedItems);
             TempData["itemCategories"] = categories;
             return View(Tuple.Create(business, categorizedItems));
         }
 
         public async Task<IActionResult> ViewItem(Guid? id)
         {
+            if (id == null)
+            {
+                _logger.LogDebug("Item ID Not found.");
+                return RedirectToAction("Index");
+            }
+
             var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
             if (accountType != KSCurrentUser.AccountType.MEMBER)
@@ -141,20 +149,16 @@ namespace KurbSide.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (id == null) //TODO
-            {
-                return NotFound();
-            }
-
             var item = await _context.Item.FirstOrDefaultAsync(i => i.ItemId == id);
             var business = await _context.Business.Where(b => b.BusinessId == item.BusinessId).FirstOrDefaultAsync();
             
-            if (item == null) //TODO
+            if (item == null)
             {
-                return NotFound();
+                _logger.LogDebug("ID Mismatch. Item does not exist.");
+                return RedirectToAction("Index");
             }
+
             return View(Tuple.Create(business, item));
-            //return View(item);
         }
 
         public static double GetDistance(Location location1, Location location2) => GeoCode.CalculateDistanceLocal(location1, location2).distance / 1000;
