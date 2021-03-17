@@ -54,9 +54,9 @@
                     <div class="col-sm-2">
                         <a class="btn btn-sm btn-secondary" asp-action="Index">@("<- Back")</a>
                     </div>
-                    <form class="btn-group btn-group-sm col-lg" style="flex-wrap: wrap; " method="POST" asp-action="ViewCatalogue" id="searchFrm">
+                    <form class="btn-group btn-group-sm col-lg" style="flex-wrap: wrap; " method="POST" asp-action="Catalogue" id="searchFrm">
                         <input type="hidden" name="filter" id="filter2" value="@activeFilter" />
-                        <a class="btn btn-sm btn-dark btn-filter rounded" style=" margin: 1px 1px 3px 1px; max-width: 150px; min-width: 150px;" asp-action="ViewCatalogue">@((activeFilter!="")? "Clear Filter" : "Filter By Category") </a>
+                        <a class="btn btn-sm btn-dark btn-filter rounded" style=" margin: 1px 1px 3px 1px; max-width: 150px; min-width: 150px;" asp-action="Catalogue">@((activeFilter!="")? "Clear Filter" : "Filter By Category") </a>
                         @foreach (string category in categories)
                         {
                             <button class="btn btn-sm btn-light border-secondary rounded @(category.Equals(activeFilter)? "active" : null)" style="margin:1px 1px 3px 1px;" onclick="doFilter('@category')">@category</button>
@@ -66,7 +66,7 @@
                             <span class="btn btn-sm btn-outline-light active border-secondary rounded" style="margin:1px 1px 3px 1px; opacity: 0.50;">No Categories</span>
                         }
                     </form>
-                    <form class="col-lg" method="POST" asp-action="ViewCatalogue">
+                    <form class="col-lg" method="POST" asp-action="Catalogue">
                         <div class="input-group input-group-sm">
                             <input type="text" id="filter" name="filter" class="form-control border-secondary" placeholder="Search Items" value="@activeFilter">
                             <div class="input-group-append">

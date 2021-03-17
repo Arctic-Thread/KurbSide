@@ -67,7 +67,7 @@ namespace KurbSide.Controllers
             return View(rtnbusiness);
         }
 
-        public async Task<IActionResult> ViewCatalogue(Guid? id, string filter = "")
+        public async Task<IActionResult> Catalogue(Guid? id, string filter = "")
         {
             var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
 
@@ -88,7 +88,7 @@ namespace KurbSide.Controllers
 
             var items = await _context.Item
                 .Where(i => i.BusinessId.Equals(id))
-                //.Where(i => i.Removed != null && i.Removed == false)
+                .Where(i => i.Removed != null && i.Removed == false)
                 .ToListAsync();
 
             var categories = items
