@@ -25,6 +25,7 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
         public static string MemberProfile => "MemberProfile";
+        public static string Preferences => "Preferences";
 
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
@@ -42,6 +43,7 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
 
         public static string TwoFactorAuthenticationNavClass(ViewContext viewContext) => PageNavClass(viewContext, TwoFactorAuthentication);
         public static string MemberProfileNavClass(ViewContext viewContext) => PageNavClass(viewContext, MemberProfile);
+        public static string PreferencesNavClass(ViewContext viewContext) => PageNavClass(viewContext, Preferences);
 
         private static string PageNavClass(ViewContext viewContext, string page)
         {

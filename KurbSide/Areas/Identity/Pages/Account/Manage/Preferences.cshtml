@@ -1,0 +1,79 @@
+﻿@page
+@model PreferencesModel
+@{
+    ViewData["Title"] = "Member Profile";
+    ViewData["ActivePage"] = ManageNavPages.Preferences;
+}
+
+<h4>@ViewData["Title"]</h4><br />
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.Phone" hidden></label>
+                <input asp-for="Input.Phone" class="form-control" />
+                <span asp-validation-for="Input.Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.FirstName" hidden></label>
+                <input asp-for="Input.FirstName" class="form-control" />
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.LastName" hidden></label>
+                <input asp-for="Input.LastName" class="form-control" />
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Gender" hidden></label>
+                <input asp-for="Input.Gender" class="form-control" />
+                <span asp-validation-for="Input.Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Birthday" hidden></label>
+                <input asp-for="Input.Birthday" class="form-control" type="date" />
+                <span asp-validation-for="Input.Birthday" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Street" hidden></label>
+                <input asp-for="Input.Street" class="form-control" />
+                <span asp-validation-for="Input.Street" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.StreetLn2" hidden></label>
+                <input asp-for="Input.StreetLn2" class="form-control" />
+                <span asp-validation-for="Input.Street" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.City" hidden></label>
+                <input asp-for="Input.City" class="form-control" />
+                <span asp-validation-for="Input.City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Postal" hidden></label>
+                <input asp-for="Input.Postal" class="form-control" />
+                <span asp-validation-for="Input.Postal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.ProvinceCode" hidden></label>
+                <select asp-for="Input.ProvinceCode" class="form-control" asp-items="ViewBag.ProvinceCode"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.CountryCode" hidden></label>
+                <select asp-for="Input.CountryCode" class="form-control" asp-items="ViewBag.CountryCode"></select>
+                <p class="text-center text-secondary font-italic">
+                    <small>
+                        Don't see your Country or Province? We're expanding to more markets and hope to serve you soon!
+                    </small>
+                </p>
+            </div>
+            <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
