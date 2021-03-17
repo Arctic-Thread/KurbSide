@@ -6,7 +6,9 @@
     <title>@ViewData["Title"] - KurbSide</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    @await(@Html.PartialAsync("_Favicons"))
+    @*@await(@Html.PartialAsync("_Favicons"))*@
+    <partial name="_Favicons" />
+
 </head>
 <body>
     <header>

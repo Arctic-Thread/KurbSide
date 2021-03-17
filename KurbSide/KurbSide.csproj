@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\img\brand\" />
+    <Folder Include="wwwroot\img\bg\" />
   </ItemGroup>
 
   <ItemGroup>
