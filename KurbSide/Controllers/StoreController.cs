@@ -133,7 +133,6 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewItem(Guid? id)
         {
             var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
-
             //If the currently logged in user is not a member they can not access the store.
             if (accountType != KSCurrentUser.AccountType.MEMBER)
             {
@@ -147,13 +146,14 @@ namespace KurbSide.Controllers
             }
 
             var item = await _context.Item.FirstOrDefaultAsync(i => i.ItemId == id);
-
+            var business = await _context.Business.Where(b => b.BusinessId == item.BusinessId).FirstOrDefaultAsync();
+            
             if (item == null) //TODO
             {
                 return NotFound();
             }
-
-            return View(item);
+            return View(Tuple.Create(business, item));
+            //return View(item);
         }
 
         public static double GetDistance(Location location1, Location location2) => GeoCode.CalculateDistanceLocal(location1, location2).distance / 1000;
