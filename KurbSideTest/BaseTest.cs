@@ -101,6 +101,7 @@ namespace KurbSideTest
 
             // Titles
             string homePageTitle = "Home Page - KurbSide";
+            string registerPageTitle = "Register - KurbSide";
             string loginPageTitle = "Log in - KurbSide";
 
             switch (accountType)
@@ -122,6 +123,7 @@ namespace KurbSideTest
             }
 
             //Act
+            KSTitleContains(registerPageTitle);
             KSClick(navbarLoginButtonID);
             KSTitleContains(loginPageTitle);
             KSSendKeys(loginEmailFieldID, loginEmail);

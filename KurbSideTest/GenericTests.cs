@@ -25,14 +25,14 @@ namespace KurbSideTest
             string navbarHomeID = "navbar-home";
 
             // Titles
-            string homePageTitle = "Home Page - KurbSide";
+            string registerPageTitle = "Register - KurbSide";
 
             //Act
-            KSTitleContains(homePageTitle);
+            KSTitleContains(registerPageTitle);
             KSClick(navbarHomeID);
-            KSTitleContains(homePageTitle);
+            KSTitleContains(registerPageTitle);
 
-            var result = _driver.Title.Contains(homePageTitle);
+            var result = _driver.Title.Contains(registerPageTitle);
 
             //Assert
             Assert.IsTrue(result);
@@ -53,11 +53,11 @@ namespace KurbSideTest
             string footerPrivacyID = "footer-privacy";
 
             // Titles
-            string homePageTitle = "Home Page - KurbSide";
+            string registerPageTitle = "Register - KurbSide";
             string privacyPolicyPageTitle = "Privacy Policy - KurbSide";
 
             //Act
-            KSTitleContains(homePageTitle);
+            KSTitleContains(registerPageTitle);
             KSClick(footerPrivacyID);
             KSTitleContains(privacyPolicyPageTitle);
 
