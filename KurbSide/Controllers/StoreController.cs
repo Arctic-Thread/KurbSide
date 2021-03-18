@@ -150,7 +150,10 @@ namespace KurbSide.Controllers
             }
 
             var item = await _context.Item.FirstOrDefaultAsync(i => i.ItemId == id);
-            var business = await _context.Business.Where(b => b.BusinessId == item.BusinessId).FirstOrDefaultAsync();
+            var business = await _context.Business
+                .Where(b => b.BusinessId == item.BusinessId)
+                .Include(b=>b.BusinessHours)
+                .FirstOrDefaultAsync();
             
             if (item == null)
             {

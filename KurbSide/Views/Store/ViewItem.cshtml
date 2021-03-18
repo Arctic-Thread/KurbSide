@@ -1,15 +1,25 @@
 ﻿@model Tuple<Business, Item>
+@{
+    var businessStatus = KurbSide.Utilities.KSStoreUtilities.CheckIfOpenForBusiness(Model.Item1.BusinessHours, DateTime.Now.DayOfWeek);
+    if (businessStatus.StartsWith("Open"))
+    {
+        businessStatus = businessStatus.Remove(0,11);
+        
+    }
 
+}
 <style>
 
     .item_img{
-        width: 65%;
-        height: 65%;
+        max-width: 65%;
+        min-width: 65%;
         
+        max-height: 40%;
         float: left;
         padding: 10px;
     }
     .item_info{
+        
         padding: 10px;
         text-align: left;
     }
@@ -20,6 +30,7 @@
     .btn2{
         width: 33%;
     }
+
 </style>
 
 
@@ -66,9 +77,8 @@
     <br/>
     <h5>Category: @Html.DisplayFor(model => model.Item2.Category)</h5>
     <br/>
-    <h5>Available for Pick-up After: Work in progress</h5>
+    <h5 >Available for Pick-up Before: @businessStatus </h5>
     <br/>
-    <h5>Distance to store location:</h5>
 </div>
 
 
