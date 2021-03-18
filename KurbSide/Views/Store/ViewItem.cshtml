@@ -1,5 +1,28 @@
 ﻿@model Tuple<Business, Item>
 
+<style>
+
+    .item_img{
+        width: 65%;
+        height: 65%;
+        
+        float: left;
+        padding: 10px;
+    }
+    .item_info{
+        padding: 10px;
+        text-align: left;
+    }
+    .item_details{
+        clear: both;
+        text-align: left;
+    }
+    .btn2{
+        width: 33%;
+    }
+</style>
+
+
 <div class="row">
     <div class="col">
         <div class="card">
@@ -21,39 +44,38 @@
     </div>
 </div>
 <br />
-<div row justify-content-center align-items-center jumbotron>
-    <div>
-        <div class="float-left">
-            @if (Model.Item2.ImageLocation == null)
-            {
-                <img id="itemImage" alt="No image available for @Model.Item2.ItemName" src="~/img/NoImageAvailable.png" width="55%"/>
-            }
-            else
-            {
-                <img id="itemImage" alt="Image of @Model.Item2.ItemName" onerror="this.onerror = null;this.src='/img/NoImageAvailable.png';" src="@Model.Item2.ImageLocation" width="55%"/>
-            }
-            
-            <div class="text-left float-right" width="100%">
-                <h4 class="text-center">@Model.Item2.ItemName</h4>
-                <hr/>
-                <br/>
-                <button type="button" class="btn btn-primary btn-lg btn-block">Add to cart</button>
-                <hr/>
-                <h5>Price: $@Html.DisplayFor(model => model.Item2.Price)</h5>
-                <br/>
-                <h5>Category: @Html.DisplayFor(model => model.Item2.Category)</h5>
-                <br/>
-                <h5>Available for Pick-up Before: Work in progress </h5>
-                
-            </div>
-            
-        </div>
-    </div>
+
+<div class="item_img">
+    @if (Model.Item2.ImageLocation == null)
+    {
+        <img id="itemImage" alt="No image available for @Model.Item2.ItemName" src="~/img/NoImageAvailable.png" width="55%"/>
+    }
+    else
+    {
+        <img id="itemImage" alt="Image of @Model.Item2.ItemName" onerror="this.onerror = null;this.src='/img/NoImageAvailable.png';" src="@Model.Item2.ImageLocation" width="100%"/>
+    }
 </div>
 
-<div>
+<div class="item_info">
+    <h4 class="text-center">@Model.Item2.ItemName</h4>
+    <br/>
+    <hr/>
+    <button type="button" class="btn2 btn-primary btn-lg">Add to cart</button>
+    <hr/>
+    <h5>Price: $@Html.DisplayFor(model => model.Item2.Price)</h5>
+    <br/>
+    <h5>Category: @Html.DisplayFor(model => model.Item2.Category)</h5>
+    <br/>
+    <h5>Available for Pick-up After: Work in progress</h5>
+    <br/>
+    <h5>Distance to store location:</h5>
+</div>
+
+
+<div class="item_details">
+    
+    <hr/>
     <h4>Details</h4>
     <p> @Html.DisplayFor(model => model.Item2.Details)</p>
-    <hr/>
-    <a asp-action="Catalogue" class="btn btn-primary" asp-route-id="@Model.Item1.BusinessId" id="btnBackToList">Back to store page</a>
+    <a asp-action="Catalogue" class="btn btn-primary btn-lg" asp-route-id="@Model.Item1.BusinessId" id="btnBackToList">Back to store page</a>
 </div>
