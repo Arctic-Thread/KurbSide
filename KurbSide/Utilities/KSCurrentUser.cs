@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using KurbSide.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace KurbSide.Utilities
 {
@@ -45,6 +46,27 @@ namespace KurbSide.Utilities
         {
             var currentUser = httpContext.User;
             return await userManager.GetUserAsync(currentUser);
+        }
+
+        /// <summary>
+        /// Gets the current <see cref="Member"/> information
+        /// <br/>
+        /// <code>Example: KSGetCurrentMemberAsync(_context, _userManager, HttpContext)</code>
+        /// </summary>
+        /// <remarks>
+        /// TODO Needs to be implemented still.
+        /// Liam De Rivers
+        /// </remarks>
+        /// <param name="KSContext">The KurbSide context.</param>
+        /// <param name="userManager">The IdentityUser UserManager.</param>
+        /// <param name="httpContext">The HttpContext of the current session.</param>
+        /// <returns></returns>
+        public static async Task<Member> KSGetCurrentMemberAsync(KSContext KSContext, UserManager<IdentityUser> userManager,
+            HttpContext httpContext)
+        {
+            var currentUser = await KSGetCurrentUserAsync(userManager, httpContext);
+            var currentMember = await KSContext.Member.Where(m => m.AspNetId.Equals(currentUser.Id)).FirstOrDefaultAsync();
+            return currentMember;
         }
 
         /// <summary>
