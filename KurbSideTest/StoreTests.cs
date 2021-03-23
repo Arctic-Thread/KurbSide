@@ -81,7 +81,7 @@ namespace KurbSideTest
             string searchBarID = "filter2";
             string desiredBusinessListingID = "businessListing-test";
             
-            //Titles
+            // Titles
             string storesPageTitle = "Stores - KurbSide";
             
             // Act
@@ -98,6 +98,42 @@ namespace KurbSideTest
             // The number of business listings has decreased (indicating the search has narrowed down the results), and the desired business is displayed.
             bool result = originalNumberOfBusinessListings.Count > newNumberOfBusinessListings.Count && desiredBusinessListing.Displayed;
 
+            Assert.IsTrue(result);
+        }
+
+        /// <summary>
+        /// UC34 - Member Views Business Catalogue
+        /// Tests that the selected businesses catalogue is displayed with their items.
+        /// </summary>
+        [Test]
+        [Order(3)]
+        public void UC34_Store_ViewBusinessCatalogue_ShouldPass()
+        {
+            // Arrange
+            // Fields & Buttons
+            string searchBarID = "filter2";
+            string viewBusinessCatalogueButtonID = "view-test-catalogue";
+            string catalogueID = "test-Catalogue";
+
+            // Titles
+            string storesPageTitle = "Stores - KurbSide";
+            string businessPageTitle = "test - KurbSide";
+            
+            // Act
+            KSUnitTestLogin(AccountType.MEMBER);
+            
+            KSTitleContains(storesPageTitle);
+            KSReplaceText(searchBarID, "test");
+            KSSendKeys(searchBarID, Keys.Enter);
+            
+            KSClick(viewBusinessCatalogueButtonID);
+            
+            KSTitleContains(businessPageTitle);
+            IReadOnlyList<IWebElement> catalogueItems = _driver.FindElements(By.Id(catalogueID));
+
+            // There are items found on the business catalogue page.
+            bool result = catalogueItems.Count > 0;
+            
             Assert.IsTrue(result);
         }
     }
