@@ -5,6 +5,7 @@
 @{
     ViewData["Title"] = Model.Item1.BusinessName;
 
+    var noItemsFoundReason = ViewData["NoItemsFoundReason"];
     var rawCategories = (IEnumerable<string>)TempData["itemCategories"];
     var rawFilter = (string)TempData["catalogueFilter"];
 
@@ -94,7 +95,7 @@
             @if (Model.Item2.Count <= 0)
             {
                 <span class="card">
-                    <span class="card-body"><small>No Items Found</small></span>
+                    <span class="card-body"><small>@noItemsFoundReason</small></span>
                 </span>
             }
             @foreach (string category in Model.Item2.Keys)
