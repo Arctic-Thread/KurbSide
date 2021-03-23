@@ -101,6 +101,7 @@ namespace KurbSideTest
 
             // Titles
             string homePageTitle = "Home Page - KurbSide";
+            string registerPageTitle = "Register - KurbSide";
             string loginPageTitle = "Log in - KurbSide";
 
             switch (accountType)
@@ -122,6 +123,7 @@ namespace KurbSideTest
             }
 
             //Act
+            KSTitleContains(registerPageTitle);
             KSClick(navbarLoginButtonID);
             KSTitleContains(loginPageTitle);
             KSSendKeys(loginEmailFieldID, loginEmail);
@@ -160,6 +162,29 @@ namespace KurbSideTest
         {
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
             wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.TitleContains(webPageTitle));
+        }
+
+        /// <summary>
+        /// Waits until the element is clickable, then clears it.
+        /// </summary>
+        /// <param name="elementIdToWaitFor">The ID of the element to clear.</param>
+        public void KSClearInput(string elementIdToWaitFor)
+        {
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(elementIdToWaitFor))).Clear();
+        }
+
+        /// <summary>
+        /// Waits until the element is clickable, then replaces the original text with the input.
+        /// </summary>
+        /// <param name="elementIdToWaitFor">The ID of the element to be waited on.</param>
+        /// <param name="input">The input for the selected ID.</param>
+        public void KSReplaceText(string elementIdToWaitFor, string input)
+        {
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(elementIdToWaitFor))).SendKeys(Keys.Home);
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(elementIdToWaitFor))).SendKeys(Keys.LeftShift+Keys.End);
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(elementIdToWaitFor))).SendKeys(input);
         }
     }
 }

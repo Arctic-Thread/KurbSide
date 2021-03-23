@@ -76,7 +76,7 @@
             <div class="card-columns">
                 @foreach (var business in Model)
                 {
-                    <div class="card">
+                    <div id="businessListing-@business.Item1.BusinessName" class="card">
                         <div class="card-body text-center" style="width: 250px">
                             @if (business.Item1.LogoLocation == null)
                             {
@@ -107,7 +107,7 @@
                             </p>
                         </div>
                         <div class="card-footer">
-                            <a asp-action="Catalogue" asp-route-id="@business.Item1.BusinessId" class="btn btn-block">Visit Store</a>
+                            <a id="view-@(business.Item1.BusinessName)-catalogue" asp-action="Catalogue" asp-route-id="@business.Item1.BusinessId" class="btn btn-block">Visit Store</a>
                         </div>
                     </div>
                 }

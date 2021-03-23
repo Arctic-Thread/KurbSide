@@ -20,12 +20,10 @@ namespace KurbSideTest
         {
             // Arrange
             // Fields & Buttons
-            string navbarRegisterButtonID = "navbar-register";
             string registerAsBusinessID = "register-page-business-register";
             string registerAsBusinessButtonID = "submit";
 
             // Titles
-            string homePageTitle = "Home Page - KurbSide";
             string registerPageTitle = "Register - KurbSide";
             string businessRegisterPageTitle = "Register as Business - KurbSide";
 
@@ -33,8 +31,6 @@ namespace KurbSideTest
             int numberOfExpectedErrors = 11;
 
             //Act
-            KSTitleContains(homePageTitle); // Wait until home page is visible
-            KSClick(navbarRegisterButtonID); // Click the register button in navbar
             KSTitleContains(registerPageTitle); // Wait until register page is visible
             KSClick(registerAsBusinessID); // Click "Register as a Business" button
             KSTitleContains(businessRegisterPageTitle); // Wait until business registration page is visible
@@ -80,7 +76,6 @@ namespace KurbSideTest
             string sixPM = "600P";
 
             // Fields & Buttons
-            string navbarRegisterButtonID = "navbar-register";
             string registerAsBusinessID = "register-page-business-register";
             string sysMessageID = "sysMessage";
 
@@ -120,7 +115,6 @@ namespace KurbSideTest
             string submitID = "submit";
 
             // Titles
-            string homePageTitle = "Home Page - KurbSide";
             string registerPageTitle = "Register - KurbSide";
             string businessRegisterPageTitle = "Register as Business - KurbSide";
             string registrationConfirmationPageTitle = "Register confirmation - KurbSide";
@@ -129,8 +123,6 @@ namespace KurbSideTest
             string expectedResult = $"We've sent an email to {email}, Please confirm your account to continue.";
 
             //Act
-            KSTitleContains(homePageTitle); // Wait until home page is visible
-            KSClick(navbarRegisterButtonID); // Click the register button in navbar
             KSTitleContains(registerPageTitle); // Wait until register page is visible
             KSClick(registerAsBusinessID); // Click "Register as a Business" button
             KSTitleContains(businessRegisterPageTitle); // Wait until business registration page is visible
@@ -188,16 +180,14 @@ namespace KurbSideTest
         /// </summary>
         [Test]
         [Order(3)]
-        public void UC04_Authentication_RegisterAsMember_InvalidInfo_ShouldFail()
+        public void UC04_Authentication_RegisterAsMember_InvalidDetails_ShouldFail()
         {
             // Arrange
             // Fields & Buttons
-            string navbarRegisterButtonID = "navbar-register";
             string registerAsMemberID = "register-page-member-register";
             string registerAsMemberSubmit = "memberSubmit";
 
             // Titles
-            string homePageTitle = "Home Page - KurbSide";
             string registerPageTitle = "Register - KurbSide";
             string memberRegisterPageTitle = "Register for KurbSide - KurbSide";
 
@@ -205,8 +195,6 @@ namespace KurbSideTest
             int numberOfExpectedErrors = 10;
 
             //Act
-            KSTitleContains(homePageTitle); // Wait until home page is visible
-            KSClick(navbarRegisterButtonID); // Click the register button in navbar
             KSTitleContains(registerPageTitle); // Wait until register page is visible
             KSClick(registerAsMemberID); // Click "Register as a Member" button
             KSTitleContains(memberRegisterPageTitle); // Wait until business registration page is visible
@@ -247,7 +235,6 @@ namespace KurbSideTest
             string country = "Canada";
 
             // Fields & Buttons
-            string navbarRegisterButtonID = "navbar-register";
             string registerAsMemberID = "register-page-member-register";
             string sysMessageID = "sysMessage";
             
@@ -268,7 +255,6 @@ namespace KurbSideTest
             string memberSubmitButtonID = "memberSubmit";
 
             // Titles
-            string homePageTitle = "Home Page - KurbSide";
             string registerPageTitle = "Register - KurbSide";
             string memberRegisterPageTitle = "Register for KurbSide - KurbSide";
             string registrationConfirmationPageTitle = "Register confirmation - KurbSide";
@@ -277,8 +263,6 @@ namespace KurbSideTest
             string expectedResult = $"We've sent an email to {email}, Please confirm your account to continue.";
 
             // Act
-            KSTitleContains(homePageTitle); // Wait until home page is visible
-            KSClick(navbarRegisterButtonID); // Click the register button in navbar
             KSTitleContains(registerPageTitle); // Wait until register page is visible
             KSClick(registerAsMemberID); // Click "Register as a Member" button
             KSTitleContains(memberRegisterPageTitle); // Wait until business registration page is visible
@@ -345,19 +329,19 @@ namespace KurbSideTest
         {
             // Arrange
             // Fields & Buttons
-            string navbarlogoutButtonID = "navbar-logout";
+            string navbarLogoutButtonID = "navbar-logout";
             string sysMessageID = "sysMessage";
 
             // Titles
-            string homePageTitle = "Home Page - KurbSide";
+            string registerPageTitle = "Register - KurbSide";
 
             // Expected Result
             string expectedResult = "You have been logged out of your account.";
 
             //Act
             KSUnitTestLogin(AccountType.TEST);
-            KSClick(navbarlogoutButtonID); // Click the logout button
-            KSTitleContains(homePageTitle); // Wait until home page is visible.
+            KSClick(navbarLogoutButtonID); // Click the logout button
+            KSTitleContains(registerPageTitle); // Wait until home page is visible.
 
             string result = _driver.FindElement(By.Id(sysMessageID)).Text;
 
