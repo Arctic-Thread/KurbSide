@@ -97,6 +97,11 @@ namespace KurbSide.Controllers
                 .Where(i => i.Removed != null && i.Removed == false)
                 .ToListAsync();
 
+            if (items.Count <= 0)
+            {
+                 ViewData["NoItemsFoundReason"] = $"Sorry, {business.BusinessName} has no items for sale right now. Please check back later!";
+            }
+
             var categories = items
                 .Select(i => i.Category)
                 .Distinct()
@@ -117,17 +122,14 @@ namespace KurbSide.Controllers
                     items = items
                         .Where(i => i.ItemName.ToLower().Contains(filter.ToLower()))
                         .ToList();
+                    
+                    ViewData["NoItemsFoundReason"] = $"Sorry, no results found for {filter}.";
                 }
             }
 
             var categorizedItems = items
                 .GroupBy(i => KurbSideUtils.KSStringManipulation.KSTitleCase(i.Category))
                 .ToDictionary(i => i.Key, i => i.AsEnumerable());
-
-            if (!items.Any())
-            {
-                return RedirectToAction("Index");
-            }
 
             TempData["itemCategories"] = categories;
             return View(Tuple.Create(business, categorizedItems));
@@ -152,9 +154,9 @@ namespace KurbSide.Controllers
             var item = await _context.Item.FirstOrDefaultAsync(i => i.ItemId == id);
             var business = await _context.Business
                 .Where(b => b.BusinessId == item.BusinessId)
-                .Include(b=>b.BusinessHours)
+                .Include(b => b.BusinessHours)
                 .FirstOrDefaultAsync();
-            
+
             if (item == null)
             {
                 _logger.LogDebug("ID Mismatch. Item does not exist.");
@@ -164,6 +166,7 @@ namespace KurbSide.Controllers
             return View(Tuple.Create(business, item));
         }
 
-        public static double GetDistance(Location location1, Location location2) => GeoCode.CalculateDistanceLocal(location1, location2).distance / 1000;
+        public static double GetDistance(Location location1, Location location2) =>
+            GeoCode.CalculateDistanceLocal(location1, location2).distance / 1000;
     }
 }
