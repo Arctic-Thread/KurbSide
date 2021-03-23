@@ -11,6 +11,7 @@ namespace KurbSide.Models
     {
         public string AspNetId { get; set; }
         public Guid? TimeZoneId { get; set; }
+        public bool PromotionalEmails { get; set; }
 
         public virtual AspNetUsers AspNet { get; set; }
         public virtual TimeZones TimeZone { get; set; }
