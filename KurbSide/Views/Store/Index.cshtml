@@ -76,7 +76,7 @@
             <div class="card-columns">
                 @foreach (var business in Model)
                 {
-                    <div class="card">
+                    <div id="businessListing-@business.Item1.BusinessName" class="card">
                         <div class="card-body text-center" style="width: 250px">
                             @if (business.Item1.LogoLocation == null)
                             {
