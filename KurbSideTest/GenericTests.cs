@@ -91,7 +91,7 @@ namespace KurbSideTest
         /// UC22
         /// Member views account settings
         /// </summary>
-        [Order(3)]
+        [Order(4)]
         [Test]
         public void UC22_MemberViewsAccountSettings_ShouldPass()
         {
