@@ -36,6 +36,13 @@ namespace KurbSide.ViewComponents
                 .ThenInclude(ci => ci.Item)
                 .FirstOrDefaultAsync();
 
+            if (cart != null && cart.ExpiryDate < DateTime.Today)
+            {
+                _context.CartItem.RemoveRange(cart.CartItem);
+                _context.Cart.RemoveRange(cart);
+                await _context.SaveChangesAsync();
+            }
+
             return await Task.FromResult((IViewComponentResult)View("Default", cart));
         }
     }

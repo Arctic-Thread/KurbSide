@@ -1,4 +1,5 @@
 ﻿@model Cart
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
 <div class="col-sm-3">
     <div class="card">
         @if (Model != null)
@@ -10,9 +11,19 @@
             <ul class="list-group">
                 @foreach (var item in Model.CartItem)
                 {
+                    var itemtotal = (item.Item.Price.Value * item.Quantity);
                     <li class="list-group-item d-flex justify-content-between align-items-center border-0">
-                        @item.Item.ItemName
-                        <span class="badge badge-pill badge-dark">@item.Quantity</span>
+                        <small>
+                            <span class="badge badge-pill badge-dark">@item.Quantity</span>
+                            <span class="badge badge-success">@(itemtotal.ToString("$#0.00"))</span><br />
+                            @item.Item.ItemName
+                        </small>
+                        <form method="POST" asp-controller="Order" asp-action="CartRemove" style="margin-left: .5em;" onsubmit="return confirm('Remove @(item.Item.ItemName)?')">
+                            <input type="hidden" name="id" value="@item.ItemId" />
+                            <button type="submit" name="submit" class="btn btn-sm btn-outline-danger" title="Remove from Cart">
+                                <i class="fa fa-trash fa-sm" aria-hidden="true"></i>
+                            </button>
+                        </form>
                     </li>
                 }
             </ul>

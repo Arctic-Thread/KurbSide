@@ -39,20 +39,19 @@ namespace KurbSide.Controllers
             }
 
             //Check that the requested item exists
-            var item = _context.Item.FirstOrDefault(i => i.ItemId.Equals(id));
+            var item = await _context.Item.FirstOrDefaultAsync(i => i.ItemId.Equals(id));
             if (item == null) return RedirectToAction("Index", "Home");
 
             //Retrieve the store
-            var business = _context.Business.FirstOrDefault(b => b.BusinessId.Equals(item.BusinessId));
+            var business = await _context.Business.FirstOrDefaultAsync(b => b.BusinessId.Equals(item.BusinessId));
 
             if (business != null)
             {
-                KSCartUtilities.KSCheckIfCartExpired(_context, _userManager, HttpContext);
-                var cart = _context.Cart
+                var cart = await _context.Cart
                                .Where(c => c.MemberId.Equals(currentMember.MemberId))
                                .Include(c => c.Business)
                                .Include(c => c.CartItem)
-                               .FirstOrDefault() ??
+                               .FirstOrDefaultAsync() ??
                            new Cart
                            {
                                BusinessId = item.BusinessId,
@@ -66,8 +65,8 @@ namespace KurbSide.Controllers
                     TempData["sysMessage"] = $"Error: Your current cart is with {cart.Business.BusinessName}," +
                                              $" please clear your cart to shop with {business.BusinessName}.";
                     return string.IsNullOrWhiteSpace(r)
-                        ? RedirectToAction("Catalogue", "Store", new {id = business.BusinessId})
-                        : (IActionResult) Redirect(r);
+                        ? RedirectToAction("Catalogue", "Store", new { id = business.BusinessId })
+                        : (IActionResult)Redirect(r);
                 }
 
                 _context.Cart.Update(cart);
@@ -76,11 +75,7 @@ namespace KurbSide.Controllers
                 //Add quantity/Create cart item
                 var cartItem = cart.CartItem
                                    .Where(ci => ci.ItemId.Equals(id))
-                                   .Select(ci =>
-                                   {
-                                       ci.Quantity += q;
-                                       return ci;
-                                   })
+                                   .Select(ci =>{ci.Quantity += q;return ci;})
                                    .FirstOrDefault() ??
                                new CartItem
                                {
@@ -103,8 +98,44 @@ namespace KurbSide.Controllers
             }
 
             return string.IsNullOrWhiteSpace(r)
-                ? RedirectToAction("Catalogue", "Store", new {id = business.BusinessId})
-                : (IActionResult) Redirect(r);
+                ? RedirectToAction("Catalogue", "Store", new { id = business.BusinessId })
+                : (IActionResult)Redirect(r);
+        }
+
+        public async Task<IActionResult> CartRemoveAsync(Guid id)
+        {
+            var currentMember = await KSCurrentUser.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            //If the currently logged in user is not a member they can not access the store.
+            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a member.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            //Check that the requested item exists
+            var item = _context.Item.FirstOrDefault(i => i.ItemId.Equals(id));
+            if (item == null) return RedirectToAction("Index", "Home");
+
+            var cart = await _context.Cart
+                .Where(c => c.MemberId.Equals(currentMember.MemberId))
+                .FirstOrDefaultAsync();
+
+            var cartItem = await _context.CartItem
+                .Where(ci => ci.CartId.Equals(cart.CartId))
+                .Where(ci => ci.ItemId.Equals(id))
+                .FirstOrDefaultAsync();
+
+            _context.CartItem.Remove(cartItem);
+            await _context.SaveChangesAsync();
+
+            if (!_context.CartItem.Where(ci => ci.CartId.Equals(cart.CartId)).Any())
+            {
+                _context.Cart.Remove(cart);
+                _context.SaveChanges();
+            }
+
+            return Redirect(HttpContext.Request.Headers["Referer"]);
         }
 
         [Route("ClearCart")]

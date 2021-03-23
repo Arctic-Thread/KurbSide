@@ -29,10 +29,11 @@ namespace KurbSide.Utilities
         {
             var currentMember = await KSCurrentUser.KSGetCurrentMemberAsync(ksContext, userManager, httpContext);
 
-            var cart = ksContext.Cart
+            var cart = await ksContext.Cart
+                .AsNoTracking()
                 .Where(c => c.MemberId.Equals(currentMember.MemberId))
                 .Include(c => c.CartItem)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             if (cart == null)
                 return;
