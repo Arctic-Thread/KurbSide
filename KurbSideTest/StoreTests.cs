@@ -136,5 +136,43 @@ namespace KurbSideTest
             
             Assert.IsTrue(result);
         }
+
+        /// <summary>
+        /// UC35 - Member Views Item
+        /// Tests that the selected item page is displayed when clicked in a business catalogue.
+        /// </summary>
+        [Test]
+        [Order(4)]
+        public void UC35_Store_ViewBusinessItem_ShouldPass()
+        {
+            // Arrange
+            // Fields & Buttons
+            string searchBarID = "filter2";
+            string viewBusinessCatalogueButtonID = "view-test-catalogue";
+            string viewTestItemID = "view-Test Item";
+
+            // Titles
+            string storesPageTitle = "Stores - KurbSide";
+            string businessPageTitle = "test - KurbSide";
+            string testItemPageTitle = "Test Item - KurbSide";
+            
+            // Act
+            KSUnitTestLogin(AccountType.MEMBER);
+            
+            KSTitleContains(storesPageTitle);
+            KSReplaceText(searchBarID, "test");
+            KSSendKeys(searchBarID, Keys.Enter);
+            
+            KSClick(viewBusinessCatalogueButtonID);
+            
+            KSTitleContains(businessPageTitle);
+            KSClick(viewTestItemID);
+            
+            KSTitleContains(testItemPageTitle);
+
+            bool result = _driver.Title.Contains(testItemPageTitle);
+            
+            Assert.IsTrue(result);
+        }
     }
 }

@@ -107,7 +107,7 @@
                     <div class="card-body">
                         @foreach (Item item in Model.Item2[category])
                         {
-                            <a asp-action="ViewItem" asp-route-id="@item.ItemId" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <a id="view-@item.ItemName" asp-action="ViewItem" asp-route-id="@item.ItemId" class="list-group-item list-group-item-action flex-column align-items-start">
                                 <table>
                                     <tr>
                                         <td>

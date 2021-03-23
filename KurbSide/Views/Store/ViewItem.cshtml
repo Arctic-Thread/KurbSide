@@ -1,5 +1,7 @@
 ﻿@model Tuple<Business, Item>
 @{
+    ViewData["Title"] = Model.Item2.ItemName;
+    
     var businessStatus = KurbSide.Utilities.KSStoreUtilities.CheckIfOpenForBusiness(Model.Item1.BusinessHours, DateTime.Now.DayOfWeek);
     if (businessStatus.StartsWith("Open"))
     {
