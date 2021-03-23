@@ -1,7 +1,13 @@
-# ![KurbSide Logo](https://i.imgur.com/k0bS05s.png)
+<p align="center">
+   <img src="https://i.imgur.com/k0bS05s.png" title="KurbSide Logo" alt="KurbSide Logo">
+   <!--<br>
+   <a href="https://www.gnu.org/licenses/gpl-3.0">
+      <img src="https://img.shields.io/badge/License-GPLv3-blue.svg" title="License: GPL v3" alt="License: GPL v3">
+   </a>-->
+</p>
 
 ## KurbSide [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-KurbSide is E-commerce website that coordinates curbside pickup between local businesses and customers.\
+KurbSide is an E-commerce website that coordinates curbside pickup between local businesses and customers.\
 It was designed and created from scratch for our capstone project at Conestoga College
 
 ## Features
