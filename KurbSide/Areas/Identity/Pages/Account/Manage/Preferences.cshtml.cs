@@ -41,6 +41,8 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
         {
             [Display(Name = "Time Zone")]
             public Guid? TimeZoneId { get; set; }
+            [Display(Name = "Would you like to receive promotional emails?")]
+            public bool PromotionalEmails { get; set; }
         }
 
         private async Task LoadAsync(IdentityUser currentUser)
@@ -52,6 +54,7 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
             Input = new InputModel
             {
                 TimeZoneId = accountSettings.TimeZoneId,
+                PromotionalEmails = accountSettings.PromotionalEmails
             };
 
             ViewData["TimeZoneId"] = new SelectList(_context.TimeZones, "TimeZoneId", "Label", accountSettings.TimeZoneId);
@@ -90,6 +93,7 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
                     .FirstOrDefaultAsync();
 
                 accountSettings.TimeZoneId = Input.TimeZoneId;
+                accountSettings.PromotionalEmails = Input.PromotionalEmails;
 
                 StatusMessage = "Your profile has been updated";
                 _context.AccountSettings.Update(accountSettings);
