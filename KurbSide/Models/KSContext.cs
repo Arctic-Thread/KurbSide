@@ -266,7 +266,7 @@ namespace KurbSide.Models
 
             modelBuilder.Entity<Cart>(entity =>
             {
-                entity.Property(e => e.CartId).ValueGeneratedNever();
+                entity.Property(e => e.CartId).HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.ExpiryDate)
                     .HasColumnType("date")
@@ -429,7 +429,7 @@ namespace KurbSide.Models
 
             modelBuilder.Entity<Order>(entity =>
             {
-                entity.Property(e => e.OrderId).ValueGeneratedNever();
+                entity.Property(e => e.OrderId).HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.CreationDate)
                     .HasColumnType("date")

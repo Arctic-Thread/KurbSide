@@ -122,6 +122,12 @@
                                         <td>
                                             @item.ItemName
                                         </td>
+                                        <td>
+                                            <form method="POST" asp-controller="Order" asp-action="CartAdd">
+                                                <input type="hidden" name="id" value="@item.ItemId" />
+                                                <input type="submit" name="submit" value="Add to Cart" />
+                                            </form>
+                                        </td>
                                     </tr>
                                 </table>
                             </a>
