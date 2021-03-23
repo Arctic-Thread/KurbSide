@@ -1,6 +1,8 @@
 ﻿using KurbSide.Models;
+using KurbSide.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +25,18 @@ namespace KurbSide.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            return await Task.FromResult((IViewComponentResult)View("Default"));
+            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var currentMember = await _context.Member
+                .Where(m => m.AspNetId.Equals(currentUser.Id))
+                .FirstOrDefaultAsync();
+            var cart = await _context.Cart
+                .Where(c => c.MemberId.Equals(currentMember.MemberId))
+                .Include(c => c.Business)
+                .Include(c => c.CartItem)
+                .ThenInclude(ci => ci.Item)
+                .FirstOrDefaultAsync();
+
+            return await Task.FromResult((IViewComponentResult)View("Default", cart));
         }
     }
 }

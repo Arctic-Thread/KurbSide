@@ -98,6 +98,7 @@ namespace KurbSide.Controllers
             else
             {
                 _context.Cart.Update(cart);
+                await _context.SaveChangesAsync();
 
                 //Add quantity/Create cart item
                 var cartItem = cart.CartItem
@@ -111,7 +112,7 @@ namespace KurbSide.Controllers
                         Quantity = 1
                     };
                 try
-                { 
+                {
                     _context.CartItem.Add(cartItem);
                     await _context.SaveChangesAsync();
                 }
@@ -125,9 +126,37 @@ namespace KurbSide.Controllers
             }
 
 
-            return string.IsNullOrWhiteSpace(r)?
+            return string.IsNullOrWhiteSpace(r) ?
                 RedirectToAction("Catalogue", "Store", new { id = store.BusinessId }) :
                 (IActionResult)Redirect(r);
+        }
+
+        [Route("ClearCart")]
+        public async Task<IActionResult> CartClearAsync()
+        {
+            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var currentMember = await _context.Member
+                .Where(m => m.AspNetId.Equals(currentUser.Id))
+                .FirstOrDefaultAsync();
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            //If the currently logged in user is not a member they can not access the store.
+            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a member.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var cart = _context.Cart
+                .Where(c => c.MemberId.Equals(currentMember.MemberId))
+                .Include(c => c.CartItem)
+                .FirstOrDefault();
+
+            _context.CartItem.RemoveRange(cart.CartItem);
+            _context.Cart.Remove(cart);
+            _context.SaveChanges();
+
+            return Redirect(HttpContext.Request.Headers["Referer"]);
+
         }
 
     }
