@@ -80,85 +80,91 @@
                 </div>
             }
 
-        <div class="d-flex flex-wrap justify-content-center">
-            @foreach (var business in Model)
-            {
-                <div id="businessListing-@business.Item1.BusinessName" class="card" style="margin: auto; margin-bottom: 1em;">
-                    <div class="card-body text-center" style="width: 250px; height: 260px; overflow: hidden; margin:auto">
-                        @if (business.Item1.LogoLocation == null)
-                        {
-                            <img alt="No Logo Available For @business.Item1.BusinessName" class="card-img-top mx-auto align-self-center" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: .5em;" />
-                        }
-                        else
-                        {
-                            <img alt="@business.Item1.LogoLocation Logo" class="card-img-top mx-auto align-self-center" src="@business.Item1.LogoLocation" style="width: 100px; height: 100px; margin: .5em;" />
-                        }
-                        <h5 class="card-title ellipsisForLongText" style="width: 225px;">@business.Item1.BusinessName</h5>
-                        <p class="card-text">
-                            <small>@business.Item1.Street, @business.Item1.City</small>
-                        </p>
-                        <p class="card-text">
-                            <small class="badge badge-primary">@Math.Round(business.Item2, 1)km</small>
-                            @{
-                                var businessStatus = KurbSide.Utilities.KSStoreUtilities.CheckIfOpenForBusiness(business.Item1.BusinessHours, DateTime.Now.DayOfWeek);
-
-                                if (businessStatus.StartsWith("Open"))
+            <div class="d-flex flex-wrap justify-content-center">
+                @foreach (var business in Model)
+                {
+                    <div id="businessListing-@business.Item1.BusinessName" class="card" style="margin: auto; margin-bottom: 1em;">
+                        <div class="card-body text-center" style="width: 250px; height: 260px; overflow: hidden; margin:auto; display: inline-flex; justify-content: center; align-items: center">
+                            <div>
+                                @if (business.Item1.LogoLocation == null)
                                 {
-                                    <small class="badge badge-success">@businessStatus</small>
+                                    <div style="height: 100px; width: 100px; margin: auto">
+                                        <img alt="No Logo Available For @business.Item1.BusinessName" class="card-img-top mx-auto align-self-center" src="~/android-chrome-512x512.png" style="width: 100%; height: 100%; object-fit: scale-down;" />
+                                    </div>
                                 }
                                 else
                                 {
-                                    <small class="badge badge-danger">@businessStatus</small>
+                                    <div style="height: 100px; width: 100px; margin: auto">
+                                        <img alt="@business.Item1.LogoLocation Logo" class="card-img-top mx-auto align-self-center" src="@business.Item1.LogoLocation" style="width: 100%; height: 100%; object-fit: scale-down;" />
+                                    </div>
                                 }
-                            }
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <a id="view-@(business.Item1.BusinessName)-catalogue" asp-action="Catalogue" asp-route-id="@business.Item1.BusinessId" class="btn btn-block">Visit Store</a>
-                    </div>
-                </div>
-            }
-        </div>
+                                <h5 class="card-title ellipsisForLongText" title="@business.Item1.BusinessName" style="width: 225px;">@business.Item1.BusinessName</h5>
+                                <p class="card-text">
+                                    <small>@business.Item1.Street, @business.Item1.City</small>
+                                </p>
+                                <p class="card-text">
+                                    <small class="badge badge-primary">@Math.Round(business.Item2, 1)km</small>
+                                    @{
+                                        var businessStatus = KurbSide.Utilities.KSStoreUtilities.CheckIfOpenForBusiness(business.Item1.BusinessHours, DateTime.Now.DayOfWeek);
 
-            @*<div class="card-columns">
-                @foreach (var business in Model)
-                {
-                    <div id="businessListing-@business.Item1.BusinessName" class="card">
-                        <div class="card-body text-center" style="width: 250px; height: 260px; overflow: hidden; margin:auto">
-                            @if (business.Item1.LogoLocation == null)
-                            {
-                                <img alt="No Logo Available For @business.Item1.BusinessName" class="card-img-top mx-auto align-self-center" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: .5em;" />
-                            }
-                            else
-                            {
-                                <img alt="@business.Item1.LogoLocation Logo" class="card-img-top mx-auto align-self-center" src="@business.Item1.LogoLocation" style="width: 100px; height: 100px; margin: .5em;" />
-                            }
-                            <h5 class="card-title ellipsisForLongText" style="width: 225px;">@business.Item1.BusinessName</h5>
-                            <p class="card-text">
-                                <small>@business.Item1.Street, @business.Item1.City</small>
-                            </p>
-                            <p class="card-text">
-                                <small class="badge badge-primary">@Math.Round(business.Item2, 1)km</small>
-                                @{
-                                    var businessStatus = KurbSide.Utilities.KSStoreUtilities.CheckIfOpenForBusiness(business.Item1.BusinessHours, DateTime.Now.DayOfWeek);
-
-                                    if (businessStatus.StartsWith("Open"))
-                                    {
-                                        <small class="badge badge-success">@businessStatus</small>
+                                        if (businessStatus.StartsWith("Open"))
+                                        {
+                                            <small class="badge badge-success">@businessStatus</small>
+                                        }
+                                        else
+                                        {
+                                            <small class="badge badge-danger">@businessStatus</small>
+                                        }
                                     }
-                                    else
-                                    {
-                                        <small class="badge badge-danger">@businessStatus</small>
-                                    }
-                                }
-                            </p>
+                                </p>
+                            </div>
                         </div>
                         <div class="card-footer">
                             <a id="view-@(business.Item1.BusinessName)-catalogue" asp-action="Catalogue" asp-route-id="@business.Item1.BusinessId" class="btn btn-block">Visit Store</a>
                         </div>
                     </div>
                 }
-            </div>*@
+            </div>
+
+            @*<div class="card-columns">
+                    @foreach (var business in Model)
+                    {
+                        <div id="businessListing-@business.Item1.BusinessName" class="card">
+                            <div class="card-body text-center" style="width: 250px; height: 260px; overflow: hidden; margin:auto">
+                                @if (business.Item1.LogoLocation == null)
+                                {
+                                    <img alt="No Logo Available For @business.Item1.BusinessName" class="card-img-top mx-auto align-self-center" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: .5em;" />
+                                }
+                                else
+                                {
+                                    <img alt="@business.Item1.LogoLocation Logo" class="card-img-top mx-auto align-self-center" src="@business.Item1.LogoLocation" style="width: 100px; height: 100px; margin: .5em;" />
+                                }
+                                <h5 class="card-title ellipsisForLongText" style="width: 225px;">@business.Item1.BusinessName</h5>
+                                <p class="card-text">
+                                    <small>@business.Item1.Street, @business.Item1.City</small>
+                                </p>
+                                <p class="card-text">
+                                    <small class="badge badge-primary">@Math.Round(business.Item2, 1)km</small>
+                                    @{
+                                        var businessStatus = KurbSide.Utilities.KSStoreUtilities.CheckIfOpenForBusiness(business.Item1.BusinessHours, DateTime.Now.DayOfWeek);
+
+                                        if (businessStatus.StartsWith("Open"))
+                                        {
+                                            <small class="badge badge-success">@businessStatus</small>
+                                        }
+                                        else
+                                        {
+                                            <small class="badge badge-danger">@businessStatus</small>
+                                        }
+                                    }
+                                </p>
+                            </div>
+                            <div class="card-footer">
+                                <a id="view-@(business.Item1.BusinessName)-catalogue" asp-action="Catalogue" asp-route-id="@business.Item1.BusinessId" class="btn btn-block">Visit Store</a>
+                            </div>
+                        </div>
+                    }
+                </div>*@
             @*<div class="card">
                     <div class="card-body">
                         @if (Model.Count() <= 0)
