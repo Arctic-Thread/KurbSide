@@ -17,6 +17,8 @@ namespace KurbSide.Models
 
         public string AspNetId { get; set; }
         public Guid MemberId { get; set; }
+        public double Lat { get; set; }
+        public double Lng { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Street { get; set; }
@@ -28,8 +30,6 @@ namespace KurbSide.Models
         public string PhoneNumber { get; set; }
         public string Gender { get; set; }
         public DateTime Birthday { get; set; }
-        public double Lat { get; set; }
-        public double Lng { get; set; }
 
         public virtual AspNetUsers AspNet { get; set; }
         public virtual Country CountryCodeNavigation { get; set; }
