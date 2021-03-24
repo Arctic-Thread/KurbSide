@@ -15,6 +15,5 @@ namespace KurbSide.Models
         public decimal? Discount { get; set; }
 
         public virtual Item Item { get; set; }
-        public virtual Cart Order { get; set; }
     }
 }
