@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NUnit.Framework;
 using OpenQA.Selenium;
 
@@ -174,5 +175,84 @@ namespace KurbSideTest
             
             Assert.IsTrue(result);
         }
+        
+        /// <summary>
+        /// UC26 member adds item to cart test
+        /// </summary>
+        [Test]
+        [Order(5)]
+        public void UC26_MemberAddsToCart_ShouldPass()
+        {
+            string searchBarID = "filter2";
+            string viewBusinessCatalogueButtonID = "view-test-catalogue";
+            
+            // Titles
+            string storesPageTitle = "Stores - KurbSide";
+            string businessPageTitle = "test - KurbSide";
+            
+            // Act
+            KSUnitTestLogin(AccountType.MEMBER);
+            
+            KSTitleContains(storesPageTitle);
+            KSReplaceText(searchBarID, "test");
+            KSSendKeys(searchBarID, Keys.Enter);
+            
+            KSClick(viewBusinessCatalogueButtonID);
+            
+            KSTitleContains(businessPageTitle);
+
+            KSClick("addToCart");//adds a item to the cart to make the cart visible
+            
+            IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id("cartItems"));
+            
+            bool result = cartItems.Count > 0;//checks to see if there are items in the cart
+            
+            KSClick("clear-cart");//clears the cart to make the test work for other test
+            
+            var confirmClearCart = _driver.SwitchTo().Alert();
+            confirmClearCart.Accept();
+            
+            Assert.IsTrue(result);
+        }
+        
+        [Test]
+        [Order(6)]
+        public void UC27_MemberClearsCart_ShouldPass()
+        {
+            string searchBarID = "filter2";
+            string viewBusinessCatalogueButtonID = "view-test-catalogue";
+            
+            // Titles
+            string storesPageTitle = "Stores - KurbSide";
+            string businessPageTitle = "test - KurbSide";
+            
+            // Act
+            KSUnitTestLogin(AccountType.MEMBER);
+            
+            KSTitleContains(storesPageTitle);
+            KSReplaceText(searchBarID, "test");
+            KSSendKeys(searchBarID, Keys.Enter);
+            
+            KSClick(viewBusinessCatalogueButtonID);
+            
+            KSTitleContains(businessPageTitle);
+
+            KSClick("addToCart");//adds a item to the cart to make the cart visible
+            
+            IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id("cartItems"));
+            
+            KSClick("clear-cart");//clears the cart to make the test work for other test
+            
+            var confirmClearCart = _driver.SwitchTo().Alert();
+            confirmClearCart.Accept();
+            //checks to see if there are items in the cart
+            bool result = cartItems.Count == 1; //(note that there is a element in the cart so the result will not come back as 0 )
+            
+            Assert.IsTrue(result);
+        }
+        
+        
+        
+        
     }
 }
