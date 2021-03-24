@@ -2,8 +2,8 @@
 @{
     ViewData["Title"] = "Stores";
 
-    var rawFilter = (string)TempData["catalogueFilter"];
-    var rawMd = (int)TempData["md"];
+    var rawFilter = (string) TempData["catalogueFilter"];
+    var rawMd = (int) TempData["md"];
 
     var activeFilter = "";
     var md = 25;
@@ -17,11 +17,11 @@
         activeFilter = rawFilter;
     }
 }
-<link href="~/css/Store/BusinessListings.css" rel="stylesheet" />
+<link href="~/css/Store/BusinessListings.css" rel="stylesheet"/>
 <div class="container">
     <div class="row">
         <div class="col">
-            <vc:member-head />
+            <vc:member-head/>
         </div>
     </div>
     <div class="row">
@@ -45,7 +45,7 @@
                             <input type="text" id="filter2" name="filter" class="form-control border-secondary" placeholder="Search Stores" value="@activeFilter">
                             <input type="hidden" id="md2" name="md" value="@md">
                             <div class="input-group-append">
-                                <input type="submit" class="input-group-text btn-dark text-light bg-dark border-dark" id="btnGroupAddon" value="Search" />
+                                <input type="submit" class="input-group-text btn-dark text-light bg-dark border-dark" id="btnGroupAddon" value="Search"/>
                             </div>
                             @if (!string.IsNullOrWhiteSpace(activeFilter))
                             {
@@ -61,7 +61,7 @@
                     </form>
                 </div>
             </div>
-            <br />
+            <br/>
             <style>
                 .card-columns {
                     column-count: 3;
@@ -70,7 +70,9 @@
             @if (!Model.Any())
             {
                 <div class="card">
-                    <span class="card-body"><small>No Stores Found, Please refine your search or distance.</small></span>
+                    <span class="card-body">
+                        <small>No Stores Found, Please refine your search or distance.</small>
+                    </span>
                 </div>
             }
             <div class="card-columns">
@@ -80,13 +82,13 @@
                         <div class="card-body text-center" style="width: 250px; height: 260px; overflow: hidden;">
                             @if (business.Item1.LogoLocation == null)
                             {
-                                <img alt="No Logo Available For @business.Item1.BusinessName" class="card-img-top mx-auto align-self-center" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: .5em;" />
+                                <img alt="No Logo Available For @business.Item1.BusinessName" class="card-img-top mx-auto align-self-center" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: .5em;"/>
                             }
                             else
                             {
-                                <img alt="@business.Item1.LogoLocation Logo" class="card-img-top mx-auto align-self-center" src="@business.Item1.LogoLocation" style="width: 100px; height: 100px; margin: .5em;" />
+                                <img alt="@business.Item1.LogoLocation Logo" class="card-img-top mx-auto align-self-center" src="@business.Item1.LogoLocation" style="width: 100px; height: 100px; margin: .5em;"/>
                             }
-                            <h5 class="card-title">@business.Item1.BusinessName</h5>
+                            <h5 class="card-title" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 225px;">@business.Item1.BusinessName</h5>
                             <p class="card-text">
                                 <small>@business.Item1.Street, @business.Item1.City</small>
                             </p>
@@ -150,6 +152,6 @@
             </div>
         </div>*@
         </div>
-        <vc:cart />
+        <vc:cart/>
     </div>
 </div>
