@@ -34,7 +34,7 @@
                             <span class="input-group-append">
                                 <span class="input-group-text bg-light text-dark" style="font-family:monospace;">
                                     @(itemtotal.ToString("$#0.00").PadLeft(10, '\u00a0'))<br />
-                                    <span style="position: absolute; bottom: -.5em;" class="text-success">@(distotal.ToString("-$#0.00").PadLeft(10, '\u00a0'))</span>
+                                    <span style="position: absolute; bottom: -.5em; @(distotal>0? null:"display:none")" class="text-success">@(distotal.ToString("-$#0.00").PadLeft(10, '\u00a0'))</span>
                                 </span>
                                 <a class="btn btn-outline-danger" title="Remove from Cart" asp-action="CartRemove" asp-controller="Order" asp-route-id="@item.ItemId">
                                     <i class="fa fa-trash fa-sm" aria-hidden="true"></i>

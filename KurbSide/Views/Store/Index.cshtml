@@ -77,7 +77,7 @@
                 @foreach (var business in Model)
                 {
                     <div id="businessListing-@business.Item1.BusinessName" class="card">
-                        <div class="card-body text-center" style="width: 250px">
+                        <div class="card-body text-center" style="width: 250px; height: 260px; overflow: hidden;">
                             @if (business.Item1.LogoLocation == null)
                             {
                                 <img alt="No Logo Available For @business.Item1.BusinessName" class="card-img-top mx-auto align-self-center" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: .5em;" />
