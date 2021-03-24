@@ -66,45 +66,5 @@ namespace KurbSideTest
             //Assert
             Assert.IsTrue(result);
         }
-        
-        /// <summary>
-        /// UC22
-        /// Member views account settings
-        /// </summary>
-        [Order(3)]
-        [Test]
-        public void UC22_BusinessViewsAccountSettings_ShouldPass()
-        {
-            string accountTitle = "My Account - KurbSide";
-            
-            KSUnitTestLogin(AccountType.BUSINESS);
-            
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
-            KSClick("navbar-account-settings");
-
-            var result = _driver.Title.Contains(accountTitle);
-            
-            Assert.IsTrue(result);
-        }
-        
-        /// <summary>
-        /// UC22
-        /// Member views account settings
-        /// </summary>
-        [Order(4)]
-        [Test]
-        public void UC22_MemberViewsAccountSettings_ShouldPass()
-        {
-            string accountTitle = "My Account - KurbSide";
-            
-            KSUnitTestLogin(AccountType.MEMBER);
-            
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
-            KSClick("navbar-account-settings");
-
-            var result = _driver.Title.Contains(accountTitle);
-            
-            Assert.IsTrue(result);
-        }
     }
 }
