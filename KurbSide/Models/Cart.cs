@@ -12,7 +12,6 @@ namespace KurbSide.Models
         public Cart()
         {
             CartItem = new HashSet<CartItem>();
-            OrderItem = new HashSet<OrderItem>();
         }
 
         public Guid CartId { get; set; }
@@ -23,6 +22,5 @@ namespace KurbSide.Models
         public virtual Business Business { get; set; }
         public virtual Member Member { get; set; }
         public virtual ICollection<CartItem> CartItem { get; set; }
-        public virtual ICollection<OrderItem> OrderItem { get; set; }
     }
 }

@@ -75,7 +75,11 @@ namespace KurbSide.Controllers
                 //Add quantity/Create cart item
                 var cartItem = cart.CartItem
                                    .Where(ci => ci.ItemId.Equals(id))
-                                   .Select(ci => { ci.Quantity = q; return ci; })
+                                   .Select(ci =>
+                                   {
+                                       ci.Quantity = q;
+                                       return ci;
+                                   })
                                    .FirstOrDefault() ??
                                new CartItem
                                {
@@ -93,7 +97,6 @@ namespace KurbSide.Controllers
                     _context.CartItem.Update(cartItem);
                     await _context.SaveChangesAsync();
                 }
-
             }
 
             return Redirect(HttpContext.Request.Headers["Referer"]);
@@ -146,7 +149,11 @@ namespace KurbSide.Controllers
                 //Add quantity/Create cart item
                 var cartItem = cart.CartItem
                                    .Where(ci => ci.ItemId.Equals(id))
-                                   .Select(ci => { ci.Quantity += q; return ci; })
+                                   .Select(ci =>
+                                   {
+                                       ci.Quantity += q;
+                                       return ci;
+                                   })
                                    .FirstOrDefault() ??
                                new CartItem
                                {
@@ -265,6 +272,92 @@ namespace KurbSide.Controllers
             return View(cart);
         }
 
+        public async Task<IActionResult> PlaceOrder()
+        {
+            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var currentMember = await _context.Member
+                .Where(m => m.AspNetId.Equals(currentUser.Id))
+                .Include(p => p.ProvinceCodeNavigation)
+                .FirstOrDefaultAsync();
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            //If the currently logged in user is not a member they can not access the store.
+            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a member.";
+                return RedirectToAction("Index", "Home");
+            }
 
+            var cart = _context.Cart
+                .Where(c => c.MemberId.Equals(currentMember.MemberId))
+                .Include(c => c.Member)
+                .Include(c => c.Business)
+                .Include(c => c.CartItem)
+                .ThenInclude(ci => ci.Item)
+                .FirstOrDefault();
+
+            var cartItems = await _context.CartItem.Where(m => m.CartId.Equals(cart.CartId)).ToListAsync();
+
+            if (cart == null || !cart.CartItem.Any())
+            {
+                return RedirectToAction("Index", "Store");
+            }
+
+            var cartSubTotal = (decimal) cartItems.Sum(ci => ci.Quantity * ci.Item.Price).Value;
+            var discountTotal = 0; //TODO Discounts & Sales
+
+            var taxRate = (decimal) currentMember.ProvinceCodeNavigation.TaxRate;
+            var taxTotal = taxRate * cartSubTotal;
+            var pendingOrderStatus =
+                await _context.OrderStatus.Where(s => s.StatusName.Equals("Pending")).FirstOrDefaultAsync();
+
+            try
+            {
+                var order = new Order
+                {
+                    MemberId = currentMember.MemberId,
+                    SubTotal = cartSubTotal,
+                    DiscountTotal = 0, //TODO Discounts & Sales
+                    Tax = taxTotal,
+                    GrandTotal = cartSubTotal + taxRate,
+                    Status = pendingOrderStatus.StatusId,
+                    CreationDate = DateTime.Now,
+                    BusinessId = cart.BusinessId
+                };
+
+                await _context.Order.AddAsync(order);
+                await _context.SaveChangesAsync();
+
+                List<OrderItem> orderItems = new List<OrderItem>();
+
+                foreach (var cartItem in cartItems)
+                {
+                    var orderItem = new OrderItem
+                    {
+                        OrderId = order.OrderId,
+                        ItemId = cartItem.ItemId,
+                        Quantity = cartItem.Quantity,
+                        Discount = 0 //TODO Discounts & Sales
+                    };
+
+                    orderItems.Add(orderItem);
+                    await _context.OrderItem.AddAsync(orderItem);
+                    await _context.SaveChangesAsync();
+                }
+
+                _context.CartItem.RemoveRange(cart.CartItem);
+                _context.Cart.Remove(cart);
+                await _context.SaveChangesAsync();
+
+                var orderDetails = Tuple.Create(order, orderItems);
+                return View("OrderConfirmation", orderDetails);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug("Error during checkout: " + ex.GetBaseException().Message);
+                ViewData["sysMessage"] = "Error: Something went wrong.";
+            }
+
+            return RedirectToAction("Index", "Store");
+        }
     }
 }
