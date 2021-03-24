@@ -3,7 +3,8 @@
     ViewData["Title"] = "Checkout";
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
-
+<script src="https://www.paypal.com/sdk/js?client-id=AUPzX4RZX9uXei_PDOlXbUg_6cY9O6lAHonu4R2h2-W07J77wpC6K3I39vVT6vFhI54uXtct5pQLuThz&currency=CAD">
+</script>
 
 <vc:member-head />
 
@@ -15,36 +16,36 @@
         <ul class="list-group list-group-flush">
             @foreach (var item in Model.CartItem)
             {
-                var itemtotal = (item.Item.Price.Value * (double) item.Quantity);
+                var itemtotal = (item.Item.Price.Value * (double)item.Quantity);
                 var distotal = (0d * (double)item.Quantity);
-            <li class="list-group-item w-100">
-                <form class="d-flex justify-content-between" asp-controller="Order" asp-action="CartUpdate" method="POST">
-                    <span>
-                        @item.Item.ItemName
-                    </span>
-                    <span>
-                        <span class="input-group input-group-sm">
+                <li class="list-group-item w-100">
+                    <form class="d-flex justify-content-between" asp-controller="Order" asp-action="CartUpdate" method="POST">
+                        <span>
+                            @item.Item.ItemName
+                        </span>
+                        <span>
+                            <span class="input-group input-group-sm">
 
-                            @*<span class="input-group-prepend">
-                                <small class="input-group-text text-sm-center">Quantity</small>
-                            </span>*@
-                            <input name="q" type="number" class="form-control" style="max-width: 5em;" value="@item.Quantity" onchange="submit();">
-                            <input name="id" type="hidden" class="form-control" value="@item.ItemId">
+                                @*<span class="input-group-prepend">
+                                        <small class="input-group-text text-sm-center">Quantity</small>
+                                    </span>*@
+                                <input name="q" type="number" class="form-control" style="max-width: 5em;" value="@item.Quantity" onchange="submit();">
+                                <input name="id" type="hidden" class="form-control" value="@item.ItemId">
 
-                            <span class="input-group-append">
-                                <span class="input-group-text bg-light text-dark" style="font-family:monospace;">
-                                    @(itemtotal.ToString("$#0.00").PadLeft(10, '\u00a0'))<br />
-                                    <span style="position: absolute; bottom: -.5em; @(distotal>0? null:"display:none")" class="text-success">@(distotal.ToString("-$#0.00").PadLeft(10, '\u00a0'))</span>
+                                <span class="input-group-append">
+                                    <span class="input-group-text bg-light text-dark" style="font-family:monospace;">
+                                        @(itemtotal.ToString("$#0.00").PadLeft(10, '\u00a0'))<br />
+                                        <span style="position: absolute; bottom: -.5em; @(distotal>0? null:"display:none")" class="text-success">@(distotal.ToString("-$#0.00").PadLeft(10, '\u00a0'))</span>
+                                    </span>
+                                    <a class="btn btn-outline-danger" title="Remove from Cart" asp-action="CartRemove" asp-controller="Order" asp-route-id="@item.ItemId">
+                                        <i class="fa fa-trash fa-sm" aria-hidden="true"></i>
+                                    </a>
                                 </span>
-                                <a class="btn btn-outline-danger" title="Remove from Cart" asp-action="CartRemove" asp-controller="Order" asp-route-id="@item.ItemId">
-                                    <i class="fa fa-trash fa-sm" aria-hidden="true"></i>
-                                </a>
                             </span>
                         </span>
-                    </span>
-                </form>
-                <form style="position: absolute; visibility: hidden;" id="form_@item.ItemId" action="POST">asd</form>
-            </li>
+                    </form>
+                    <form style="position: absolute; visibility: hidden;" id="form_@item.ItemId" action="POST">asd</form>
+                </li>
             }
         </ul>
     </div>
@@ -58,16 +59,37 @@
                     var taxrate = Model.Member.ProvinceCodeNavigation.TaxRate;
                     var subtotal = Model.CartItem.Sum(ci => ci.Quantity * ci.Item.Price).Value;
                     var tax = (taxrate * subtotal).Value;
-                    var servicefee = 0;
-                    var grandtotal = subtotal + tax + servicefee;
+                    var serviceFee = 0;
+                    var grandTotal = subtotal + tax + serviceFee;
                 }
                 <span>@("Subtotal:".PadRight(15, '\u00a0'))@(subtotal.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br />
                 <span>@($"Tax ({taxrate.Value.ToString("P0")}):".PadRight(15, '\u00a0'))@(tax.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br />
-                <span>@("Service Fees:".PadRight(15, '\u00a0'))@(servicefee.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br /><br />
-                <span>@("Grand Total:".PadRight(15, '\u00a0'))@(grandtotal.ToString("$#0.00").PadLeft(10, '\u00a0'))</span>
+                <span>@("Service Fees:".PadRight(15, '\u00a0'))@(serviceFee.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br /><br />
+                <span>@("Grand Total:".PadRight(15, '\u00a0'))@(grandTotal.ToString("$#0.00").PadLeft(10, '\u00a0'))</span>
             </p>
 
-            <a class="btn btn-primary btn-block" asp-controller="Order" asp-action="Submit" asp-route-id="@Model.BusinessId">Place Order</a>
+            <div id="paypal-button-container"></div>
+            <form hidden id="PlaceOrderForm" asp-controller="Order" asp-action="PlaceOrder">
+                <a hidden id="btnPlaceOrder" asp-controller="Order" asp-action="PlaceOrder">Place Order</a>
+            </form>
+
+            <script>
+                paypal.Buttons({
+                    createOrder: function (data, actions) {
+                        // This function sets up the details of the transaction, including the amount and line item details.
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: @(grandTotal)
+                                }
+                            }]
+                        });
+                    },
+                    onApprove: function (data, actions) {
+                        $('#PlaceOrderForm').submit();
+                    }
+                }).render('#paypal-button-container');
+            </script>
         </div>
     </div>
 </div>

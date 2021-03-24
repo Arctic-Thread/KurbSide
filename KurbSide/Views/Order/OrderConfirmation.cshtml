@@ -1,0 +1,13 @@
+﻿@model Tuple<Order, List<OrderItem>>
+@{
+    ViewData["Title"] = "OrderConfirmation";
+}
+
+<h1>OrderConfirmation</h1>
+
+<p>@Model.Item1.CreationDate</p>
+
+@foreach (var item in @Model.Item2)
+{
+    @item.Item.ItemName
+}

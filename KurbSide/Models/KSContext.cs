@@ -430,10 +430,14 @@ namespace KurbSide.Models
 
             modelBuilder.Entity<Order>(entity =>
             {
+                entity.HasIndex(e => e.OrderId)
+                    .HasName("UQ__Order__C3905BCEF186AAAE")
+                    .IsUnique();
+
                 entity.Property(e => e.OrderId).HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.CreationDate)
-                    .HasColumnType("date")
+                    .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.DiscountTotal)
@@ -485,7 +489,7 @@ namespace KurbSide.Models
                     .WithMany(p => p.OrderItem)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__OrderItem__Order__76969D2E");
+                    .HasConstraintName("FK_ORDERITEM_ORDERID");
             });
 
             modelBuilder.Entity<OrderStatus>(entity =>
