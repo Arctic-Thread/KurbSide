@@ -193,23 +193,27 @@ namespace KurbSide.Controllers
             var item = _context.Item.FirstOrDefault(i => i.ItemId.Equals(id));
             if (item == null) return RedirectToAction("Index", "Home");
 
-            var cart = await _context.Cart
-                .Where(c => c.MemberId.Equals(currentMember.MemberId))
-                .FirstOrDefaultAsync();
-
-            var cartItem = await _context.CartItem
-                .Where(ci => ci.CartId.Equals(cart.CartId))
-                .Where(ci => ci.ItemId.Equals(id))
-                .FirstOrDefaultAsync();
-
-            _context.CartItem.Remove(cartItem);
-            await _context.SaveChangesAsync();
-
-            if (!_context.CartItem.Where(ci => ci.CartId.Equals(cart.CartId)).Any())
+            try
             {
-                _context.Cart.Remove(cart);
-                _context.SaveChanges();
+                var cart = await _context.Cart
+                    .Where(c => c.MemberId.Equals(currentMember.MemberId))
+                    .FirstOrDefaultAsync();
+
+                var cartItem = await _context.CartItem
+                    .Where(ci => ci.CartId.Equals(cart.CartId))
+                    .Where(ci => ci.ItemId.Equals(id))
+                    .FirstOrDefaultAsync();
+
+                _context.CartItem.Remove(cartItem);
+                await _context.SaveChangesAsync();
+
+                if (!_context.CartItem.Where(ci => ci.CartId.Equals(cart.CartId)).Any())
+                {
+                    _context.Cart.Remove(cart);
+                    _context.SaveChanges();
+                }
             }
+            catch (Exception){}
 
             return Redirect(HttpContext.Request.Headers["Referer"]);
         }

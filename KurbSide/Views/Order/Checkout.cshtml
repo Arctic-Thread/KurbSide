@@ -3,7 +3,7 @@
     ViewData["Title"] = "Checkout";
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
-<script src="https://www.paypal.com/sdk/js?client-id=AUPzX4RZX9uXei_PDOlXbUg_6cY9O6lAHonu4R2h2-W07J77wpC6K3I39vVT6vFhI54uXtct5pQLuThz&currency=CAD">
+<script src="https://www.paypal.com/sdk/js?client-id=AUPzX4RZX9uXei_PDOlXbUg_6cY9O6lAHonu4R2h2-W07J77wpC6K3I39vVT6vFhI54uXtct5pQLuThz&currency=CAD&intent=authorize&buyer-country=CA" data-order-id="@Model.CartId">
 </script>
 
 <vc:member-head />
@@ -73,16 +73,64 @@
                 <a hidden id="btnPlaceOrder" asp-controller="Order" asp-action="PlaceOrder">Place Order</a>
             </form>
 
+
+            <hr />
+            @foreach (var item in Model.CartItem)
+            {
+
+                @("unit amount " + item.Item.Price)<br />
+                @("tax " + (item.Item.Price * item.Quantity) * taxrate)
+                <hr />
+            }
+
             <script>
                 paypal.Buttons({
                     createOrder: function (data, actions) {
                         // This function sets up the details of the transaction, including the amount and line item details.
                         return actions.order.create({
-                            purchase_units: [{
-                                amount: {
-                                    value: @(grandTotal)
+                              "purchase_units": [{
+                                  "description": "Stuff",
+                                  "amount": {
+                                    "value": "@(grandTotal)",
+                                    "currency_code": "CAD",
+                                    "breakdown": {
+                                      "item_total": {
+                                        "currency_code": "CAD",
+                                        "value": "@(subtotal)"
+                                        },
+                                      "tax_total": {
+                                        "currency_code": "CAD",
+                                        "value": "@(tax)"
+                                        },
+                                      "handling": {
+                                        "currency_code": "CAD",
+                                        "value": "@(serviceFee)"
+                                        },
+                                    }
+                                  },
+                                  "items": [
+                                      @foreach (var item in Model.CartItem)
+                                        {
+                                        @Html.Raw("{")
+                                            @Html.Raw("'unit_amount': {")
+                                                @Html.Raw("'currency_code': 'CAD',")
+                                                @Html.Raw("'value': '" + item.Item.Price + "'")
+                                            @Html.Raw("},")
+                                           @Html.Raw("'tax': {")
+                                                @Html.Raw("'currency_code': 'CAD',")
+                                                @Html.Raw("'value': '" + (item.Item.Price) * taxrate + "'")
+                                            @Html.Raw("},")
+                                            @Html.Raw("'quantity': '" + item.Quantity + "',")
+                                            @Html.Raw("'name': '" + item.Item.ItemName + "'")
+                                        @Html.Raw("},")
+                                        }
+                                  ],
                                 }
-                            }]
+                            ],
+                            application_context: {
+                                brand_name: "KurbSide",
+                                shipping_preference: 'NO_SHIPPING'
+                            }
                         });
                     },
                     onApprove: function (data, actions) {
