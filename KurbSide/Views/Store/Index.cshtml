@@ -83,7 +83,7 @@
         <div class="d-flex flex-wrap justify-content-center">
             @foreach (var business in Model)
             {
-                <div id="businessListing-@business.Item1.BusinessName" class="card" style="margin: .25rem">
+                <div id="businessListing-@business.Item1.BusinessName" class="card" style="margin: auto; margin-bottom: 1em;">
                     <div class="card-body text-center" style="width: 250px; height: 260px; overflow: hidden; margin:auto">
                         @if (business.Item1.LogoLocation == null)
                         {
