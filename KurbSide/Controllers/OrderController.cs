@@ -100,7 +100,7 @@ namespace KurbSide.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CartAddAsync(Guid id, string r = "", int q = 1)
+        public async Task<IActionResult> CartAddAsync(Guid id, int q = 1)
         {
             var currentMember = await KSCurrentUser.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
             var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
@@ -137,9 +137,7 @@ namespace KurbSide.Controllers
                 {
                     TempData["sysMessage"] = $"Error: Your current cart is with {cart.Business.BusinessName}," +
                                              $" please clear your cart to shop with {business.BusinessName}.";
-                    return string.IsNullOrWhiteSpace(r)
-                        ? RedirectToAction("Catalogue", "Store", new { id = business.BusinessId })
-                        : (IActionResult)Redirect(r);
+                    return Redirect(HttpContext.Request.Headers["Referer"]);
                 }
 
                 _context.Cart.Update(cart);
@@ -170,9 +168,7 @@ namespace KurbSide.Controllers
                 TempData["sysMessage"] = $"{item.ItemName} has been added to cart.";
             }
 
-            return string.IsNullOrWhiteSpace(r)
-                ? RedirectToAction("Catalogue", "Store", new { id = business.BusinessId })
-                : (IActionResult)Redirect(r);
+            return Redirect(HttpContext.Request.Headers["Referer"]);
         }
 
         public async Task<IActionResult> CartRemoveAsync(Guid id)
