@@ -27,6 +27,77 @@ namespace KurbSide.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> CartUpdateAsync(Guid id, int q = 0)
+        {
+            var currentMember = await KSCurrentUser.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            //If the currently logged in user is not a member they can not access the store.
+            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a member.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            //Check that the requested item exists
+            var item = await _context.Item.FirstOrDefaultAsync(i => i.ItemId.Equals(id));
+            if (item == null) return RedirectToAction("Index", "Home");
+
+            //Retrieve the store
+            var business = await _context.Business.FirstOrDefaultAsync(b => b.BusinessId.Equals(item.BusinessId));
+
+            if (business != null)
+            {
+                var cart = await _context.Cart
+                               .Where(c => c.MemberId.Equals(currentMember.MemberId))
+                               .Include(c => c.Business)
+                               .Include(c => c.CartItem)
+                               .FirstOrDefaultAsync() ??
+                           new Cart
+                           {
+                               BusinessId = item.BusinessId,
+                               MemberId = currentMember.MemberId,
+                               ExpiryDate = DateTime.Now.AddDays(1)
+                           };
+
+                //Validate the cart
+                if (!cart.BusinessId.Equals(business.BusinessId))
+                {
+                    TempData["sysMessage"] = $"Error: Your current cart is with {cart.Business.BusinessName}," +
+                                             $" please clear your cart to shop with {business.BusinessName}.";
+                    return Redirect(HttpContext.Request.Headers["Referer"]);
+                }
+
+                _context.Cart.Update(cart);
+                await _context.SaveChangesAsync();
+
+                //Add quantity/Create cart item
+                var cartItem = cart.CartItem
+                                   .Where(ci => ci.ItemId.Equals(id))
+                                   .Select(ci => { ci.Quantity = q; return ci; })
+                                   .FirstOrDefault() ??
+                               new CartItem
+                               {
+                                   CartId = cart.CartId,
+                                   ItemId = item.ItemId,
+                                   Quantity = q
+                               };
+                try
+                {
+                    await _context.CartItem.AddAsync(cartItem);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+                    _context.CartItem.Update(cartItem);
+                    await _context.SaveChangesAsync();
+                }
+
+            }
+
+            return Redirect(HttpContext.Request.Headers["Referer"]);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> CartAddAsync(Guid id, string r = "", int q = 1)
         {
             var currentMember = await KSCurrentUser.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);

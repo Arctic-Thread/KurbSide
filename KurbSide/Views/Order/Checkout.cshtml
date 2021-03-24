@@ -2,13 +2,53 @@
 @{
     ViewData["Title"] = "Checkout";
 }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
 
-@Model.Business.BusinessName
 
-<ul>
-    @foreach (var item in Model.CartItem)
-    {
-        <li>@item.Item.ItemName *@item.Quantity</li>
-    }
-</ul>
+<vc:member-head />
 
+<div class="card">
+    <div class="card-header">
+        Your Order with @Model.Business.BusinessName @DateTime.Today
+    </div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush">
+            @foreach (var item in Model.CartItem)
+            {
+                var itemtotal = (item.Item.Price.Value * item.Quantity);
+                var distotal = (0 * item.Quantity);
+            <li class="list-group-item w-100">
+                <form class="d-flex justify-content-between" asp-controller="Order" asp-action="CartUpdate" method="POST">
+                    <span>
+                        @item.Item.ItemName
+                    </span>
+                    <span>
+                        <span class="input-group input-group-sm">
+
+                            @*<span class="input-group-prepend">
+                                <small class="input-group-text text-sm-center">Quantity</small>
+                            </span>*@
+                            <input name="q" type="number" class="form-control" style="max-width: 5em;" value="@item.Quantity" onchange="submit();">
+                            <input name="id" type="hidden" class="form-control" value="@item.ItemId">
+
+                            <span class="input-group-append">
+                                <span class="input-group-text bg-light text-dark" style="font-family:monospace;">
+                                    @(itemtotal.ToString("$#0.00").PadLeft(10, '\u00a0'))<br />
+                                    <span style="position: absolute; bottom: -.5em;" class="text-success">@(distotal.ToString("-$#0.00").PadLeft(10, '\u00a0'))</span>
+                                </span>
+                                <a class="btn btn-outline-danger" title="Remove from Cart" asp-action="CartRemove" asp-controller="Order" asp-route-id="@item.ItemId">
+                                    <i class="fa fa-trash fa-sm" aria-hidden="true"></i>
+                                </a>
+                            </span>
+                        </span>
+                    </span>
+                </form>
+                <form style="position: absolute; visibility: hidden;" id="form_@item.ItemId" action="POST">asd</form>
+            </li>
+            }
+        </ul>
+    </div>
+    <div class="card-footer">
+
+    </div>
+</div>
