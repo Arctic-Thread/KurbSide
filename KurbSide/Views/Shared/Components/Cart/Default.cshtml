@@ -1,14 +1,14 @@
 ﻿@model Cart
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
 <div class="col-sm-3">
-    <div class="card">
+    <div id="cartCard" class="card">
         @if (Model != null)
         {
             <div class="card-header">
                 <span>@Model.Business.BusinessName Cart</span>
             </div>
 
-            <ul class="list-group">
+            <ul id="cartItems" class="list-group">
                 @foreach (var item in Model.CartItem)
                 {
                     var itemtotal = (item.Item.Price.Value * item.Quantity);
@@ -26,7 +26,7 @@
                         </small>
                         <form method="POST" asp-controller="Order" asp-action="CartRemove" style="margin-left: .5em;" onsubmit="return confirm('Remove @(item.Item.ItemName)?')">
                             <input type="hidden" name="id" value="@item.ItemId" />
-                            <button type="submit" name="submit" class="btn btn-sm btn-outline-danger" title="Remove from Cart">
+                            <button type="submit" name="submit" class="btn btn-sm btn-outline-danger" id="remove-from-cart-@item.Item.ItemName" title="Remove from Cart">
                                 <i class="fa fa-trash fa-sm" aria-hidden="true"></i>
                             </button>
                         </form>
@@ -36,7 +36,7 @@
             <div class="card-footer d-flex">
                 <div class="btn-group btn-group-sm w-100">
                     <a asp-controller="Order" asp-action="Checkout" class="btn btn-sm btn-outline-primary w-100">Checkout</a>
-                    <a onclick="return confirm('Are you sure you want to clear your cart?')" asp-controller="Order" asp-action="CartClear" class="btn btn-sm btn-outline-danger w-50">Clear</a>
+                    <a onclick="return confirm('Are you sure you want to clear your cart?')" asp-controller="Order" asp-action="CartClear" id="clear-cart" class="btn btn-sm btn-outline-danger w-50">Clear</a>
                 </div>
             </div>
         }
