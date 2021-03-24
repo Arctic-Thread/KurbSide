@@ -1,93 +1,83 @@
 ﻿@model Tuple<Business, Item>
 @{
     ViewData["Title"] = Model.Item2.ItemName;
-    
+
     var businessStatus = KurbSide.Utilities.KSStoreUtilities.CheckIfOpenForBusiness(Model.Item1.BusinessHours, DateTime.Now.DayOfWeek);
     if (businessStatus.StartsWith("Open"))
     {
-        businessStatus = businessStatus.Remove(0,11);
-        
+        businessStatus = businessStatus.Remove(0, 11);
+
     }
 
 }
-<style>
-     .item_img{
-        max-width: 65%;
-        min-width: 65%;
-        
-        max-height: 40%;
-        min-height: 40%;
-        float: left;
-        padding: 10px;
-    }
-    .item_info{
-        float: right;
-        max-width: 40%;
-        padding: 10px;
-        text-align: left;
-    }
-    .item_details{
-        clear: both;
-        text-align: left;
-    }
-    .btn2{
-        width: 90%;
-    }
-</style>
 
-
-<div class="row">
-    <div class="col">
-        <div class="card">
-            @{
-                if (Model.Item1.LogoLocation == null)
-                {
-                    <img alt="No Logo Available For @Model.Item1.BusinessName" class="card-img-top mx-auto" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                @{
+                    if (Model.Item1.LogoLocation == null)
+                    {
+                        <img alt="No Logo Available For @Model.Item1.BusinessName" class="card-img-top mx-auto" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
+                    }
+                    else
+                    {
+                        <div style="height: 100px; width: 100px; margin: auto">
+                            <img alt="@Model.Item1.LogoLocation Logo" class="card-img-top mx-auto align-self-center" src="@Model.Item1.LogoLocation" style="width: 100%; height: 100%; object-fit: scale-down;" />
+                        </div>
+                    }
                 }
-                else
-                {
-                    <img alt="@Model.Item1.BusinessName Logo" class="card-img-top mx-auto" src="@Model.Item1.LogoLocation" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
-                }
-            }
-            <div class="card-body" style="padding: 0 0 10px 0;">
-                <h5 class="card-title text-sm-center">@Model.Item1.BusinessName <small style="opacity: .5">@Model.Item1.StoreIdentifier</small></h5>
-                <p class="text-center">@Model.Item1.Street , @Model.Item1.City </p>
+                <div class="card-body" style="padding: 0 0 10px 0;">
+                    <h5 class="card-title text-sm-center">@Model.Item1.BusinessName <small style="opacity: .5">@Model.Item1.StoreIdentifier</small></h5>
+                    <p class="text-center">@Model.Item1.Street , @Model.Item1.City </p>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<br />
+    <br />
 
-<div class="item_img">
-    @if (Model.Item2.ImageLocation == null)
-    {
-        <img id="itemImage" alt="No image available for @Model.Item2.ItemName" src="~/img/NoImageAvailable.png" width="55%"/>
-    }
-    else
-    {
-        <img id="itemImage" alt="Image of @Model.Item2.ItemName" onerror="this.onerror = null;this.src='/img/NoImageAvailable.png';" src="@Model.Item2.ImageLocation" width="100%"/>
-    }
-</div>
-
-<div class="item_info">
-    <h4 class="text-center">@Model.Item2.ItemName</h4>
-    <br/>
-    <hr/>
-    <button type="button" class="btn2 btn-primary btn-lg">Add to cart</button>
-    <hr/>
-    <h5>Price: $@Html.DisplayFor(model => model.Item2.Price)</h5>
-    <br/>
-    <h5>Category: @Html.DisplayFor(model => model.Item2.Category)</h5>
-    <br/>
-    <h5 >Available for Pick-up Before: @businessStatus </h5>
-    <br/>
-</div>
-
-
-<div class="item_details">
-    
-    <hr/>
-    <h4>Details</h4>
-    <p> @Html.DisplayFor(model => model.Item2.Details)</p>
-    <a asp-action="Catalogue" class="btn btn-primary btn-lg" asp-route-id="@Model.Item1.BusinessId" id="btnBackToList">Back to store page</a>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="row card-body">
+                    <div class="col">
+                        @if (Model.Item2.ImageLocation == null)
+                        {
+                            <img id="itemImage" alt="No image available for @Model.Item2.ItemName" src="~/img/NoImageAvailable.png" width="55%" />
+                        }
+                        else
+                        {
+                            <img id="itemImage" alt="Image of @Model.Item2.ItemName" onerror="this.onerror = null;this.src='/img/NoImageAvailable.png';" src="@Model.Item2.ImageLocation" style="margin: auto; width: 100%;" />
+                        }
+                    </div>
+                    <div class="col">
+                        <h4 class="text-center">@Model.Item2.ItemName</h4>
+                        <br />
+                        <hr />
+                        @*<button type="button" class="btn2 btn-primary btn-lg btn-block">Add to cart</button>*@
+                        <form method="POST" asp-controller="Order" asp-action="CartAdd">
+                            <input type="hidden" name="id" value="@Model.Item2.ItemId" />
+                            <input class="btn btn-lg btn-block btn-success" type="submit" name="submit" value="Add to Cart" />
+                        </form>
+                        <hr />
+                        <h5>Price: $@Html.DisplayFor(model => model.Item2.Price)</h5>
+                        <br />
+                        <h5>Category: @Html.DisplayFor(model => model.Item2.Category)</h5>
+                        <br />
+                        <h5>Available for Pick-up Before: @businessStatus </h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="card-body" style="margin: 0 1em 1em 1em; padding-top: 0;">
+                        <hr />
+                        <h4>Details</h4>
+                        <p> @Html.DisplayFor(model => model.Item2.Details)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <vc:cart />
+    </div>
+    <br />
+    <a asp-action="Catalogue" class="btn btn-secondary" asp-route-id="@Model.Item1.BusinessId" id="btnBackToList">@("<-Back to store page")</a>
 </div>

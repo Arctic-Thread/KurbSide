@@ -38,7 +38,9 @@
                     }
                     else
                     {
-                        <img alt="@Model.Item1.BusinessName Logo" class="card-img-top mx-auto" src="@Model.Item1.LogoLocation" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
+                        <div style="height: 100px; width: 100px; margin: auto">
+                            <img alt="@Model.Item1.LogoLocation Logo" class="card-img-top mx-auto align-self-center" src="@Model.Item1.LogoLocation" style="width: 100%; height: 100%; object-fit: scale-down;" />
+                        </div>
                     }
                 }
                 <div class="card-body" style="padding: 0 0 10px 0; margin: auto;">
