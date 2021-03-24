@@ -17,7 +17,7 @@ namespace KurbSide.Models
         public Guid ItemId { get; set; }
         public Guid BusinessId { get; set; }
         [Display(Name = "Product Name")]
-        [RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Only Alpha-Numeric characters allowed.")]
+        [RegularExpression("^[a-zA-Z0-9\\s]*$", ErrorMessage = "Only Alpha-Numeric characters allowed.")]
         [MinLength(2, ErrorMessage = "The entered Product Name is too short. A minimum of 2 characters is required.")]
         [MaxLength(75, ErrorMessage = "The entered Product Name is too long. 75 characters max.")]
         [Required(ErrorMessage = "You must enter a product name.")]
