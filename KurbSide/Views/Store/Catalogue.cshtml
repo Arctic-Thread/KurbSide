@@ -30,7 +30,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <div class="card">
+            <div class="card d-flex justify-content-center">
                 @{
                     if (Model.Item1.LogoLocation == null)
                     {
@@ -41,7 +41,7 @@
                         <img alt="@Model.Item1.BusinessName Logo" class="card-img-top mx-auto" src="@Model.Item1.LogoLocation" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
                     }
                 }
-                <div class="card-body" style="padding: 0 0 10px 0;">
+                <div class="card-body" style="padding: 0 0 10px 0; margin: auto;">
                     <h5 class="card-title text-sm-center">@Model.Item1.BusinessName <small style="opacity: .5">@Model.Item1.StoreIdentifier</small></h5>
                 </div>
             </div>

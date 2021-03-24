@@ -63,9 +63,9 @@
             </div>
             <br/>
             <style>
-                .card-columns {
+/*                .card-columns {
                     column-count: 3;
-                }
+                }*/
             </style>
             @if (!Model.Any())
             {
@@ -78,8 +78,8 @@
             <div class="card-columns">
                 @foreach (var business in Model)
                 {
-                    <div id="businessListing-@business.Item1.BusinessName" class="card">
-                        <div class="card-body text-center" style="width: 250px; height: 260px; overflow: hidden;">
+                    <div id="businessListing-@business.Item1.BusinessName" class="card d-flex justify-content-center">
+                        <div class="card-body text-center" style="width: 250px; height: 260px; overflow: hidden; margin:auto">
                             @if (business.Item1.LogoLocation == null)
                             {
                                 <img alt="No Logo Available For @business.Item1.BusinessName" class="card-img-top mx-auto align-self-center" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: .5em;"/>

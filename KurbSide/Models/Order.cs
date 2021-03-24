@@ -17,7 +17,9 @@ namespace KurbSide.Models
         public decimal GrandTotal { get; set; }
         public int Status { get; set; }
         public DateTime? CreationDate { get; set; }
+        public Guid BusinessId { get; set; }
 
+        public virtual Business Business { get; set; }
         public virtual Member Member { get; set; }
         public virtual OrderStatus StatusNavigation { get; set; }
     }
