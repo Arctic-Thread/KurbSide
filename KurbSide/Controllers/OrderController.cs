@@ -164,5 +164,38 @@ namespace KurbSide.Controllers
 
             return Redirect(HttpContext.Request.Headers["Referer"]);
         }
+
+        [Route("Checkout")]
+        public async Task<IActionResult> Checkout()
+        {
+            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var currentMember = await _context.Member
+                .Where(m => m.AspNetId.Equals(currentUser.Id))
+                .FirstOrDefaultAsync();
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            //If the currently logged in user is not a member they can not access the store.
+            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a member.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var cart = _context.Cart
+                .Where(c => c.MemberId.Equals(currentMember.MemberId))
+                .Include(c => c.Member)
+                .Include(c => c.Business)
+                .Include(c => c.CartItem)
+                .ThenInclude( ci => ci.Item)
+                .FirstOrDefault();
+
+            if (cart == null || !cart.CartItem.Any())
+            {
+                return RedirectToAction("Index", "Store");
+            }
+
+            return View(cart);
+        }
+
+
     }
 }

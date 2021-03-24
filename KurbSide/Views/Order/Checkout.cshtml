@@ -1,0 +1,14 @@
+﻿@model Cart;
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+@Model.Business.BusinessName
+
+<ul>
+    @foreach (var item in Model.CartItem)
+    {
+        <li>@item.Item.ItemName *@item.Quantity</li>
+    }
+</ul>
+
