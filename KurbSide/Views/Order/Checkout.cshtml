@@ -59,7 +59,7 @@
                     var taxrate = Model.Member.ProvinceCodeNavigation.TaxRate;
                     var subtotal = Model.CartItem.Sum(ci => ci.Quantity * ci.Item.Price).Value;
                     var tax = (taxrate * subtotal).Value;
-                    var serviceFee = 2;
+                    var serviceFee = 3.50;
                     var grandTotal = subtotal + tax + serviceFee;
                 }
                 <span>@("Subtotal:".PadRight(15, '\u00a0'))@(subtotal.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br />
