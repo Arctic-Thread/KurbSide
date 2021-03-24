@@ -14,7 +14,7 @@ namespace KurbSideTest
         /// UC22
         /// Member views account settings
         /// </summary>
-        [Order(3)]
+        [Order(1)]
         [Test]
         public void UC22_BusinessViewsAccountSettings_ShouldPass()
         {
@@ -37,7 +37,7 @@ namespace KurbSideTest
         /// UC22
         /// Member views account settings
         /// </summary>
-        [Order(4)]
+        [Order(2)]
         [Test]
         public void UC22_MemberViewsAccountSettings_ShouldPass()
         {
@@ -59,7 +59,7 @@ namespace KurbSideTest
         /// <summary>
         /// UC23 Email preferences Tests
         /// </summary>
-        [Order(5)]
+        [Order(3)]
         [Test]
         public void UC23_MemberChangesEmailPreferences_ShouldPass()
         {
