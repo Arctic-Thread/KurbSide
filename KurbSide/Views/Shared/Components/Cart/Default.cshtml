@@ -8,7 +8,7 @@
                 <span>@Model.Business.BusinessName Cart</span>
             </div>
 
-            <ul id="cartItems" class="list-group" style="max-height: 50vh; overflow-y: scroll;">
+            <ul id="cartItems" class="list-group" style="max-height: 50vh; overflow-y: auto;">
                 @foreach (var item in Model.CartItem)
                 {
                     var itemtotal = (item.Item.Price.Value * item.Quantity);
