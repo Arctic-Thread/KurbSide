@@ -42,6 +42,8 @@ namespace KurbSide.Controllers
             var item = await _context.Item.FirstOrDefaultAsync(i => i.ItemId.Equals(id));
             if (item == null) return RedirectToAction("Index", "Home");
 
+            if (q == null || q <= 0) return Redirect(HttpContext.Request.Headers["Referer"]);
+
             //Retrieve the store
             var business = await _context.Business.FirstOrDefaultAsync(b => b.BusinessId.Equals(item.BusinessId));
 
@@ -146,7 +148,7 @@ namespace KurbSide.Controllers
                 //Add quantity/Create cart item
                 var cartItem = cart.CartItem
                                    .Where(ci => ci.ItemId.Equals(id))
-                                   .Select(ci =>{ci.Quantity += q;return ci;})
+                                   .Select(ci => { ci.Quantity += q; return ci; })
                                    .FirstOrDefault() ??
                                new CartItem
                                {
@@ -256,7 +258,7 @@ namespace KurbSide.Controllers
                 .Include(c => c.Member)
                 .Include(c => c.Business)
                 .Include(c => c.CartItem)
-                .ThenInclude( ci => ci.Item)
+                .ThenInclude(ci => ci.Item)
                 .FirstOrDefault();
 
             if (cart == null || !cart.CartItem.Any())
