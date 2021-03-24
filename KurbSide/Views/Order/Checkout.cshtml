@@ -73,16 +73,6 @@
                 <a hidden id="btnPlaceOrder" asp-controller="Order" asp-action="PlaceOrder">Place Order</a>
             </form>
 
-
-            <hr />
-            @foreach (var item in Model.CartItem)
-            {
-
-                @("unit amount " + item.Item.Price)<br />
-                @("tax " + (item.Item.Price * item.Quantity) * taxrate)
-                <hr />
-            }
-
             <script>
                 paypal.Buttons({
                     createOrder: function (data, actions) {
