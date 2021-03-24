@@ -18,7 +18,7 @@
                                 @*@item.Quantity*@
                                 <form asp-controller="Order" asp-action="CartUpdate">
                                     <input type="hidden" name="id" value="@item.ItemId" />
-                                    <input style="max-width: 1.5em; text-align: center; -moz-appearance: textfield;" class="bg-transparent border-0 my-0 p-0 text-white" type="number" name="q" value="@item.Quantity" onchange="submit();"/>
+                                    <input style="max-width: 1.5em; text-align: center; -moz-appearance: textfield;" class="bg-transparent border-0 my-0 p-0 text-white" type="text" name="q" value="@item.Quantity" onchange="submit();" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" />
                                 </form>
                             </span>
                             <span class="badge badge-success">@(itemtotal.ToString("$#0.00"))</span><br />
