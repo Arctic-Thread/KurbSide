@@ -110,7 +110,7 @@ namespace KurbSideTest
         /// Tests that the selected businesses catalogue is displayed with their items.
         /// </summary>
         [Test]
-        [Order(3)]
+        [Order(4)]
         public void UC34_Store_ViewBusinessCatalogue_ShouldPass()
         {
             // Arrange
@@ -147,7 +147,7 @@ namespace KurbSideTest
         /// Tests that the selected item page is displayed when clicked in a business catalogue.
         /// </summary>
         [Test]
-        [Order(4)]
+        [Order(5)]
         public void UC35_Store_ViewBusinessItem_ShouldPass()
         {
             // Arrange
@@ -186,7 +186,7 @@ namespace KurbSideTest
         /// Tests adding an item to a shopping cart.
         /// </summary>
         [Test]
-        [Order(5)]
+        [Order(6)]
         public void UC26_Store_MemberAddsToCart_ShouldPass()
         {
             // Arrange
@@ -226,7 +226,7 @@ namespace KurbSideTest
         /// Tests removing all items from a shopping cart.
         /// </summary>
         [Test]
-        [Order(6)]
+        [Order(7)]
         public void UC27_Store_MemberClearsCart_ShouldPass()
         {
             // Arrange
@@ -255,7 +255,7 @@ namespace KurbSideTest
         /// Tests removing a specific item from a shopping cart.
         /// </summary>
         [Test]
-        [Order(7)]
+        [Order(8)]
         public void UC27_Store_MemberRemovesFromCart_ShouldPass()
         {
             // Arrange
@@ -288,7 +288,7 @@ namespace KurbSideTest
         /// TODO Revisit when order page is completed.
         /// </summary>
         [Test]
-        [Order(8)]
+        [Order(9)]
         public void UC28_Store_MemberCheckout_ShouldPass()
         {
             // Arrange
