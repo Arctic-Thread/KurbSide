@@ -8,11 +8,11 @@
                 <span>@Model.Business.BusinessName Cart</span>
             </div>
 
-            <ul id="cartItems" class="list-group" style="max-height: 50vh; overflow-y: auto;">
+            <ul class="list-group" style="max-height: 50vh; overflow-y: auto;">
                 @foreach (var item in Model.CartItem)
                 {
                     var itemtotal = (item.Item.Price.Value * item.Quantity);
-                    <li class="list-group-item d-flex justify-content-between align-items-center border-0">
+                    <li id="cartItems" class="list-group-item d-flex justify-content-between align-items-center border-0">
                         <small>
                             <span class="badge badge-pill badge-dark" style="max-width: 3em;">
                                 @*@item.Quantity*@

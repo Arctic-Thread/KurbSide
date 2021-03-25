@@ -234,13 +234,8 @@ namespace KurbSideTest
             string clearCartButtonID = "clear-cart";
             string cartItemsID = "cartItems";
 
-            // Titles
-            string storesPageTitle = "Stores - KurbSide";
-
             // Act
-            KSUnitTestLogin(AccountType.MEMBER);
-
-            KSTitleContains(storesPageTitle);
+            UC26_Store_MemberAddsToCart_ShouldPass();
 
             IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id(cartItemsID));
 
@@ -249,7 +244,7 @@ namespace KurbSideTest
             var confirmClearCart = _driver.SwitchTo().Alert();
             confirmClearCart.Accept();
             //checks to see if there are items in the cart
-            bool result = cartItems.Count == 1; //(note that there is a element in the cart so the result will not come back as 0 )
+            bool result = cartItems.Count == 0; //(note that there is a element in the cart so the result will not come back as 0 )
 
             // Assert 
             Assert.IsTrue(result);
@@ -269,12 +264,9 @@ namespace KurbSideTest
             string cartItemsID = "cartItems";
 
             // Titles
-            string storesPageTitle = "Stores - KurbSide";
 
             // Act
-            KSUnitTestLogin(AccountType.MEMBER);
-
-            KSTitleContains(storesPageTitle);
+            UC26_Store_MemberAddsToCart_ShouldPass();
 
             IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id(cartItemsID));
 
@@ -283,7 +275,7 @@ namespace KurbSideTest
             var confirmRemoveFromCart = _driver.SwitchTo().Alert();
             confirmRemoveFromCart.Accept();
             //checks to see if there are items in the cart
-            bool result = cartItems.Count == 1; //(note that there is a element in the cart so the result will not come back as 0 )
+            bool result = cartItems.Count == 0; //(note that there is a element in the cart so the result will not come back as 0 )
 
             // Assert 
             Assert.IsTrue(result);
@@ -301,28 +293,15 @@ namespace KurbSideTest
         {
             // Arrange
             // Fields & Buttons
-            string searchBarID = "filter2";
-            string viewBusinessCatalogueButtonID = "view-test-catalogue";
-            string addToCartButtonID = "addToCart";
             string checkoutButtonID = "checkout";
             string placeOrderFormID = "PlaceOrderForm";
 
             // Titles
-            string storesPageTitle = "Stores - KurbSide";
             string businessPageTitle = "test - KurbSide";
             string orderConfirmationPageTitle = "Order Confirmation";
 
             // Act
-            KSUnitTestLogin(AccountType.MEMBER);
-
-            KSTitleContains(storesPageTitle);
-            KSReplaceText(searchBarID, "test");
-            KSSendKeys(searchBarID, Keys.Enter);
-
-            KSClick(viewBusinessCatalogueButtonID);
-
-            KSTitleContains(businessPageTitle);
-            KSClick(addToCartButtonID);
+            UC26_Store_MemberAddsToCart_ShouldPass();
 
             KSTitleContains(businessPageTitle);
             KSClick(checkoutButtonID);
