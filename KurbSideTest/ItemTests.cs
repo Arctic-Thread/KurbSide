@@ -151,12 +151,17 @@ namespace KurbSideTest
         [Order(4)]
         public void UC16_Items_EditItem_ShouldPass()
         {
+            // Arrange
+            // Input
             string ItemNameTest = " Edit";
             string DetailTest = " Edit";
             string PriceTest = "5";
             string SkuTest = " Edit";
             string UpcTest = "";
             string CategoryTest = " Edit";
+            
+            // Titles
+            string cataloguePageTitle = "Business Catalogue - KurbSide";
 
             KSUnitTestLogin(AccountType.BUSINESS);
 
@@ -175,10 +180,12 @@ namespace KurbSideTest
 
             var confirmEdit = _driver.SwitchTo().Alert();
             confirmEdit.Accept();
+            
+            KSTitleContains(cataloguePageTitle);
 
-            IWebElement itemFounds = _driver.FindElement(By.XPath("//td[contains(.,'Test Item Pls Delete Edit')]"));
+            IReadOnlyList<IWebElement> itemNames = _driver.FindElements(By.Id("catalogue-allItems"));//gets all the items and store them in a list
 
-            Assert.AreEqual("Test Item Pls Delete Edit", itemFounds.Text);//checks to make sure that there are items in the list
+            Assert.IsTrue(itemNames.Count == 1);//checks to make sure that there are no items in the list
         }
         
         /// <summary>

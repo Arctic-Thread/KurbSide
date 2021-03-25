@@ -142,7 +142,7 @@
             <tbody>
                 @foreach (Item item in Model)
                 {
-                    <tr title="@item.ItemId">
+                    <tr id="catalogue-item-@item.ItemName" title="@item.ItemId">
                         <td class="align-middle">
                             @if (item.ImageLocation == null)
                             {
