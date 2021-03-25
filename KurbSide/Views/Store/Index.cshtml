@@ -63,13 +63,19 @@
             </div>
             <br/>
             <style>
-                .card-columns {
-                    -webkit-column-break-inside: avoid-region;
-                }
+                    .card-columns {
+                        -webkit-column-break-inside: avoid-region;
+                    }
 
                     .card-columns .card {
                         display: block;
                     }
+
+                .business {
+                    margin: 1% !important;
+                    flex: 1 1 30%;
+                    min-width: 250px;
+                }
             </style>
             @if (!Model.Any())
             {
@@ -80,22 +86,85 @@
                 </div>
             }
 
-            <div class="d-flex flex-wrap justify-content-center">
+            <div class="d-flex flex-wrap justify-content-center business-columns">
                 @{
                     Random random = new Random();
                 }
                 @foreach (var business in Model)
                 {
                     int bbbScore = random.Next(0, 100);
-                    <div id="businessListing-@business.Item1.BusinessName" class="card" style="margin: auto; margin-bottom: 1em;">
+                    <div id="businessListing-@business.Item1.BusinessName" class="card business" style="margin: auto; margin-bottom: 1em">
 
-                        <div id="BBBGrade" style="position: absolute; right: 0; width: 40px; height: 70px;">
+                        <div id="BBBGrade" style="position: absolute; right: 5px; width: 50px; height: 80px; padding: 5px;">
                             @if (bbbScore >= 90)
                             {
-                                <img class="zoom" alt="@business.Item1.BusinessName-BBBCertification" src="img/BBBAccredited.svg" style="width: 100%; height: 100%;"/>
+                                <img class="zoom" alt="@business.Item1.BusinessName-BBBCertification" src="img/BBBAccredited.svg" style="width: 100%; height: 100%; opacity: 0.75; margin-bottom: 0 !important" />
+                            }
+                            @*<div class="badge badge-info" style="width: 100%; margin: 5px 0 0 -5px; opacity: 0.75; font-size: 10px"><span>BBB: X</span></div>*@
+                    <style>
+                        .bbb {
+                            width: 100%;
+                            margin: 0;
+                            opacity: 0.75;
+                            font-size: 9px
+                        }
+                    </style>
+                            @{
+                                if (bbbScore < 60)
+                                {
+                                    <span class="badge badge-danger bbb"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: F</span>
+                                }
+                                else if (bbbScore < 64)
+                                {
+                                    <span class="badge badge-danger bbb"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: D-</span>
+                                }
+                                else if (bbbScore < 67)
+                                {
+                                    <span class="badge badge-danger bbb"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: D</span>
+                                }
+                                else if (bbbScore < 70)
+                                {
+                                    <span class="badge badge-danger bbb"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: D+</span>
+                                }
+                                else if (bbbScore < 74)
+                                {
+                                    <span class="badge badge-warning bbb"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: C-</span>
+                                }
+                                else if (bbbScore < 77)
+                                {
+                                    <span class="badge badge-warning bbb"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: C</span>
+                                }
+                                else if (bbbScore < 80)
+                                {
+                                    <span class="badge badge-warning bbb"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: C+</span>
+                                }
+                                else if (bbbScore < 84)
+                                {
+                                    <span class="badge badge-warning bbb"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: B-</span>
+                                }
+                                else if (bbbScore < 87)
+                                {
+                                    <span class="badge badge-success bbb"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: B</span>
+                                }
+                                else if (bbbScore < 90)
+                                {
+                                    <span class="badge badge-success bbb"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: B+</span>
+                                }
+                                else if (bbbScore < 94)
+                                {
+                                    <span class="badge badge-success bbb"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: A-</span>
+                                }
+                                else if (bbbScore < 97)
+                                {
+                                    <span class="badge badge-success bbb"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: A</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-success bbb"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: A+</span>
+                                }
                             }
                         </div>
-                        <div class="card-body text-center" style="width: 250px; height: 260px; overflow: hidden; margin:auto; display: inline-flex; justify-content: center; align-items: center">
+                        <div class="card-body text-center" style="overflow: hidden; margin:auto; display: inline-flex; justify-content: center; align-items: center">
                             <div>
                                 @if (business.Item1.LogoLocation == null)
                                 {
@@ -115,61 +184,6 @@
                                 </p>
                                 <p class="card-text">
                                     <small class="badge badge-primary">@Math.Round(business.Item2, 1)km</small>
-                                    
-                                    @{
-                                        if (bbbScore < 60)
-                                        {
-                                            <small class="badge badge-danger"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: F</small>
-                                        }
-                                        else if (bbbScore < 64)
-                                        {
-                                            <small class="badge badge-danger"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: D-</small>
-                                        }
-                                        else if (bbbScore < 67)
-                                        {
-                                            <small class="badge badge-danger"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: D</small>
-                                        }
-                                        else if (bbbScore < 70)
-                                        {
-                                            <small class="badge badge-danger"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: D+</small>
-                                        }
-                                        else if (bbbScore < 74)
-                                        {
-                                            <small class="badge badge-warning"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: C-</small>
-                                        }
-                                        else if (bbbScore < 77)
-                                        {
-                                            <small class="badge badge-warning"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: C</small>
-                                        }
-                                        else if (bbbScore < 80)
-                                        {
-                                            <small class="badge badge-warning"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: C+</small>
-                                        }
-                                        else if (bbbScore < 84)
-                                        {
-                                            <small class="badge badge-warning"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: B-</small>
-                                        }
-                                        else if (bbbScore < 87)
-                                        {
-                                            <small class="badge badge-success"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: B</small>
-                                        }
-                                        else if (bbbScore < 90)
-                                        {
-                                            <small class="badge badge-success"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: B+</small>
-                                        }
-                                        else if (bbbScore < 94)
-                                        {
-                                            <small class="badge badge-success"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: A-</small>
-                                        }
-                                        else if (bbbScore < 97)
-                                        {
-                                            <small class="badge badge-success"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: A</small>
-                                        }
-                                        else
-                                        {
-                                            <small class="badge badge-success"><abbr title="The Better Business Bureau has been helping people find businesses, brands, and charities they can trust.">BBB</abbr>: A+</small>
-                                        }
-                                    }
                                     <br/>
                                     @{
                                         var businessStatus = KurbSide.Utilities.KSStoreUtilities.CheckIfOpenForBusiness(business.Item1.BusinessHours, DateTime.Now.DayOfWeek);
