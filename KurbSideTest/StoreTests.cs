@@ -66,6 +66,7 @@ namespace KurbSideTest
             // The number of business listings has decreased (indicating the distance filtering has narrowed down the results).
             bool result = originalNumberOfBusinessListings.Count > newNumberOfBusinessListings.Count;
 
+            // Assert 
             Assert.IsTrue(result);
         }
 
@@ -100,6 +101,7 @@ namespace KurbSideTest
             // The number of business listings has decreased (indicating the search has narrowed down the results), and the desired business is displayed.
             bool result = originalNumberOfBusinessListings.Count > newNumberOfBusinessListings.Count && desiredBusinessListing.Displayed;
 
+            // Assert 
             Assert.IsTrue(result);
         }
 
@@ -136,6 +138,7 @@ namespace KurbSideTest
             // There are items found on the business catalogue page.
             bool result = catalogueItems.Count > 0;
 
+            // Assert 
             Assert.IsTrue(result);
         }
 
@@ -174,18 +177,24 @@ namespace KurbSideTest
 
             bool result = _driver.Title.Contains(testItemPageTitle);
 
+            // Assert 
             Assert.IsTrue(result);
         }
 
         /// <summary>
-        /// UC26 member adds item to cart test
+        /// UC26 - Member Adds To Cart
+        /// Tests adding an item to a shopping cart.
         /// </summary>
         [Test]
         [Order(5)]
-        public void UC26_MemberAddsToCart_ShouldPass()
+        public void UC26_Store_MemberAddsToCart_ShouldPass()
         {
+            // Arrange
+            // Fields & Buttons
             string searchBarID = "filter2";
             string viewBusinessCatalogueButtonID = "view-test-catalogue";
+            string addToCartButtonID = "addToCart";
+            string cartItemsID = "cartItems";
 
             // Titles
             string storesPageTitle = "Stores - KurbSide";
@@ -202,95 +211,88 @@ namespace KurbSideTest
 
             KSTitleContains(businessPageTitle);
 
-            KSClick("addToCart"); //adds a item to the cart to make the cart visible
+            KSClick(addToCartButtonID); //adds a item to the cart to make the cart visible
 
-            IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id("cartItems"));
+            IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id(cartItemsID));
 
             bool result = cartItems.Count > 0; //checks to see if there are items in the cart
 
-            KSClick("clear-cart"); //clears the cart to make the test work for other test
-
-            var confirmClearCart = _driver.SwitchTo().Alert();
-            confirmClearCart.Accept();
-
+            // Assert 
             Assert.IsTrue(result);
         }
 
+        /// <summary>
+        /// UC27 - Member Removes Item From Cart
+        /// Tests removing all items from a shopping cart.
+        /// </summary>
         [Test]
         [Order(6)]
-        public void UC27_MemberClearsCart_ShouldPass()
+        public void UC27_Store_MemberClearsCart_ShouldPass()
         {
-            string searchBarID = "filter2";
-            string viewBusinessCatalogueButtonID = "view-test-catalogue";
+            // Arrange
+            // Fields & Buttons
+            string clearCartButtonID = "clear-cart";
+            string cartItemsID = "cartItems";
 
             // Titles
             string storesPageTitle = "Stores - KurbSide";
-            string businessPageTitle = "test - KurbSide";
 
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
 
             KSTitleContains(storesPageTitle);
-            KSReplaceText(searchBarID, "test");
-            KSSendKeys(searchBarID, Keys.Enter);
 
-            KSClick(viewBusinessCatalogueButtonID);
+            IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id(cartItemsID));
 
-            KSTitleContains(businessPageTitle);
-
-            KSClick("addToCart"); //adds a item to the cart to make the cart visible
-
-            IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id("cartItems"));
-
-            KSClick("clear-cart"); //clears the cart to make the test work for other test
+            KSClick(clearCartButtonID); //clears the cart to make the test work for other test
 
             var confirmClearCart = _driver.SwitchTo().Alert();
             confirmClearCart.Accept();
             //checks to see if there are items in the cart
             bool result = cartItems.Count == 1; //(note that there is a element in the cart so the result will not come back as 0 )
 
+            // Assert 
             Assert.IsTrue(result);
         }
 
+        /// <summary>
+        /// UC27 - Member Removes Item From Cart
+        /// Tests removing a specific item from a shopping cart.
+        /// </summary>
         [Test]
         [Order(7)]
-        public void UC27_MemberRemovesFromCart_ShouldPass()
+        public void UC27_Store_MemberRemovesFromCart_ShouldPass()
         {
-            string searchBarID = "filter2";
-            string viewBusinessCatalogueButtonID = "view-test-catalogue";
+            // Arrange
+            // Fields & Buttons
+            string removeTestItemFromCartButtonID = "remove-from-cart-Test Item";
+            string cartItemsID = "cartItems";
 
             // Titles
             string storesPageTitle = "Stores - KurbSide";
-            string businessPageTitle = "test - KurbSide";
 
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
 
             KSTitleContains(storesPageTitle);
-            KSReplaceText(searchBarID, "test");
-            KSSendKeys(searchBarID, Keys.Enter);
 
-            KSClick(viewBusinessCatalogueButtonID);
+            IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id(cartItemsID));
 
-            KSTitleContains(businessPageTitle);
-
-            KSClick("addToCart"); //adds a item to the cart to make the cart visible
-
-            IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id("cartItems"));
-
-            KSClick("remove-from-cart-Test Item"); //clears the cart to make the test work for other test
+            KSClick(removeTestItemFromCartButtonID); //clears the cart to make the test work for other test
 
             var confirmRemoveFromCart = _driver.SwitchTo().Alert();
             confirmRemoveFromCart.Accept();
             //checks to see if there are items in the cart
             bool result = cartItems.Count == 1; //(note that there is a element in the cart so the result will not come back as 0 )
 
+            // Assert 
             Assert.IsTrue(result);
         }
 
         /// <summary>
         /// UC28 - Member Checkout
-        /// Tests that when an item is purchased the order confirmation page is displayed.
+        /// Tests adding an item to a shopping cart and then purchasing it
+        ///  passes when the order confirmation page is displayed.
         /// TODO Revisit when order page is completed.
         /// </summary>
         [Test]
