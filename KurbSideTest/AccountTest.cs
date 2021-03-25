@@ -33,34 +33,34 @@ namespace KurbSideTest
         }
         
         /// <summary>
-        /// UC23 Email preferences Tests
+        /// UC23 - Member Changes Email Preferences
+        /// Tests changing email preferences.
         /// </summary>
-        [Order(3)]
+        [Order(2)]
         [Test]
         public void UC23_Account_MemberChangesEmailPreferences_ShouldPass()
         {
-            //var for the test
-            bool isChecked = false;
+            // Arrange
+            // Fields & Buttons
+            string preferencesID = "preferences";
+            string promotionalEmailsCheckboxID = "Input_PromotionalEmails";
+            string saveChanges = "update-profile-button";
             
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            // Act
+            UC22_Account_AccountViewsAccountSettings_ShouldPass(AccountType.MEMBER);
+            KSClick(preferencesID);
+            IWebElement emailCheckBox = _driver.FindElement(By.Id(promotionalEmailsCheckboxID));
+
+            bool isChecked = emailCheckBox.Selected;
+            KSClick(promotionalEmailsCheckboxID);
+            KSClick(saveChanges);
+
+            // The instance of the checkbox changes when refreshing the page so we must find it again.
+            emailCheckBox = _driver.FindElement(By.Id(promotionalEmailsCheckboxID)); 
             
-            //logging and getting to page we want
-            KSUnitTestLogin(AccountType.MEMBER);
-            KSClick("navbar-account-settings");
-            KSClick("preferences");
-            IWebElement emailCheckBox = _driver.FindElement(By.XPath("//input[contains(@id,'Input_PromotionalEmails')]"));
-            
-            //checking to make sure promotional emails is checked
-            if(!emailCheckBox.Selected)
-            {
-                KSClick("Input_PromotionalEmails");//if unchecked check it
-            }
-            if (emailCheckBox.Selected)
-            {
-                isChecked = true;
-            }
             //Assert
-            Assert.IsTrue(isChecked);
+            // If the previous status of the checkbox is different, the changes were saved.
+            Assert.IsTrue(emailCheckBox.Selected == !isChecked); 
         }
     }
 }
