@@ -59,6 +59,7 @@ namespace KurbSideTest
             {
                 AcceptInsecureCertificates = true
             };
+            chrome.AddUserProfilePreference("profile.default_content_setting_values.images", 2);
             _driver = new ChromeDriver(newPath, chrome);
             _driver.Navigate().GoToUrl("http://localhost:5000/");
         }
