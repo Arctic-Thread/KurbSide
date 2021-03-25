@@ -35,8 +35,8 @@
             </ul>
             <div class="card-footer d-flex">
                 <div class="btn-group btn-group-sm w-100">
-                    <a asp-controller="Order" asp-action="Checkout" class="btn btn-sm btn-outline-primary w-100">Checkout</a>
-                    <a onclick="return confirm('Are you sure you want to clear your cart?')" asp-controller="Order" asp-action="CartClear" id="clear-cart" class="btn btn-sm btn-outline-danger w-50">Clear</a>
+                    <a id="checkout" asp-controller="Order" asp-action="Checkout" class="btn btn-sm btn-outline-primary w-100">Checkout</a>
+                    <a id="clear-cart" asp-controller="Order" asp-action="CartClear" class="btn btn-sm btn-outline-danger w-50"  onclick="return confirm('Are you sure you want to clear your cart?')">Clear</a>
                 </div>
             </div>
         }

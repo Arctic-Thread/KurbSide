@@ -19,18 +19,19 @@ namespace KurbSideTest
             // Arrange
             // Fields & Buttons
             string businessListingsCSSSelector = "[id^='businessListing-']"; // IDs that start with 'businessListing-'
-            
+
             //Titles
             string storesPageTitle = "Stores - KurbSide";
-            
+
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
             KSTitleContains(storesPageTitle);
-            IReadOnlyList<IWebElement> originalNumberOfBusinessListings = _driver.FindElements(By.CssSelector(businessListingsCSSSelector));
+            IReadOnlyList<IWebElement> originalNumberOfBusinessListings =
+                _driver.FindElements(By.CssSelector(businessListingsCSSSelector));
 
             // The number of business listings is greater than zero (indicating the web server has retrieved a list of businesses).
             bool result = originalNumberOfBusinessListings.Count > 0;
-            
+
             // Assert
             Assert.IsTrue(result);
         }
@@ -47,24 +48,24 @@ namespace KurbSideTest
             // Fields & Buttons
             string businessListingsCSSSelector = "[id^='businessListing-']"; // IDs that start with 'businessListing-'
             string maximumDistanceID = "md";
-            
+
             //Titles
             string storesPageTitle = "Stores - KurbSide";
-            
+
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
-            
+
             KSTitleContains(storesPageTitle);
             IReadOnlyList<IWebElement> originalNumberOfBusinessListings = _driver.FindElements(By.CssSelector(businessListingsCSSSelector));
             KSReplaceText(maximumDistanceID, "5");
             KSSendKeys(maximumDistanceID, Keys.Enter);
-            
+
             KSTitleContains(storesPageTitle);
             IReadOnlyList<IWebElement> newNumberOfBusinessListings = _driver.FindElements(By.CssSelector(businessListingsCSSSelector));
 
             // The number of business listings has decreased (indicating the distance filtering has narrowed down the results).
             bool result = originalNumberOfBusinessListings.Count > newNumberOfBusinessListings.Count;
-            
+
             Assert.IsTrue(result);
         }
 
@@ -81,21 +82,21 @@ namespace KurbSideTest
             string businessListingsCSSSelector = "[id^='businessListing-']"; // IDs that start with 'businessListing-'
             string searchBarID = "filter2";
             string desiredBusinessListingID = "businessListing-test";
-            
+
             // Titles
             string storesPageTitle = "Stores - KurbSide";
-            
+
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
-            
+
             KSTitleContains(storesPageTitle);
             IReadOnlyList<IWebElement> originalNumberOfBusinessListings = _driver.FindElements(By.CssSelector(businessListingsCSSSelector));
             KSReplaceText(searchBarID, "test");
             KSSendKeys(searchBarID, Keys.Enter);
-            
+
             IReadOnlyList<IWebElement> newNumberOfBusinessListings = _driver.FindElements(By.CssSelector(businessListingsCSSSelector));
             IWebElement desiredBusinessListing = _driver.FindElement(By.Id(desiredBusinessListingID));
-            
+
             // The number of business listings has decreased (indicating the search has narrowed down the results), and the desired business is displayed.
             bool result = originalNumberOfBusinessListings.Count > newNumberOfBusinessListings.Count && desiredBusinessListing.Displayed;
 
@@ -119,22 +120,22 @@ namespace KurbSideTest
             // Titles
             string storesPageTitle = "Stores - KurbSide";
             string businessPageTitle = "test - KurbSide";
-            
+
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
-            
+
             KSTitleContains(storesPageTitle);
             KSReplaceText(searchBarID, "test");
             KSSendKeys(searchBarID, Keys.Enter);
-            
+
             KSClick(viewBusinessCatalogueButtonID);
-            
+
             KSTitleContains(businessPageTitle);
             IReadOnlyList<IWebElement> catalogueItems = _driver.FindElements(By.Id(catalogueID));
 
             // There are items found on the business catalogue page.
             bool result = catalogueItems.Count > 0;
-            
+
             Assert.IsTrue(result);
         }
 
@@ -156,26 +157,26 @@ namespace KurbSideTest
             string storesPageTitle = "Stores - KurbSide";
             string businessPageTitle = "test - KurbSide";
             string testItemPageTitle = "Test Item - KurbSide";
-            
+
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
-            
+
             KSTitleContains(storesPageTitle);
             KSReplaceText(searchBarID, "test");
             KSSendKeys(searchBarID, Keys.Enter);
-            
+
             KSClick(viewBusinessCatalogueButtonID);
-            
+
             KSTitleContains(businessPageTitle);
             KSClick(viewTestItemID);
-            
+
             KSTitleContains(testItemPageTitle);
 
             bool result = _driver.Title.Contains(testItemPageTitle);
-            
+
             Assert.IsTrue(result);
         }
-        
+
         /// <summary>
         /// UC26 member adds item to cart test
         /// </summary>
@@ -185,108 +186,152 @@ namespace KurbSideTest
         {
             string searchBarID = "filter2";
             string viewBusinessCatalogueButtonID = "view-test-catalogue";
-            
+
             // Titles
             string storesPageTitle = "Stores - KurbSide";
             string businessPageTitle = "test - KurbSide";
-            
+
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
-            
+
             KSTitleContains(storesPageTitle);
             KSReplaceText(searchBarID, "test");
             KSSendKeys(searchBarID, Keys.Enter);
-            
+
             KSClick(viewBusinessCatalogueButtonID);
-            
+
             KSTitleContains(businessPageTitle);
 
-            KSClick("addToCart");//adds a item to the cart to make the cart visible
-            
+            KSClick("addToCart"); //adds a item to the cart to make the cart visible
+
             IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id("cartItems"));
-            
-            bool result = cartItems.Count > 0;//checks to see if there are items in the cart
-            
-            KSClick("clear-cart");//clears the cart to make the test work for other test
-            
+
+            bool result = cartItems.Count > 0; //checks to see if there are items in the cart
+
+            KSClick("clear-cart"); //clears the cart to make the test work for other test
+
             var confirmClearCart = _driver.SwitchTo().Alert();
             confirmClearCart.Accept();
-            
+
             Assert.IsTrue(result);
         }
-        
+
         [Test]
         [Order(6)]
         public void UC27_MemberClearsCart_ShouldPass()
         {
             string searchBarID = "filter2";
             string viewBusinessCatalogueButtonID = "view-test-catalogue";
-            
+
             // Titles
             string storesPageTitle = "Stores - KurbSide";
             string businessPageTitle = "test - KurbSide";
-            
+
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
-            
+
             KSTitleContains(storesPageTitle);
             KSReplaceText(searchBarID, "test");
             KSSendKeys(searchBarID, Keys.Enter);
-            
+
             KSClick(viewBusinessCatalogueButtonID);
-            
+
             KSTitleContains(businessPageTitle);
 
-            KSClick("addToCart");//adds a item to the cart to make the cart visible
-            
+            KSClick("addToCart"); //adds a item to the cart to make the cart visible
+
             IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id("cartItems"));
-            
-            KSClick("clear-cart");//clears the cart to make the test work for other test
-            
+
+            KSClick("clear-cart"); //clears the cart to make the test work for other test
+
             var confirmClearCart = _driver.SwitchTo().Alert();
             confirmClearCart.Accept();
             //checks to see if there are items in the cart
             bool result = cartItems.Count == 1; //(note that there is a element in the cart so the result will not come back as 0 )
-            
+
             Assert.IsTrue(result);
         }
-        
+
         [Test]
         [Order(7)]
         public void UC27_MemberRemovesFromCart_ShouldPass()
         {
             string searchBarID = "filter2";
             string viewBusinessCatalogueButtonID = "view-test-catalogue";
-            
+
             // Titles
             string storesPageTitle = "Stores - KurbSide";
             string businessPageTitle = "test - KurbSide";
-            
+
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
-            
+
             KSTitleContains(storesPageTitle);
             KSReplaceText(searchBarID, "test");
             KSSendKeys(searchBarID, Keys.Enter);
-            
+
             KSClick(viewBusinessCatalogueButtonID);
-            
+
             KSTitleContains(businessPageTitle);
 
-            KSClick("addToCart");//adds a item to the cart to make the cart visible
-            
+            KSClick("addToCart"); //adds a item to the cart to make the cart visible
+
             IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id("cartItems"));
-            
-            KSClick("remove-from-cart-Test Item");//clears the cart to make the test work for other test
-            
+
+            KSClick("remove-from-cart-Test Item"); //clears the cart to make the test work for other test
+
             var confirmRemoveFromCart = _driver.SwitchTo().Alert();
             confirmRemoveFromCart.Accept();
             //checks to see if there are items in the cart
             bool result = cartItems.Count == 1; //(note that there is a element in the cart so the result will not come back as 0 )
-            
+
             Assert.IsTrue(result);
         }
-        
-        
+
+        /// <summary>
+        /// UC28 - Member Checkout
+        /// Tests that when an item is purchased the order confirmation page is displayed.
+        /// TODO Revisit when order page is completed.
+        /// </summary>
+        [Test]
+        [Order(8)]
+        public void UC28_Store_MemberCheckout_ShouldPass()
+        {
+            // Arrange
+            // Fields & Buttons
+            string searchBarID = "filter2";
+            string viewBusinessCatalogueButtonID = "view-test-catalogue";
+            string addToCartButtonID = "addToCart";
+            string checkoutButtonID = "checkout";
+            string placeOrderFormID = "PlaceOrderForm";
+
+            // Titles
+            string storesPageTitle = "Stores - KurbSide";
+            string businessPageTitle = "test - KurbSide";
+            string orderConfirmationPageTitle = "Order Confirmation";
+
+            // Act
+            KSUnitTestLogin(AccountType.MEMBER);
+
+            KSTitleContains(storesPageTitle);
+            KSReplaceText(searchBarID, "test");
+            KSSendKeys(searchBarID, Keys.Enter);
+
+            KSClick(viewBusinessCatalogueButtonID);
+
+            KSTitleContains(businessPageTitle);
+            KSClick(addToCartButtonID);
+
+            KSTitleContains(businessPageTitle);
+            KSClick(checkoutButtonID);
+
+            var placeOrderForm = _driver.FindElement(By.Id(placeOrderFormID));
+            placeOrderForm.Submit();
+
+            bool result = _driver.Title.Contains(orderConfirmationPageTitle);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
     }
 }
