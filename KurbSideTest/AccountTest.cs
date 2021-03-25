@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 
 namespace KurbSideTest
 {
@@ -11,46 +7,26 @@ namespace KurbSideTest
     class AccountTest : BaseTest
     {
         /// <summary>
-        /// UC22
-        /// Member views account settings
+        /// UC22 - Business or Member Views Account Settings
+        /// Tests viewing the account settings for the specified <see cref="AccountType"/>.
         /// </summary>
         [Order(1)]
-        [Test]
-        public void UC22_Account_BusinessViewsAccountSettings_ShouldPass()
+        [TestCase(AccountType.MEMBER)]
+        [TestCase(AccountType.BUSINESS)]
+        public void UC22_Account_AccountViewsAccountSettings_ShouldPass(AccountType accountType)
         {
-            //var needed for the test
-            string accountTitle = "My Account - KurbSide";
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            // Arrange
+            // Fields & Buttons
+            string navbarAccountSettingsID = "navbar-account-settings";
             
-            //getting to the page we need
-            KSUnitTestLogin(AccountType.BUSINESS);
-            KSClick("navbar-account-settings");
+            // Titles
+            string myAccountPageTitle = "My Account - KurbSide";
             
-            //checking to see if we are on the right page
-            var result = _driver.Title.Contains(accountTitle);
+            // Act
+            KSUnitTestLogin(accountType);
+            KSClick(navbarAccountSettingsID);
             
-            //Assert
-            Assert.IsTrue(result);
-        }
-        
-        /// <summary>
-        /// UC22
-        /// Member views account settings
-        /// </summary>
-        [Order(2)]
-        [Test]
-        public void UC22_Account_MemberViewsAccountSettings_ShouldPass()
-        {
-            //var needed for the test
-            string accountTitle = "My Account - KurbSide";
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
-            
-            //getting to the page we need
-            KSUnitTestLogin(AccountType.MEMBER);
-            KSClick("navbar-account-settings");
-            
-            //checking to see if we are on the right page
-            var result = _driver.Title.Contains(accountTitle);
+            var result = _driver.Title.Contains(myAccountPageTitle);
             
             //Assert
             Assert.IsTrue(result);
