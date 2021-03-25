@@ -117,7 +117,7 @@ namespace KurbSideTest
             // Fields & Buttons
             string searchBarID = "filter2";
             string viewBusinessCatalogueButtonID = "view-test-catalogue";
-            string catalogueID = "test-Catalogue";
+            string catalogueItems = "[id^='catalogue-item-']";
 
             // Titles
             string storesPageTitle = "Stores - KurbSide";
@@ -133,10 +133,10 @@ namespace KurbSideTest
             KSClick(viewBusinessCatalogueButtonID);
 
             KSTitleContains(businessPageTitle);
-            IReadOnlyList<IWebElement> catalogueItems = _driver.FindElements(By.Id(catalogueID));
+            IReadOnlyList<IWebElement> catalogueItemsList = _driver.FindElements(By.CssSelector(catalogueItems)); 
 
             // There are items found on the business catalogue page.
-            bool result = catalogueItems.Count > 0;
+            bool result = catalogueItemsList.Count > 0;
 
             // Assert 
             Assert.IsTrue(result);

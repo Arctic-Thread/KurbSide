@@ -109,8 +109,8 @@
                     <div class="card-body">
                         @foreach (Item item in Model.Item2[category])
                         {
-                            <a asp-action="ViewItem" asp-route-id="@item.ItemId" class="list-group-item list-group-item-action flex-column align-items-start">
-                                <table class="table table-borderless py-0 m-0">
+                            <a id="view-@item.ItemName" asp-action="ViewItem" asp-route-id="@item.ItemId" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <table id="catalogue-item-@item.ItemName" class="table table-borderless py-0 m-0">
                                     <tr class="d-flex justify-content-between align-items-center">
                                         <td>
                                             @if (item.ImageLocation == null)
