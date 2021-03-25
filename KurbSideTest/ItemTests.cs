@@ -149,7 +149,7 @@ namespace KurbSideTest
         /// </summary>
         [Test]
         [Order(4)]
-        public void UC16_EditItem_ShouldPass()
+        public void UC16_Items_EditItem_ShouldPass()
         {
             string ItemNameTest = " Edit";
             string DetailTest = " Edit";
@@ -187,7 +187,7 @@ namespace KurbSideTest
         /// </summary>
         [Test]
         [Order(5)]
-        public void UC17_DeleteItem_ShouldPass()
+        public void UC17_Items_DeleteItem_ShouldPass()
         {
             KSUnitTestLogin(AccountType.BUSINESS);
             KSClick("navbar-catalogue"); //Clicks the catalogue button in the nav bar

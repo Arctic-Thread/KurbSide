@@ -16,7 +16,7 @@ namespace KurbSideTest
         /// </summary>
         [Order(1)]
         [Test]
-        public void UC22_BusinessViewsAccountSettings_ShouldPass()
+        public void UC22_Account_BusinessViewsAccountSettings_ShouldPass()
         {
             //var needed for the test
             string accountTitle = "My Account - KurbSide";
@@ -39,7 +39,7 @@ namespace KurbSideTest
         /// </summary>
         [Order(2)]
         [Test]
-        public void UC22_MemberViewsAccountSettings_ShouldPass()
+        public void UC22_Account_MemberViewsAccountSettings_ShouldPass()
         {
             //var needed for the test
             string accountTitle = "My Account - KurbSide";
@@ -61,7 +61,7 @@ namespace KurbSideTest
         /// </summary>
         [Order(3)]
         [Test]
-        public void UC23_MemberChangesEmailPreferences_ShouldPass()
+        public void UC23_Account_MemberChangesEmailPreferences_ShouldPass()
         {
             //var for the test
             bool isChecked = false;
