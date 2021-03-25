@@ -237,14 +237,13 @@ namespace KurbSideTest
             // Act
             UC26_Store_MemberAddsToCart_ShouldPass();
 
-            IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id(cartItemsID));
-
             KSClick(clearCartButtonID); //clears the cart to make the test work for other test
-
             var confirmClearCart = _driver.SwitchTo().Alert();
             confirmClearCart.Accept();
+            
+            IReadOnlyList<IWebElement> cartItems = _driver.FindElements(By.Id(cartItemsID));
             //checks to see if there are items in the cart
-            bool result = cartItems.Count == 0; //(note that there is a element in the cart so the result will not come back as 0 )
+            bool result = cartItems.Count == 0; 
 
             // Assert 
             Assert.IsTrue(result);
@@ -262,6 +261,7 @@ namespace KurbSideTest
             // Fields & Buttons
             string removeTestItemFromCartButtonID = "remove-from-cart-Test Item";
             string cartItemsID = "cartItems";
+            bool result = false;
 
             // Titles
 
@@ -274,9 +274,13 @@ namespace KurbSideTest
 
             var confirmRemoveFromCart = _driver.SwitchTo().Alert();
             confirmRemoveFromCart.Accept();
+            IReadOnlyList<IWebElement> cartItems2 = _driver.FindElements(By.Id(cartItemsID));
             //checks to see if there are items in the cart
-            bool result = cartItems.Count == 0; //(note that there is a element in the cart so the result will not come back as 0 )
 
+            if (cartItems.Count - 1 == cartItems2.Count)
+            {
+                result = true;
+            }
             // Assert 
             Assert.IsTrue(result);
         }
