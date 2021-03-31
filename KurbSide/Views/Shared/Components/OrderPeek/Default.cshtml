@@ -2,7 +2,9 @@
 
 @foreach (Order order in Model)
 {
-    <li class="list-group-item d-flex justify-content-between align-items-center">
+
+    <a asp-controller="Business" asp-action="editOrder" asp-route-id="@order.OrderId"
+       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
         <span>
             <span class="badge badge-dark">@order.OrderId.ToString().Substring(order.OrderId.ToString().Length - 6).ToUpper()</span>
             <strong>@(order.Member.FirstName + " " + order.Member.LastName)</strong>
@@ -17,5 +19,6 @@
             </span>
         </span>
         <span class="badge badge-@order.StatusNavigation.BootstrapClass badge-pill">@order.StatusNavigation.StatusName</span>
-    </li>
+    </a>
+
 }
