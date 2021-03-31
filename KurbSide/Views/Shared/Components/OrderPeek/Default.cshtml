@@ -11,7 +11,7 @@
                 @{
                     var totalItems = order.OrderItem.Sum(oi => oi.Quantity);
                 }
-                @("Create Date:".PadRight(15, '\u00a0'))@(order.CreationDate.Value.ToString("d").PadLeft(10, '\u00a0'))<br />
+                @("Create Date:".PadRight(15, '\u00a0'))@(order.CreationDate.ToString("d").PadLeft(10, '\u00a0'))<br />
                 @("Total Items:".PadRight(15, '\u00a0'))@(totalItems.ToString().PadLeft(10, '\u00a0'))<br />
                 @("Subtotal:".PadRight(15, '\u00a0'))@(order.SubTotal.ToString("$#0.00").PadLeft(10, '\u00a0'))<br />
             </span>
