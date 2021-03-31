@@ -37,7 +37,10 @@ namespace KurbSide.ViewComponents
                 .ThenInclude(oi => oi.Item)
                 .FirstOrDefaultAsync();
 
-            var businessOrders = currentBusiness.Order;
+            var businessOrders = currentBusiness.Order
+                .OrderBy(o => o.CreationDate)
+                .OrderBy(o => o.Status)
+                .ToList();
 
             switch (view)
             {
@@ -64,7 +67,7 @@ namespace KurbSide.ViewComponents
                     break;
             }
 
-            return await Task.FromResult((IViewComponentResult)View("Default", businessOrders));
+            return await Task.FromResult((IViewComponentResult)View("Default", businessOrders.Take(10)));
         }
     }
 }
