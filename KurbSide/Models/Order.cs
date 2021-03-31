@@ -11,6 +11,7 @@ namespace KurbSide.Models
     {
         public Order()
         {
+            Notification = new HashSet<Notification>();
             OrderItem = new HashSet<OrderItem>();
         }
 
@@ -21,12 +22,13 @@ namespace KurbSide.Models
         public decimal Tax { get; set; }
         public decimal GrandTotal { get; set; }
         public int Status { get; set; }
-        public DateTime? CreationDate { get; set; }
+        public DateTime CreationDate { get; set; }
         public Guid BusinessId { get; set; }
 
         public virtual Business Business { get; set; }
         public virtual Member Member { get; set; }
         public virtual OrderStatus StatusNavigation { get; set; }
+        public virtual ICollection<Notification> Notification { get; set; }
         public virtual ICollection<OrderItem> OrderItem { get; set; }
     }
 }
