@@ -17,6 +17,7 @@ namespace KurbSide.Models
             AspNetUserTokens = new HashSet<AspNetUserTokens>();
             Business = new HashSet<Business>();
             Member = new HashSet<Member>();
+            Notification = new HashSet<Notification>();
         }
 
         public string Id { get; set; }
@@ -42,5 +43,6 @@ namespace KurbSide.Models
         public virtual ICollection<AspNetUserTokens> AspNetUserTokens { get; set; }
         public virtual ICollection<Business> Business { get; set; }
         public virtual ICollection<Member> Member { get; set; }
+        public virtual ICollection<Notification> Notification { get; set; }
     }
 }
