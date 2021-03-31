@@ -56,14 +56,15 @@
         <div>
             <p style="font-family:monospace;">
                 @{
-                    var taxrate = Model.Member.ProvinceCodeNavigation.TaxRate;
+                    var taxrate = Math.Round(Model.Member.ProvinceCodeNavigation.TaxRate.Value, 2);
                     var subtotal = Model.CartItem.Sum(ci => ci.Quantity * ci.Item.Price).Value;
-                    var tax = (taxrate * subtotal).Value;
+                    var tax = Math.Round((taxrate * subtotal), 2);
                     var serviceFee = 3.50;
                     var grandTotal = subtotal + tax + serviceFee;
                 }
+
                 <span>@("Subtotal:".PadRight(15, '\u00a0'))@(subtotal.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br />
-                <span>@($"Tax ({taxrate.Value.ToString("P0")}):".PadRight(15, '\u00a0'))@(tax.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br />
+                <span>@($"Tax ({taxrate.ToString("P0")}):".PadRight(15, '\u00a0'))@(tax.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br />
                 <span>@("Service Fees:".PadRight(15, '\u00a0'))@(serviceFee.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br /><br />
                 <span>@("Grand Total:".PadRight(15, '\u00a0'))@(grandTotal.ToString("$#0.00").PadLeft(10, '\u00a0'))</span>
             </p>
@@ -76,49 +77,11 @@
                     createOrder: function (data, actions) {
                         // This function sets up the details of the transaction, including the amount and line item details.
                         return actions.order.create({
-                              "purchase_units": [{
-                                  "description": "Stuff",
-                                  "amount": {
-                                    "value": "@(grandTotal)",
-                                    "currency_code": "CAD",
-                                    "breakdown": {
-                                      "item_total": {
-                                        "currency_code": "CAD",
-                                        "value": "@(subtotal)"
-                                        },
-                                      "tax_total": {
-                                        "currency_code": "CAD",
-                                        "value": "@(tax)"
-                                        },
-                                      "handling": {
-                                        "currency_code": "CAD",
-                                        "value": "@(serviceFee)"
-                                        },
-                                    }
-                                  },
-                                  "items": [
-                                      @foreach (var item in Model.CartItem)
-                                        {
-                                        @Html.Raw("{")
-                                            @Html.Raw("'unit_amount': {")
-                                                @Html.Raw("'currency_code': 'CAD',")
-                                                @Html.Raw("'value': '" + item.Item.Price + "'")
-                                            @Html.Raw("},")
-                                           @Html.Raw("'tax': {")
-                                                @Html.Raw("'currency_code': 'CAD',")
-                                                @Html.Raw("'value': '" + (item.Item.Price) * taxrate + "'")
-                                            @Html.Raw("},")
-                                            @Html.Raw("'quantity': '" + item.Quantity + "',")
-                                            @Html.Raw("'name': '" + item.Item.ItemName + "'")
-                                        @Html.Raw("},")
-                                        }
-                                  ],
+                            purchase_units: [{
+                                amount: {
+                                    value: @(Math.Round(grandTotal,2))
                                 }
-                            ],
-                            application_context: {
-                                brand_name: "KurbSide",
-                                shipping_preference: 'NO_SHIPPING'
-                            }
+                            }]
                         });
                     },
                     onApprove: function (data, actions) {

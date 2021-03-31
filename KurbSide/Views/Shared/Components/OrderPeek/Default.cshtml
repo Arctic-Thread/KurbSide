@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Order>;
+
+@foreach (Order order in Model)
+{
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>
+            <span class="badge badge-dark">@order.OrderId.ToString().Substring(order.OrderId.ToString().Length - 6).ToUpper()</span>
+            <strong>@(order.Member.FirstName + " " + order.Member.LastName)</strong>
+            <br />
+            <span style="font-family:monospace;">
+                @{
+                    var totalItems = order.OrderItem.Sum(oi => oi.Quantity);
+                }
+                @("Create Date:".PadRight(15, '\u00a0'))@(order.CreationDate.Value.ToString("d").PadLeft(10, '\u00a0'))<br />
+                @("Total Items:".PadRight(15, '\u00a0'))@(totalItems.ToString().PadLeft(10, '\u00a0'))<br />
+                @("Subtotal:".PadRight(15, '\u00a0'))@(order.SubTotal.ToString("$#0.00").PadLeft(10, '\u00a0'))<br />
+            </span>
+        </span>
+        <span class="badge badge-@order.StatusNavigation.BootstrapClass badge-pill">@order.StatusNavigation.StatusName</span>
+    </li>
+}

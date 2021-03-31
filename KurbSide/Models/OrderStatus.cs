@@ -17,6 +17,7 @@ namespace KurbSide.Models
         public int StatusId { get; set; }
         public string StatusName { get; set; }
         public string StatusText { get; set; }
+        public string BootstrapClass { get; set; }
 
         public virtual ICollection<Order> Order { get; set; }
     }

@@ -316,6 +316,42 @@ namespace KurbSide.Controllers
 
             try
             {
+
+                for (int i = 0; i < 10; i++)
+                {
+                    var order2 = new Order
+                    {
+                        MemberId = currentMember.MemberId,
+                        SubTotal = cartSubTotal,
+                        DiscountTotal = 0, //TODO Discounts & Sales
+                        Tax = taxTotal,
+                        GrandTotal = cartSubTotal + taxRate,
+                        Status = pendingOrderStatus.StatusId,
+                        CreationDate = DateTime.Now,
+                        BusinessId = cart.BusinessId
+                    };
+
+                    await _context.Order.AddAsync(order2);
+                    await _context.SaveChangesAsync();
+
+                    List<OrderItem> orderItems2 = new List<OrderItem>();
+
+                    foreach (var cartItem in cartItems)
+                    {
+                        var orderItem = new OrderItem
+                        {
+                            OrderId = order2.OrderId,
+                            ItemId = cartItem.ItemId,
+                            Quantity = cartItem.Quantity,
+                            Discount = 0 //TODO Discounts & Sales
+                        };
+
+                        orderItems2.Add(orderItem);
+                        await _context.OrderItem.AddAsync(orderItem);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
                 var order = new Order
                 {
                     MemberId = currentMember.MemberId,

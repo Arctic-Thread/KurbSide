@@ -9,14 +9,14 @@
 
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title text-sm-center">Business Links</h5>
+            <h5 class="card-title text-sm-center">Navigation</h5>
             <p class="card-text">
                 <div class="btn-group-vertical w-100" role="group">
                     <a asp-controller="Business" asp-action="EditBusiness" class="btn btn-secondary">Edit Business Info</a>
                     <a asp-controller="Business" asp-action="EditBusinessHours" class="btn btn-secondary">Edit Hours</a>
                     @*<a asp-controller="Business" asp-action="PickupWindows" class="btn btn-secondary">Edit Pickup Windows</a>*@
                     <a asp-controller="Business" asp-action="Catalogue" class="btn btn-secondary">Edit Catalogue</a>
-                    @*<a asp-controller="Business" asp-action="Orders" class="btn btn-dark">All Orders</a>*@
+                    <a asp-controller="Business" asp-action="Orders" class="btn btn-dark">All Orders</a>
                     @*<a asp-controller="Business" asp-action="Reporting" class="btn btn-dark">Reporting</a>*@
                 </div>
             </p>
@@ -25,46 +25,103 @@
 
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title text-sm-center">Today's Orders</h5>
-            <p class="card-text">
-                <ul class="list-group">
+            <h5 class="card-title text-sm-center">Orders</h5>
 
-                    <li class="list-group-item d-flex justify-content-center align-items-center list-group-item-light">
-                        <span>
-                            No Orders Today
-                        </span>
-                    </li>
+            <style>
+                .tab-pane {
+                    border-left: 1px solid #dee2e6;
+                    border-right: 1px solid #dee2e6;
+                    border-bottom: 1px solid #dee2e6;
+                    border-bottom-left-radius: .25rem;
+                    border-bottom-right-radius: .25rem;
+                }
+                small.d-block {
+                    opacity: 0.5;
+                }
+            </style>
 
-                    @*<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-light">
-                        <span>
-                            <span class="badge badge-dark badge-pill">13:00-13:30</span>
-                            #12003 - Firstname Lastname
-                        </span>
-                        <span class="badge badge-secondary badge-pill">Closed</span>
-                    </li>
+            <nav>
+                <div class="nav nav-tabs w-100 nav-fill" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#nav-pend" role="tab">Pending</a>
+                    <a class="nav-item nav-link active" id="nav-profile-tab" data-toggle="tab" href="#nav-open" role="tab">Open</a>
+                    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-closed" role="tab">Closed</a>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade" id="nav-pend" role="tabpanel">
+                    <br />
+                    <ul class="list-group list-group-flush">
+                        <vc:order-peek view="1" />
+                    </ul>
+                    <hr />
+                    <small class="d-block w-100 text-center">Viewing 10 Most Recent Pending Orders</small>
+                    <a class="btn btn-sm btn-block" style="margin-bottom: 1rem;">View All Pending Orders</a>
+                </div>
+                <div class="tab-pane fade show active" id="nav-open" role="tabpanel">
+                    <br />
+                    <ul class="list-group list-group-flush">
+                        <vc:order-peek view="2" />
+                    </ul>
+                    <hr />
+                    <small class="d-block w-100 text-center">Viewing 10 Most Recent Pending Orders</small>
+                    <a class="btn btn-sm btn-block" style="margin-bottom: 1rem;">View All Open Orders</a>
+                </div>
+                <div class="tab-pane fade" id="nav-closed" role="tabpanel">
+                    <br />
+                    <ul class="list-group list-group-flush">
+                        <vc:order-peek view="3" />
+                    </ul>
+                    <hr />
+                    <small class="d-block w-100 text-center">Viewing 10 Most Recent Pending Orders</small>
+                    <a class="btn btn-sm btn-block" style="margin-bottom: 1rem;">View All Closed Orders</a>
+                </div>
+            </div>
 
-                    <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-light">
-                        <span>
-                            <span class="badge badge-dark badge-pill">10:00-10:30</span>
-                            #12002 - Firstname Lastname
-                        </span>
-                        <span class="badge badge-secondary badge-pill">Closed</span>
-                    </li>
+            <!--<p class="card-text">
+        <ul class="list-group">-->
+            @*<li class="list-group-item d-flex justify-content-center align-items-center list-group-item-light">
+            <span>
+                No Orders Today
+            </span>
+        </li>*@
 
-                    <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-light">
-                        <span>
-                            <span class="badge badge-dark badge-pill">09:00-09:30</span>
-                            #12001 - Firstname Lastname
-                        </span>
-                        <span class="badge badge-secondary badge-pill">Closed</span>
-                    </li>*@
+            <!--<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-light">
+                <span>
+                    <span class="badge badge-dark badge-pill">13:00-13:30</span>
+                    #12003 - Firstname Lastname
+                </span>
+                <span class="badge badge-secondary badge-pill">Closed</span>
+            </li>
 
-                </ul>
-            </p>
-        </div>
-        @*<div class="card-footer">
-            <small class="text-muted">Last updated 3 mins ago</small>
+            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-light">
+                <span>
+                    <span class="badge badge-dark badge-pill">10:00-10:30</span>
+                    #12002 - Firstname Lastname
+                </span>
+                <span class="badge badge-secondary badge-pill">Closed</span>
+            </li>
+
+            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-light">
+                <span>
+                    <span class="badge badge-dark badge-pill">09:00-09:30</span>
+                    #12001 - Firstname Lastname
+                </span>
+                <span class="badge badge-secondary badge-pill">Closed</span>
+            </li>
+
+        </ul>
+    </p>-->
+            @*<div class="card-text">
+                <div class="btn-group w-100" role="group">
+                    <a asp-controller="Business" asp-action="Orders" class="btn btn-dark">Pending Orders</a>
+                    <a asp-controller="Business" asp-action="Orders" class="btn btn-dark">Open Orders</a>
+                    <a asp-controller="Business" asp-action="Orders" class="btn btn-dark">Closed Orders</a>
+                </div>
+            </div>
         </div>*@
+        @*<div class="card-footer">
+                <small class="text-muted">Last updated 3 mins ago</small>
+            </div>*@
     </div>
 
 </div>
