@@ -14,6 +14,7 @@ namespace KurbSide.Models
             Cart = new HashSet<Cart>();
             Item = new HashSet<Item>();
             Order = new HashSet<Order>();
+            Sale = new HashSet<Sale>();
         }
 
         public string AspNetId { get; set; }
@@ -44,5 +45,6 @@ namespace KurbSide.Models
         public virtual ICollection<Cart> Cart { get; set; }
         public virtual ICollection<Item> Item { get; set; }
         public virtual ICollection<Order> Order { get; set; }
+        public virtual ICollection<Sale> Sale { get; set; }
     }
 }

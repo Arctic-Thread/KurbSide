@@ -16,10 +16,12 @@ namespace KurbSide.Models
         }
 
         public Guid SaleId { get; set; }
+        public Guid BusinessId { get; set; }
         public string SaleName { get; set; }
         public string SaleDescription { get; set; }
         public decimal SaleDiscountPercentage { get; set; }
 
+        public virtual Business Business { get; set; }
         public virtual ICollection<Notification> Notification { get; set; }
         public virtual ICollection<SaleItem> SaleItem { get; set; }
     }
