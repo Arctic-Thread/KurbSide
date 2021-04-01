@@ -1,0 +1,41 @@
+﻿@model KurbSide.Models.Sale
+
+@{
+    ViewData["Title"] = "Create Sale";
+}
+
+<h1>View</h1>
+
+<h4>Sale</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Business" asp-action="CreateSale" method="post" asp-route-businessId="@Model.BusinessId">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BusinessId"/>
+
+            <div class="form-group">
+                <label asp-for="SaleName" class="control-label"></label>
+                <input asp-for="SaleName" class="form-control"/>
+                <span asp-validation-for="SaleName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SaleDescription" class="control-label"></label>
+                <input asp-for="SaleDescription" class="form-control"/>
+                <span asp-validation-for="SaleDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SaleDiscountPercentage" class="control-label"></label>
+                <input asp-for="SaleDiscountPercentage" class="form-control"/>
+                <span asp-validation-for="SaleDiscountPercentage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

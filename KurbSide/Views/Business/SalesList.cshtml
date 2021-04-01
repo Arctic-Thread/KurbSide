@@ -1,0 +1,49 @@
+﻿@model IEnumerable<KurbSide.Models.Sale>
+
+@{
+    ViewData["Title"] = "SalesList";
+}
+
+<h1>SalesList</h1>
+
+<p>
+    <a asp-action="CreateSale">Create New</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.SaleName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SaleDescription)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SaleDiscountPercentage)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SaleName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SaleDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SaleDiscountPercentage)
+            </td>
+            <td>
+                <a asp-controller="Business" asp-action="EditSale" asp-route-SaleId="@item.SaleId">Edit</a> |
+                <a asp-controller="Business" asp-action="ManageSaleItem" asp-route-saleId="@item.SaleId">Details</a> |
+                <a asp-controller="Business" asp-action="EndSale" asp-route-saleId="@item.SaleId">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
