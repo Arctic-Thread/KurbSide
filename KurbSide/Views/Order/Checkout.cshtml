@@ -44,7 +44,6 @@
                             </span>
                         </span>
                     </form>
-                    <form style="position: absolute; visibility: hidden;" id="form_@item.ItemId" action="POST">asd</form>
                 </li>
             }
         </ul>
@@ -56,14 +55,18 @@
         <div>
             <p style="font-family:monospace;">
                 @{
-                    var taxrate = Math.Round(Model.Member.ProvinceCodeNavigation.TaxRate.Value, 2);
-                    var subtotal = Model.CartItem.Sum(ci => ci.Quantity * ci.Item.Price).Value;
-                    var tax = Math.Round((taxrate * subtotal), 2);
-                    var serviceFee = 3.50;
-                    var grandTotal = subtotal + tax + serviceFee;
+                    decimal subtotalBeforeDiscount = (decimal)Model.CartItem.Sum(ci => ci.Quantity * ci.Item.Price).Value;
+                    decimal discountTotal = (decimal)ViewData["discountTotal"];
+                    decimal subtotalAfterDiscount = subtotalBeforeDiscount - discountTotal;
+
+                    decimal taxrate = (decimal)Math.Round(Model.Member.ProvinceCodeNavigation.TaxRate.Value, 2);
+                    decimal tax = Math.Round(taxrate * subtotalAfterDiscount, 2);
+                    decimal serviceFee = 3.50m;
+                    decimal grandTotal = subtotalAfterDiscount + tax + serviceFee;
                 }
 
-                <span>@("Subtotal:".PadRight(15, '\u00a0'))@(subtotal.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br />
+                <span>@("Subtotal:".PadRight(15, '\u00a0'))@(subtotalBeforeDiscount.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br />
+                <span>@("Discount:".PadRight(15, '\u00a0'))@(discountTotal.ToString("-$#0.00").PadLeft(10, '\u00a0'))</span><br />
                 <span>@($"Tax ({taxrate.ToString("P0")}):".PadRight(15, '\u00a0'))@(tax.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br />
                 <span>@("Service Fees:".PadRight(15, '\u00a0'))@(serviceFee.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br /><br />
                 <span>@("Grand Total:".PadRight(15, '\u00a0'))@(grandTotal.ToString("$#0.00").PadLeft(10, '\u00a0'))</span>

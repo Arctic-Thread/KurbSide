@@ -268,11 +268,35 @@ namespace KurbSide.Controllers
                 .ThenInclude(ci => ci.Item)
                 .FirstOrDefault();
 
+            var cartItems = await _context.CartItem
+                .Where(m => m.CartId.Equals(cart.CartId))
+                .Include(i => i.Item)
+                .ThenInclude(si => si.SaleItem)
+                .ThenInclude(s => s.Sale)
+                .ToListAsync();
+            
             if (cart == null || !cart.CartItem.Any())
             {
                 return RedirectToAction("Index", "Store");
             }
 
+            decimal discountTotal = 0;
+            
+            var businessSales = await _context.Sale
+                .Where(s => s.BusinessId.Equals(cart.BusinessId))
+                .ToListAsync();
+            
+            foreach (var cartItem in cartItems)
+            {
+                var saleId = KSOrderUtilities.KSCheckIfItemInSale(cartItem.Item, businessSales);
+                if (saleId != new Guid())
+                {
+                    var sale = await _context.Sale.Where(s => s.SaleId.Equals(saleId)).FirstOrDefaultAsync();
+                    discountTotal += (decimal)(cartItem.Item.Price * cartItem.Quantity) * sale.SaleDiscountPercentage;
+                }
+            }
+
+            ViewData["discountTotal"] = discountTotal;
             return View(cart);
         }
 
