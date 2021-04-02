@@ -661,6 +661,7 @@ namespace KurbSide.Controllers
 
             var items = await _context.Item
                 .Where(i => i.BusinessId.Equals(business.BusinessId))
+                .Include(si => si.SaleItem)
                 .ToListAsync();
 
             ViewData["salePercentage"] = sale.SaleDiscountPercentage;
