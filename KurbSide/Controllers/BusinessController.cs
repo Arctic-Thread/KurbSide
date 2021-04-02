@@ -861,8 +861,13 @@ namespace KurbSide.Controllers
                 .Where(s => s.SaleId.Equals(saleId))
                 .FirstOrDefaultAsync();
 
+            var saleItems = await _context.SaleItem
+                .Where(s => s.SaleId.Equals(saleId))
+                .ToListAsync();
+
             try
             {
+                _context.SaleItem.RemoveRange(saleItems);
                 _context.Remove(sale);
                 await _context.SaveChangesAsync();
                 TempData["sysMessage"] = "Sale ended successfully.";
