@@ -53,6 +53,9 @@
                     @Html.DisplayNameFor(model => model.SaleDiscountPercentage)
                 </th>
                 <th scope="col">
+                    @Html.DisplayNameFor(model => model.SaleCategory)
+                </th>
+                <th scope="col">
                     <a asp-controller="Business" asp-action="CreateSale" class="btn btn-sm btn-success btn-width" id="saleList-CreateSale">New Sale</a>
                 </th>
             </tr>
@@ -73,6 +76,9 @@
                     </td>
                     <td class="align-middle">
                         <form method="post" asp-controller="Business" asp-action="EndSale" asp-route-saleId="@sale.SaleId" asp-route-page="@(page)" asp-route-perPage="@(perPage)" onSubmit="return confirm('Are you sure you want to end @(sale.SaleName)?')">
+                        @Html.DisplayFor(modelItem => sale.SaleCategory)
+                    </td>
+                    <td class="align-middle">
                             <div class="btn-group-vertical btn-group-sm">
                                 <a asp-controller="Business" asp-action="EditSale" asp-route-saleId="@sale.SaleId" id="editSale-@sale.SaleName" class="btn btn-width btn-warning">Edit Sale Details</a>
                                 <a asp-controller="Business" asp-action="ManageSaleItem" asp-route-saleId="@sale.SaleId" id="manageSale-@sale.SaleName" class="btn btn-width btn-info">Manage Items In Sale</a>
