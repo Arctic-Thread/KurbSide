@@ -809,6 +809,8 @@ namespace KurbSide.Controllers
                 TempData["sysMessage"] = "Error: Something went wrong while finding your sale.";
                 return RedirectToAction("ViewSales");
             }
+            
+            sale.SaleDiscountPercentage = Math.Round(sale.SaleDiscountPercentage * 100, 2); //User enters discount as whole numbers(15), they are saved as decimals(0.15).
 
             return View(sale);
         }
@@ -838,6 +840,7 @@ namespace KurbSide.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    sale.SaleDiscountPercentage /= 100; //User enters discount as whole numbers(15), they are saved as decimals(0.15).
                     _context.Update(sale);
                     await _context.SaveChangesAsync();
                     return RedirectToAction("ViewSales");
