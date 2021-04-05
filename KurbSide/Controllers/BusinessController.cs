@@ -546,7 +546,6 @@ namespace KurbSide.Controllers
 
             var sales = await _context.Sale
                 .Where(s => s.BusinessId.Equals(business.BusinessId))
-                .Where(s => s.Active.Equals(false))
                 .ToListAsync();
 
             if (!string.IsNullOrWhiteSpace(filter))
@@ -860,8 +859,8 @@ namespace KurbSide.Controllers
             return View(sale);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> EndSale(Guid saleId)
+        [HttpPost]
+        public async Task<IActionResult> SwapSaleStatus(Guid saleId)
         {
             //Check that the accessing user is a business type account
             var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -882,26 +881,22 @@ namespace KurbSide.Controllers
                 .Where(s => s.BusinessId.Equals(business.BusinessId))
                 .Where(s => s.SaleId.Equals(saleId))
                 .FirstOrDefaultAsync();
-
-            var saleItems = await _context.SaleItem
-                .Where(s => s.SaleId.Equals(saleId))
-                .ToListAsync();
-
+            
             try
             {
-                _context.SaleItem.RemoveRange(saleItems);
-                _context.Remove(sale);
+                sale.Active = !sale.Active;
+                _context.Update(sale);
                 await _context.SaveChangesAsync();
-                TempData["sysMessage"] = "Sale ended successfully.";
+                TempData["sysMessage"] = "Sale status changed successfully.";
             }
             catch (DbUpdateConcurrencyException)
             {
-                _logger.LogError($"Error: Sale {sale.SaleId} does not exist, Ending Failed.");
+                _logger.LogError($"Error: Sale {sale.SaleId} does not exist, status change Failed.");
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error: {ex.GetBaseException().Message}. Ending not performed.");
+                _logger.LogError($"Error: {ex.GetBaseException().Message}. status change not performed.");
                 return RedirectToAction("Index");
             }
 

@@ -75,14 +75,21 @@
                         @Html.DisplayFor(modelItem => sale.SaleDiscountPercentage)
                     </td>
                     <td class="align-middle">
-                        <form method="post" asp-controller="Business" asp-action="EndSale" asp-route-saleId="@sale.SaleId" asp-route-page="@(page)" asp-route-perPage="@(perPage)" onSubmit="return confirm('Are you sure you want to end @(sale.SaleName)?')">
                         @Html.DisplayFor(modelItem => sale.SaleCategory)
                     </td>
                     <td class="align-middle">
+                        <form method="POST" asp-controller="Business" asp-action="SwapSaleStatus" asp-route-saleId="@sale.SaleId" onSubmit="return confirm('Are you sure you want to change the status of @(sale.SaleName)?')">
                             <div class="btn-group-vertical btn-group-sm">
-                                <a asp-controller="Business" asp-action="EditSale" asp-route-saleId="@sale.SaleId" id="editSale-@sale.SaleName" class="btn btn-width btn-warning">Edit Sale Details</a>
-                                <a asp-controller="Business" asp-action="ManageSaleItem" asp-route-saleId="@sale.SaleId" id="manageSale-@sale.SaleName" class="btn btn-width btn-info">Manage Items In Sale</a>
-                                <input type="submit" id="endSale-@sale.SaleName" class="btn btn-width btn-danger" value="End Sale">
+                                <a asp-controller="Business" asp-action="EditSale" asp-route-saleId="@sale.SaleId" id="editSale-@sale.SaleName" class="btn btn-width btn-warning">Edit Details</a>
+                                <a asp-controller="Business" asp-action="ManageSaleItem" asp-route-saleId="@sale.SaleId" id="manageSale-@sale.SaleName" class="btn btn-width btn-info">Manage Items</a>
+                                @if (sale.Active)
+                                {
+                                    <input type="submit" id="endSale-@sale.SaleName" class="btn btn-width btn-danger" value="End Sale">
+                                }
+                                else
+                                {
+                                    <input type="submit" id="endSale-@sale.SaleName" class="btn btn-width btn-success" value="Activate Sale">
+                                }
                             </div>
                         </form>
                     </td>
