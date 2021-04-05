@@ -21,7 +21,7 @@ namespace KurbSide.Models
         public string SaleDescription { get; set; }
         public string SaleCategory { get; set; }
         public decimal SaleDiscountPercentage { get; set; }
-        public bool SaleEnded { get; set; }
+        public bool Active { get; set; }
 
         public virtual Business Business { get; set; }
         public virtual ICollection<Notification> Notification { get; set; }

@@ -546,7 +546,7 @@ namespace KurbSide.Controllers
 
             var sales = await _context.Sale
                 .Where(s => s.BusinessId.Equals(business.BusinessId))
-                .Where(s => s.SaleEnded.Equals(false))
+                .Where(s => s.Active.Equals(false))
                 .ToListAsync();
 
             if (!string.IsNullOrWhiteSpace(filter))
@@ -631,7 +631,6 @@ namespace KurbSide.Controllers
                     await _context.AddAsync(sale);
                     await _context.SaveChangesAsync();
                     _logger.LogDebug($"Debug: Sale created. {sale.BusinessId} - {sale.SaleId}");
-                    var test = sale.SaleId;
                     return RedirectToAction("ManageSaleItem", new{ sale.SaleId});
                 }
             }
