@@ -546,6 +546,7 @@ namespace KurbSide.Controllers
 
             var sales = await _context.Sale
                 .Where(s => s.BusinessId.Equals(business.BusinessId))
+                .Where(s => s.SaleEnded.Equals(false))
                 .ToListAsync();
 
             if (!string.IsNullOrWhiteSpace(filter))
@@ -626,6 +627,7 @@ namespace KurbSide.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    sale.SaleDiscountPercentage /= 100; //User enters discount as whole numbers(15), they are saved as decimals(0.15).
                     await _context.AddAsync(sale);
                     await _context.SaveChangesAsync();
                     _logger.LogDebug($"Debug: Sale created. {sale.BusinessId} - {sale.SaleId}");

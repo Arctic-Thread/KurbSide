@@ -1,0 +1,21 @@
+/* Chrome, Safari, Edge, Opera */
+.noArrowsOnInputNumber::-webkit-outer-spin-button,
+.noArrowsOnInputNumber::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+.noArrowsOnInputNumber[type=number] {
+    -moz-appearance: textfield;
+}
+
+.checkbox-lg .custom-control-label::before,
+.checkbox-lg .custom-control-label::after {
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+.checkbox-lg .custom-control-label {
+    padding-left: 6px;
+}
