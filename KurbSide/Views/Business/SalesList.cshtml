@@ -1,49 +1,153 @@
 ﻿@model IEnumerable<KurbSide.Models.Sale>
 
 @{
-    ViewData["Title"] = "SalesList";
+    ViewData["Title"] = "Sale List";
+
+    var rawFilter = (string) TempData["saleFilter"];
+
+    var activeFilter = "";
+
+    var page = (int) TempData["currentPage"];
+    var perPage = (int) TempData["perPage"];
+    var totalPage = (int) TempData["totalPage"];
+    var hasNext = (bool) TempData["hasNextPage"];
+    var hasPrev = (bool) TempData["hasPrevPage"];
+
+    if (rawFilter != null)
+    {
+        activeFilter = rawFilter;
+    }
 }
 
-<h1>SalesList</h1>
-
-<p>
-    <a asp-action="CreateSale">Create New</a>
-</p>
-<table class="table">
-    <thead>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.SaleName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SaleDescription)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SaleDiscountPercentage)
-        </th>
-        <th></th>
-    </tr>
-    </thead>
-
-    <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.SaleName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SaleDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SaleDiscountPercentage)
-            </td>
-            <td>
-                <a asp-controller="Business" asp-action="EditSale" asp-route-SaleId="@item.SaleId">Edit</a> |
-                <a asp-controller="Business" asp-action="ManageSaleItem" asp-route-saleId="@item.SaleId">Details</a> |
-                <a asp-controller="Business" asp-action="EndSale" asp-route-saleId="@item.SaleId">Delete</a>
-            </td>
-        </tr>
+<style>
+    .btn-width {
+        min-width: 6em;
     }
-    </tbody>
-</table>
+</style>
+
+<vc:business-head/>
+
+<div class="card">
+    <div class="card-body row">
+        <form class="col" method="GET" asp-action="ViewSales">
+            <div class="input-group input-group-sm">
+                <input type="text" id="filter" name="filter" class="form-control border-secondary" placeholder="Search Items" value="@activeFilter">
+                <div class="input-group-append">
+                    <input type="submit" class="input-group-text btn-dark text-light bg-dark border-dark" id="btnGroupAddon" value="Search"/>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-responsive-sm">
+            <thead>
+            <tr>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.SaleName)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.SaleDescription)
+                </th>
+                <th scope="col">
+                    @Html.DisplayNameFor(model => model.SaleDiscountPercentage)
+                </th>
+                <th scope="col">
+                    <a asp-controller="Business" asp-action="CreateSale" class="btn btn-sm btn-success btn-width" id="saleList-CreateSale">New Sale</a>
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            @foreach (var sale in Model)
+            {
+                <tr id="saleList-sale-@sale.SaleId">
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => sale.SaleName)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => sale.SaleDescription)
+                    </td>
+                    <td class="align-middle">
+                        @Html.DisplayFor(modelItem => sale.SaleDiscountPercentage)
+                    </td>
+                    <td class="align-middle">
+                        <form method="post" asp-controller="Business" asp-action="EndSale" asp-route-saleId="@sale.SaleId" asp-route-page="@(page)" asp-route-perPage="@(perPage)" onSubmit="return confirm('Are you sure you want to end @(sale.SaleName)?')">
+                            <div class="btn-group-vertical btn-group-sm">
+                                <a asp-controller="Business" asp-action="EditSale" asp-route-saleId="@sale.SaleId" id="editSale-@sale.SaleName" class="btn btn-width btn-warning">Edit Sale Details</a>
+                                <a asp-controller="Business" asp-action="ManageSaleItem" asp-route-saleId="@sale.SaleId" id="manageSale-@sale.SaleName" class="btn btn-width btn-info">Manage Items In Sale</a>
+                                <input type="submit" id="endSale-@sale.SaleName" class="btn btn-width btn-danger" value="End Sale">
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <div class="container container-fluid justify-content-center">
+            <div class="row justify-content-between">
+                <a class="btn btn-sm btn-light border-secondary @(hasPrev ? null : "disabled")" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page - 1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("<Prev Page")</a>
+                <span>
+                    <form class="col" method="GET" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page)" asp-route-filter="@(activeFilter)">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text bg-light border-secondary">
+                                    Page @(page) / @(totalPage)
+                                </label>
+                            </div>
+                            <select name="perPage" id="perPage" class="custom-select bg-light border-secondary" style="max-width: 200px;" onchange="submit();">
+                                @if (perPage == 5)
+                                {
+                                    <option value="5" selected>5 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="5">5 Per Page</option>
+                                }
+                                @if (perPage == 10)
+                                {
+                                    <option value="10" selected>10 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="10">10 Per Page</option>
+                                }
+                                @if (perPage == 25)
+                                {
+                                    <option value="25" selected>25 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="25">25 Per Page</option>
+                                }
+                                @if (perPage == 50)
+                                {
+                                    <option value="50" selected>50 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="50">50 Per Page</option>
+                                }
+                                @if (perPage == 100)
+                                {
+                                    <option value="100" selected>100 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="100">100 Per Page</option>
+                                }
+                            </select>
+                        </div>
+                    </form>
+                </span>
+                <a class="btn btn-sm btn-light border-secondary @(hasNext ? null : "disabled")" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page + 1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("Next Page>")</a>
+            </div>
+        </div>
+        <hr/>
+        <div class="container container-fluid justify-content-center">
+            <div class="row justify-content-between">
+                <a class="btn btn-sm btn-secondary" asp-action="Index">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>

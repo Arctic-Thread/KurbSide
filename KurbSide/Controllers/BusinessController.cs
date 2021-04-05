@@ -527,7 +527,7 @@ namespace KurbSide.Controllers
         #region Sales
 
         [HttpGet]
-        public async Task<IActionResult> ViewSales()
+        public async Task<IActionResult> ViewSales(string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
             var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -548,9 +548,27 @@ namespace KurbSide.Controllers
                 .Where(s => s.BusinessId.Equals(business.BusinessId))
                 .ToListAsync();
 
-            ViewData["numSales"] = sales;
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                TempData["saleFilter"] = filter;
+                sales = sales
+                    .Where(i => i.SaleName.ToLower().Contains(filter.ToLower()))
+                    .ToList();
+                    
+                ViewData["NoItemsFoundReason"] = $"Sorry, no results found for {filter}.";
+            }
 
-            return View("SalesList", sales);
+            var paginatedSales = KurbSideUtils.KSPaginatedList<Sale>.Create(sales.AsQueryable(), page, perPage);
+
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedSales.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedSales.HasNextPage;
+            TempData["hasPrevPage"] = paginatedSales.HasPreviousPage;
+
+            return View("SalesList", paginatedSales);
         }
 
         [HttpGet]
