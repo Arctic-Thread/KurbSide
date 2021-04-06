@@ -1,0 +1,58 @@
+﻿@model IEnumerable<KurbSide.Models.Item>
+<vc:business-head/>
+<div>
+
+    <table class="table table-responsive-sm">
+        <thead>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.ItemName)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.Category)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.Sku)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.Upc)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.Removed)
+        </th>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="reportItem-@item.ItemName">
+                <td class="align-middle">
+                    @Html.DisplayFor(modelItem => item.ItemName)
+                </td>
+                <td class="align-middle">
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td class="align-middle">
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td class="align-middle">
+                    @Html.DisplayFor(modelItem => item.Sku)
+                </td>
+                <td class="align-middle">
+                    @Html.DisplayFor(modelItem => item.Upc)
+                </td>
+                <td class="align-middle">
+                    @item.Removed
+                </td>
+            </tr>
+        }
+
+
+        </tbody>
+
+
+    </table>
+
+
+</div>
