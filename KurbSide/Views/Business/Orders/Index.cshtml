@@ -1,0 +1,85 @@
+﻿@model IEnumerable<Order>
+@{
+    ViewData["Title"] = "Business Orders";
+
+    var rawFilter = (string)TempData["catalogueFilter"];
+
+    var activeFilter = "";
+
+    // var page = (int)TempData["currentPage"];
+    // var perPage = (int)TempData["perPage"];
+    // var totalPage = (int)TempData["totalPage"];
+    // var hasNext = (bool)TempData["hasNextPage"];
+    // var hasPrev = (bool)TempData["hasPrevPage"];
+    
+    if (rawFilter != null)
+    {
+        activeFilter = rawFilter;
+    }
+}
+
+<vc:business-head />
+
+<div class="card">
+    <div class="card-body row">
+        <form class="col" method="GET" asp-action="Orders">
+            <div class="input-group input-group-sm">
+                <input type="text" id="filter" name="filter" class="form-control border-secondary" placeholder="Search Orders" value="@activeFilter">
+                <div class="input-group-append">
+                    <input type="submit" class="input-group-text btn-dark text-light bg-dark border-dark" id="btnGroupAddon" value="Search" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body row">
+        <table class="table table-responsive-sm">
+            <thead>
+            <tr>
+                <th scope="col">
+                    Short Order No.
+                </th>
+                <th scope="col">
+                    Member Name
+                </th>
+                <th scope="col">
+                    SubTotal
+                </th>
+                <th scope="col">
+                    Status
+                </th>
+            </tr>
+            </thead>
+            <tboddy>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <form method="post" asp-controller="Order" asp-action="UpdateStatus">
+                            <td>
+                                @order.OrderId.ToString().Substring(order.OrderId.ToString().Length - 6).ToUpper()
+                            </td>
+                            <td>
+                                @(order.Member.FirstName + " " + order.Member.LastName)
+                            </td>
+                            <td>
+                                @order.SubTotal
+                            </td>
+                            <td>
+                                <span class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-outline-secondary active">
+                                      <input type="radio" name="status" id="status1" autocomplete="off"> Active
+                                    </label>
+                                    <label class="btn btn-outline-secondary">
+                                      <input type="radio" name="status" id="status2" autocomplete="off"> Radio
+                                    </label>
+                                    <label class="btn btn-outline-secondary">
+                                      <input type="radio" name="status" id="status3" autocomplete="off"> Radio
+                                    </label>
+                                </span>
+                            </td>
+                        </form>
+                    </tr>
+                }
+            </tboddy>
+        </table>
+    </div>
+</div>

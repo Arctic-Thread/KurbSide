@@ -255,7 +255,9 @@ namespace KurbSide.Controllers
                     _logger.LogDebug("Debug: Item is present in orders, Marked as Hidden/Removed.");
                 }
                 catch (Exception)
-                { }
+                {
+                    // ignored
+                }
             }
             finally
             {
@@ -376,7 +378,7 @@ namespace KurbSide.Controllers
                 {
                     if(itemImageEdit != null) // If the business has added an image, it is uploaded to imgur and the link is prepped to be saved to the DB
                     {
-                        string uploadResults = await KSImgur.KSUploadImageToImgur(itemImageEdit);
+                        var uploadResults = await KSImgur.KSUploadImageToImgur(itemImageEdit);
                         if (!uploadResults.StartsWith("Error: "))
                         {
                             item.ImageLocation = uploadResults;
@@ -392,7 +394,7 @@ namespace KurbSide.Controllers
                     else // If they are not adding a new image, it uses the pre-existing image.
                     {
                         var existingItem = await _context.Item.AsNoTracking().Where(i => i.ItemId == item.ItemId).FirstOrDefaultAsync();
-                        string existingImage = existingItem.ImageLocation;
+                        var existingImage = existingItem.ImageLocation;
                         item.ImageLocation = existingImage;
                     }
 
@@ -521,6 +523,39 @@ namespace KurbSide.Controllers
                 return RedirectToAction("Index");
             }
             return View(businessHours);
+        }
+        #endregion
+        
+        #region Orders
+
+        public async Task<IActionResult> EditOrder()
+        {
+            return View("Orders/Edit");
+        }
+
+        public async Task<IActionResult> Orders()
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var orders = await _context.Order
+                .Where(o => o.Business.BusinessId.Equals(business.BusinessId))
+                .Include(o => o.Member)
+                .ToListAsync();
+            
+            return View("Orders/Index", orders);
         }
         #endregion
     }
