@@ -1,17 +1,19 @@
-﻿@model Cart
+﻿@using KurbSide.Utilities
+@model Tuple<Cart, List<Sale>>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
 <div class="col-sm-3">
     <div id="cartCard" class="card">
         @if (Model != null)
         {
             <div class="card-header">
-                <span>@Model.Business.BusinessName Cart</span>
+                <span>@Model.Item1.Business.BusinessName Cart</span>
             </div>
 
             <ul class="list-group" style="max-height: 50vh; overflow-y: auto;">
-                @foreach (var item in Model.CartItem)
+                @foreach (var item in Model.Item1.CartItem)
                 {
-                    var itemtotal = (item.Item.Price.Value * item.Quantity);
+                    var discountedPrice = KSOrderUtilities.GetDiscountPrice(item.Item, Model.Item2);
+                    var itemTotal = (discountedPrice * item.Quantity);
                     <li id="cartItems" class="list-group-item d-flex justify-content-between align-items-center border-0">
                         <small>
                             <span class="badge badge-pill badge-dark" style="max-width: 3em;">
@@ -21,7 +23,7 @@
                                     <input style="max-width: 1.5em; text-align: center; -moz-appearance: textfield;" class="bg-transparent border-0 my-0 p-0 text-white" type="text" name="q" value="@item.Quantity" onchange="submit();" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" />
                                 </form>
                             </span>
-                            <span class="badge badge-success">@(itemtotal.ToString("$#0.00"))</span><br />
+                            <span class="badge badge-success">@(itemTotal.ToString("$#0.00"))</span><br />
                             @item.Item.ItemName
                         </small>
                         <form method="POST" asp-controller="Order" asp-action="CartRemove" style="margin-left: .5em;" onsubmit="return confirm('Remove @(item.Item.ItemName)?')">
@@ -36,7 +38,7 @@
             <div class="card-footer d-flex">
                 <div class="btn-group btn-group-sm w-100">
                     <a id="checkout" asp-controller="Order" asp-action="Checkout" class="btn btn-sm btn-outline-primary w-100">Checkout</a>
-                    <a id="clear-cart" asp-controller="Order" asp-action="CartClear" class="btn btn-sm btn-outline-danger w-50"  onclick="return confirm('Are you sure you want to clear your cart?')">Clear</a>
+                    <a id="clear-cart" asp-controller="Order" asp-action="CartClear" class="btn btn-sm btn-outline-danger w-50" onclick="return confirm('Are you sure you want to clear your cart?')">Clear</a>
                 </div>
             </div>
         }

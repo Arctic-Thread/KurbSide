@@ -95,6 +95,7 @@ namespace KurbSide.Controllers
             var items = await _context.Item
                 .Where(i => i.BusinessId.Equals(id))
                 .Where(i => i.Removed != null && i.Removed == false)
+                .Include(s => s.SaleItem)
                 .ToListAsync();
 
             if (items.Count <= 0)
@@ -130,6 +131,13 @@ namespace KurbSide.Controllers
             var categorizedItems = items
                 .GroupBy(i => KurbSideUtils.KSStringManipulation.KSTitleCase(i.Category))
                 .ToDictionary(i => i.Key, i => i.AsEnumerable());
+
+            var sales = await _context.Sale
+                .Where(b => b.BusinessId.Equals(business.BusinessId))
+                .Include(s => s.SaleItem)
+                .ToListAsync();
+
+            ViewData["sales"] = sales;
 
             TempData["itemCategories"] = categories;
             return View(Tuple.Create(business, categorizedItems));
