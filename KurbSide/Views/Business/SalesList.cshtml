@@ -9,8 +9,7 @@
     var categories = new List<string>();
     var activeFilter = "";
 
-    var rawViewInactive = (string) TempData["viewInactive"];
-    bool viewInactive = rawViewInactive.Equals("on");
+    bool viewInactive = (bool) TempData["viewInactiveSales"];
 
     var page = (int) TempData["currentPage"];
     var perPage = (int) TempData["perPage"];
@@ -32,20 +31,33 @@
     .btn-width {
         min-width: 6em;
     }
+    
+        .btn-filter {
+            min-width: 10em;
+        }
 </style>
 
 <vc:business-head/>
-
 <div class="card">
     <div class="card-body row">
         <div class="col">
             <div class="row">
                 <div class="col">
                     <div class="btn-group btn-group-sm" style="flex-wrap: wrap;">
-                        <a class="btn btn-sm btn-dark btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-controller="Business" asp-action="ViewSales" asp-route-perPage="@(perPage)"> @((activeFilter != "") ? "Clear Filter" : "Filter By Category") </a>
+                        <div>
+                            @if (viewInactive)
+                            {
+                                <a class="btn btn-sm btn-danger btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page)" asp-route-perPage="@(perPage)" asp-route-viewInactive="false">Viewing Inactive Sales</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-sm btn-success btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page)" asp-route-perPage="@(perPage)" asp-route-viewInactive="true">Viewing Active Sales</a>
+                            }
+                        </div>
+                        <a class="btn btn-sm btn-dark btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-controller="Business" asp-action="ViewSales" asp-route-perPage="@(perPage)" asp-route-viewInactive="@viewInactive"> @((activeFilter != "") ? "Clear Filter" : "Filter By Category") </a>
                         @foreach (string category in categories)
                         {
-                            <a class="btn btn-sm btn-light border-secondary rounded @(category.Equals(activeFilter) ? "active" : null)" style="margin:1px 1px 3px 1px;" asp-route-filter="@category" asp-route-perPage="@(perPage)">@category</a>
+                            <a class="btn btn-sm btn-light border-secondary rounded @(category.Equals(activeFilter) ? "active" : null)" style="margin:1px 1px 3px 1px;" asp-route-filter="@category" asp-route-perPage="@(perPage)" asp-route-viewInactive="@viewInactive">@category</a>
                         }
                         @if (categories.Count <= 0)
                         {
@@ -55,6 +67,9 @@
                 </div>
 
                 <form class="col" method="GET" asp-action="ViewSales">
+                    <input type="hidden" name="page" value="@(page)"/>
+                    <input type="hidden" name="perPage" value="@(perPage)"/>
+                    <input type="hidden" name="viewInactive" value="@viewInactive.ToString()"/>
                     <div class="input-group input-group-sm">
                         <input type="text" id="filter" name="filter" class="form-control border-secondary" placeholder="Search Items" value="@activeFilter">
                         <div class="input-group-append">
@@ -63,17 +78,6 @@
                     </div>
                 </form>
             </div>
-
-            <form class="col" method="GET" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page)" asp-route-filter="@(activeFilter)">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="viewInactive" name="viewInactive" onchange="submit();"
-                           @if (viewInactive)
-                           {
-                               <text>checked</text>
-                           }>
-                    <label class="form-check-label" for="viewInactive">View Inactive Sales</label>
-                </div>
-            </form>
         </div>
     </div>
 
@@ -137,9 +141,10 @@
         </table>
         <div class="container container-fluid justify-content-center">
             <div class="row justify-content-between">
-                <a class="btn btn-sm btn-light border-secondary @(hasPrev ? null : "disabled")" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page - 1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("<Prev Page")</a>
+                <a class="btn btn-sm btn-light border-secondary @(hasPrev ? null : "disabled")" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page - 1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)" asp-route-viewInactive="@viewInactive">@("<Prev Page")</a>
                 <span>
                     <form class="col" method="GET" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page)" asp-route-filter="@(activeFilter)">
+                        <input type="hidden" name="viewInactive" value="@viewInactive.ToString()"/>
                         <div class="input-group input-group-sm">
                             <div class="input-group-prepend">
                                 <label class="input-group-text bg-light border-secondary">
@@ -191,7 +196,7 @@
                         </div>
                     </form>
                 </span>
-                <a class="btn btn-sm btn-light border-secondary @(hasNext ? null : "disabled")" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page + 1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("Next Page>")</a>
+                <a class="btn btn-sm btn-light border-secondary @(hasNext ? null : "disabled")" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page + 1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)" asp-route-viewInactive="@viewInactive">@("Next Page>")</a>
             </div>
         </div>
         <hr/>

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using KurbSide.Service;
 using KurbSide.Utilities;
+using KurbSideUtils;
 
 namespace KurbSide.Controllers
 {
@@ -527,7 +528,7 @@ namespace KurbSide.Controllers
         #region Sales
 
         [HttpGet]
-        public async Task<IActionResult> ViewSales(string filter = "", int page = 1, int perPage = 5, string viewInactive = "off")
+        public async Task<IActionResult> ViewSales(string filter = "", int page = 1, int perPage = 5, string viewInactive = "false")
         {
             //Check that the accessing user is a business type account
             var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -544,11 +545,11 @@ namespace KurbSide.Controllers
                 .Where(b => b.AspNetId.Equals(user.Id))
                 .FirstOrDefaultAsync();
 
-            bool activeOnly = viewInactive.Equals("off");
+            bool viewInactiveSales = bool.Parse(viewInactive.KSTitleCase());
 
             var sales = await _context.Sale
                 .Where(s => s.BusinessId.Equals(business.BusinessId))
-                .Where(s => s.Active == activeOnly)
+                .Where(s => s.Active == !viewInactiveSales)
                 .OrderBy(s => s.SaleName)
                 .ToListAsync();
 
@@ -567,7 +568,7 @@ namespace KurbSide.Controllers
                 ViewData["NoItemsFoundReason"] = $"Sorry, no results found for {filter}.";
             }
 
-            var paginatedSales = KurbSideUtils.KSPaginatedList<Sale>.Create(sales.AsQueryable(), page, perPage);
+            var paginatedSales = KSPaginatedList<Sale>.Create(sales.AsQueryable(), page, perPage);
 
             //Gather temp data and pagination/filter info
             //  all in to one place for use 
@@ -577,7 +578,7 @@ namespace KurbSide.Controllers
             TempData["perPage"] = perPage;
             TempData["hasNextPage"] = paginatedSales.HasNextPage;
             TempData["hasPrevPage"] = paginatedSales.HasPreviousPage;
-            TempData["viewInactive"] = viewInactive;
+            TempData["viewInactiveSales"] = viewInactiveSales;
 
             return View("SalesList", paginatedSales);
         }
@@ -680,7 +681,7 @@ namespace KurbSide.Controllers
                 .Where(s => s.BusinessId.Equals(business.BusinessId))
                 .Where(s => s.SaleId.Equals(saleId))
                 .FirstOrDefaultAsync();
-            
+
             if (sale == null)
             {
                 _logger.LogDebug($"Debug: Sale ID mismatch. Sale {saleId} not found for business {business.BusinessId}.");
@@ -693,7 +694,7 @@ namespace KurbSide.Controllers
                 .Where(si => si.Removed == false)
                 .Include(si => si.SaleItem)
                 .ToListAsync();
-
+            
             var categories = items
                 .Select(i => i.Category)
                 .Distinct()
