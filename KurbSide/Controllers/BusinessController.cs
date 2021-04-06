@@ -690,6 +690,7 @@ namespace KurbSide.Controllers
 
             var items = await _context.Item
                 .Where(i => i.BusinessId.Equals(business.BusinessId))
+                .Where(si => si.Removed == false)
                 .Include(si => si.SaleItem)
                 .ToListAsync();
 
