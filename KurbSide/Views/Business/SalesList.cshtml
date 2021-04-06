@@ -3,9 +3,14 @@
 @{
     ViewData["Title"] = "Sale List";
 
+    var rawCategories = (IEnumerable<string>) TempData["saleCategories"];
     var rawFilter = (string) TempData["saleFilter"];
 
+    var categories = new List<string>();
     var activeFilter = "";
+
+    var rawViewInactive = (string) TempData["viewInactive"];
+    bool viewInactive = rawViewInactive.Equals("on");
 
     var page = (int) TempData["currentPage"];
     var perPage = (int) TempData["perPage"];
@@ -13,6 +18,10 @@
     var hasNext = (bool) TempData["hasNextPage"];
     var hasPrev = (bool) TempData["hasPrevPage"];
 
+    if (rawCategories != null)
+    {
+        categories.AddRange(rawCategories);
+    }
     if (rawFilter != null)
     {
         activeFilter = rawFilter;
@@ -29,14 +38,43 @@
 
 <div class="card">
     <div class="card-body row">
-        <form class="col" method="GET" asp-action="ViewSales">
-            <div class="input-group input-group-sm">
-                <input type="text" id="filter" name="filter" class="form-control border-secondary" placeholder="Search Items" value="@activeFilter">
-                <div class="input-group-append">
-                    <input type="submit" class="input-group-text btn-dark text-light bg-dark border-dark" id="btnGroupAddon" value="Search"/>
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <div class="btn-group btn-group-sm" style="flex-wrap: wrap;">
+                        <a class="btn btn-sm btn-dark btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-controller="Business" asp-action="ViewSales" asp-route-perPage="@(perPage)"> @((activeFilter != "") ? "Clear Filter" : "Filter By Category") </a>
+                        @foreach (string category in categories)
+                        {
+                            <a class="btn btn-sm btn-light border-secondary rounded @(category.Equals(activeFilter) ? "active" : null)" style="margin:1px 1px 3px 1px;" asp-route-filter="@category" asp-route-perPage="@(perPage)">@category</a>
+                        }
+                        @if (categories.Count <= 0)
+                        {
+                            <span class="btn btn-sm btn-outline-light active border-secondary rounded" style="margin:1px 1px 3px 1px; opacity: 0.50;">No Categories</span>
+                        }
+                    </div>
                 </div>
+
+                <form class="col" method="GET" asp-action="ViewSales">
+                    <div class="input-group input-group-sm">
+                        <input type="text" id="filter" name="filter" class="form-control border-secondary" placeholder="Search Items" value="@activeFilter">
+                        <div class="input-group-append">
+                            <input type="submit" class="input-group-text btn-dark text-light bg-dark border-dark" id="btnGroupAddon" value="Search"/>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
+
+            <form class="col" method="GET" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page)" asp-route-filter="@(activeFilter)">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="viewInactive" name="viewInactive" onchange="submit();"
+                           @if (viewInactive)
+                           {
+                               <text>checked</text>
+                           }>
+                    <label class="form-check-label" for="viewInactive">View Inactive Sales</label>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div class="card-body">

@@ -527,7 +527,7 @@ namespace KurbSide.Controllers
         #region Sales
 
         [HttpGet]
-        public async Task<IActionResult> ViewSales(string filter = "", int page = 1, int perPage = 5)
+        public async Task<IActionResult> ViewSales(string filter = "", int page = 1, int perPage = 5, string viewInactive = "off")
         {
             //Check that the accessing user is a business type account
             var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -544,9 +544,18 @@ namespace KurbSide.Controllers
                 .Where(b => b.AspNetId.Equals(user.Id))
                 .FirstOrDefaultAsync();
 
+            bool activeOnly = viewInactive.Equals("off");
+
             var sales = await _context.Sale
                 .Where(s => s.BusinessId.Equals(business.BusinessId))
+                .Where(s => s.Active == activeOnly)
+                .OrderBy(s => s.SaleName)
                 .ToListAsync();
+
+            var categories = sales
+                .Select(s => s.SaleCategory)
+                .Distinct()
+                .ToList();
 
             if (!string.IsNullOrWhiteSpace(filter))
             {
@@ -562,11 +571,13 @@ namespace KurbSide.Controllers
 
             //Gather temp data and pagination/filter info
             //  all in to one place for use 
+            TempData["saleCategories"] = categories;
             TempData["currentPage"] = page;
             TempData["totalPage"] = paginatedSales.TotalPages;
             TempData["perPage"] = perPage;
             TempData["hasNextPage"] = paginatedSales.HasNextPage;
             TempData["hasPrevPage"] = paginatedSales.HasPreviousPage;
+            TempData["viewInactive"] = viewInactive;
 
             return View("SalesList", paginatedSales);
         }
