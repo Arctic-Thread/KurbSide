@@ -29,7 +29,7 @@
     }
 }
 <script src="~/js/Business/Sales/AddItemToSale.js"></script>
-@* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous"> *@
+<link rel="stylesheet" href="~/css/site.css"/>
 
 <vc:business-head/>
 
@@ -42,7 +42,7 @@
                 <a class="btn btn-sm btn-dark btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-controller="Business" asp-action="ManageSaleItem" asp-route-saleId="@sale.SaleId" asp-route-perPage="@(perPage)"> @((activeFilter != "") ? "Clear Filter" : "Filter By Category") </a>
                 @foreach (string category in categories)
                 {
-                    <a class="btn btn-sm btn-light border-secondary rounded @(category.Equals(activeFilter) ? "active" : null)" style="margin:1px 1px 3px 1px;" asp-route-saleId="@sale.SaleId"  asp-route-filter="@category" asp-route-perPage="@(perPage)">@category</a>
+                    <a class="btn btn-sm btn-light border-secondary rounded @(category.Equals(activeFilter) ? "active" : null)" style="margin:1px 1px 3px 1px;" asp-route-saleId="@sale.SaleId" asp-route-filter="@category" asp-route-perPage="@(perPage)">@category</a>
                 }
                 @if (categories.Count <= 0)
                 {
@@ -52,8 +52,10 @@
         </div>
         <form class="col" method="GET" asp-controller="Business" asp-action="ManageSaleItem">
             <div class="input-group input-group-sm">
+                <input type="hidden" name="page" value="@(page)"/>
+                <input type="hidden" name="perPage" value="@(perPage)"/>
                 <input type="hidden" id="saleId" name="saleId" value="@sale.SaleId">
-                <input type="text" id="filter" name="filter" class="form-control border-secondary" placeholder="Search Items" value="@activeFilter">
+                <input type="text" id="filter" name="filter" class="form-control border-secondary" placeholder="Search Items" value="@(activeFilter)">
                 <div class="input-group-append">
                     <input type="submit" class="input-group-text btn-dark text-light bg-dark border-dark" id="btnGroupAddon" value="Search"/>
                 </div>
@@ -65,26 +67,23 @@
         <table class="table table-responsive-sm">
             <thead>
             <tr>
-                <th>
+                <th class="align-middle text-center">
                     @Html.DisplayNameFor(model => model.ItemName)
                 </th>
-                <th>
+                <th class="align-middle text-center">
                     @Html.DisplayNameFor(model => model.Details)
                 </th>
-                <th>
+                <th class="align-middle text-center">
                     Original Price
                 </th>
-                <th>
+                <th class="align-middle text-center">
                     Price With Discount
                 </th>
-                <th>
+                <th class="align-middle text-center">
                     @Html.DisplayNameFor(model => model.Category)
                 </th>
-                <th>
-                    &nbsp;
-                </th>
-                <th>
-                    &nbsp;
+                <th class="align-middle text-center">
+                    Controls
                 </th>
             </tr>
             </thead>
@@ -93,36 +92,44 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>
+                    <td class="align-middle text-center">
                         @Html.DisplayFor(modelItem => item.ItemName)
                     </td>
-                    <td>
+                    <td class="align-middle text-center ellipsisForLongText">
                         @Html.DisplayFor(modelItem => item.Details)
                     </td>
-                    <td>
+                    <td class="align-middle text-center">
                         @Html.DisplayFor(modelItem => item.Price)
                     </td>
-                    <td>
+                    <td class="align-middle text-center">
                         @(((decimal) item.Price - ((decimal) item.Price * (decimal) @sale.SaleDiscountPercentage / 100)).ToString("$#0.00"))
                     </td>
-                    <td>
+                    <td class="align-middle text-center">
                         @Html.DisplayFor(modelItem => item.Category)
                     </td>
-                    <td>
-                        <input type="radio" class="btn-check" name="saleItem-@item.ItemId" id="addToSale-@item.ItemId"
-                               @if (KSOrderUtilities.KSCheckIfItemInSale(item, sale.SaleId))
-                               {
-                                   <text>checked</text>
-                               }>
-                        <label class="btn btn-outline-success" for="addToSale-@item.ItemId">Add</label>
-                    </td>
-                    <td>
-                        <input type="radio" class="btn-check" name="saleItem-@item.ItemId" id="removeFromSale-@item.ItemId"
-                               @if (!KSOrderUtilities.KSCheckIfItemInSale(item, sale.SaleId))
-                               {
-                                   <text>checked</text>
-                               }>
-                        <label class="btn btn-outline-danger" for="removeFromSale-@item.ItemId">Remove</label>
+                    <td class="align-middle text-center">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            @if (KSOrderUtilities.KSCheckIfItemInSale(item, sale.SaleId))
+                            {
+                                <label class="btn btn-outline-success active" style="width: 85px;">
+                                    <input type="radio" name="saleItem-@item.ItemId" id="addToSale-@item.ItemId" checked>Add
+                                </label>
+
+                                <label class="btn btn-outline-danger" style="width: 85px;">
+                                    <input type="radio" name="saleItem-@item.ItemId" id="removeFromSale-@item.ItemId">Remove
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="btn btn-outline-success" style="width: 85px;">
+                                    <input type="radio" name="saleItem-@item.ItemId" id="addToSale-@item.ItemId">Add
+                                </label>
+
+                                <label class="btn btn-outline-danger active" style="width: 85px;">
+                                    <input type="radio" name="saleItem-@item.ItemId" id="removeFromSale-@item.ItemId" checked>Remove
+                                </label>
+                            }
+                        </div>
                     </td>
                 </tr>
 
@@ -139,6 +146,7 @@
                 <span>
                     <form class="col" method="GET" asp-controller="Business" asp-action="ManageSaleItem" asp-route-page="@(page)" asp-route-filter="@(activeFilter)">
                         <input type="hidden" id="saleId" name="saleId" value="@sale.SaleId">
+                        <input type="hidden" id="filter" name="filter" value="@(activeFilter)">
                         <div class="input-group input-group-sm">
                             <div class="input-group-prepend">
                                 <label class="input-group-text bg-light border-secondary">
