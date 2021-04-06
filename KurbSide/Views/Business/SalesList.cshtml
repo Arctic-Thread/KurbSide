@@ -85,19 +85,19 @@
         <table class="table table-responsive-sm">
             <thead>
             <tr>
-                <th scope="col">
+                <th scope="col" class="text-center">
                     @Html.DisplayNameFor(model => model.SaleName)
                 </th>
-                <th scope="col">
+                <th scope="col" class="text-center">
                     @Html.DisplayNameFor(model => model.SaleDescription)
                 </th>
-                <th scope="col">
+                <th scope="col" class="text-center">
                     @Html.DisplayNameFor(model => model.SaleDiscountPercentage)
                 </th>
-                <th scope="col">
+                <th scope="col" class="text-center">
                     @Html.DisplayNameFor(model => model.SaleCategory)
                 </th>
-                <th scope="col">
+                <th scope="col" class="text-center">
                     <a asp-controller="Business" asp-action="CreateSale" class="btn btn-sm btn-success btn-width" id="saleList-CreateSale">New Sale</a>
                 </th>
             </tr>
@@ -107,19 +107,20 @@
             @foreach (var sale in Model)
             {
                 <tr id="saleList-sale-@sale.SaleId">
-                    <td class="align-middle">
+                    <td class="align-middle text-center">
                         @Html.DisplayFor(modelItem => sale.SaleName)
                     </td>
-                    <td class="align-middle">
+                    @*TODO responsive widths instead of hard coded*@
+                    <td class="align-middle text-center ellipsisForLongText" style="min-width: 300px; max-width: 500px;">
                         @Html.DisplayFor(modelItem => sale.SaleDescription)
                     </td>
-                    <td class="align-middle">
+                    <td class="align-middle text-center">
                         @Html.DisplayFor(modelItem => sale.SaleDiscountPercentage)
                     </td>
-                    <td class="align-middle">
+                    <td class="align-middle text-center">
                         @Html.DisplayFor(modelItem => sale.SaleCategory)
                     </td>
-                    <td class="align-middle">
+                    <td class="align-middle text-center">
                         <form method="POST" asp-controller="Business" asp-action="SwapSaleStatus" asp-route-saleId="@sale.SaleId" onSubmit="return confirm('Are you sure you want to change the status of @(sale.SaleName)?')">
                             <div class="btn-group-vertical btn-group-sm">
                                 <a asp-controller="Business" asp-action="EditSale" asp-route-saleId="@sale.SaleId" id="editSale-@sale.SaleName" class="btn btn-width btn-warning">Edit Details</a>
@@ -143,8 +144,9 @@
             <div class="row justify-content-between">
                 <a class="btn btn-sm btn-light border-secondary @(hasPrev ? null : "disabled")" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page - 1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)" asp-route-viewInactive="@viewInactive">@("<Prev Page")</a>
                 <span>
-                    <form class="col" method="GET" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page)" asp-route-filter="@(activeFilter)">
+                    <form class="col" method="GET" asp-controller="Business" asp-action="ViewSales">
                         <input type="hidden" name="viewInactive" value="@viewInactive.ToString()"/>
+                        <input type="hidden" id="filter" name="filter" value="@(activeFilter)">
                         <div class="input-group input-group-sm">
                             <div class="input-group-prepend">
                                 <label class="input-group-text bg-light border-secondary">
