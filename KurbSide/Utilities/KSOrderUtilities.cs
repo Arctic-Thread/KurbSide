@@ -37,5 +37,25 @@ namespace KurbSide.Utilities
 
             return new Guid();
         }
+
+        /// <summary>
+        /// Returns the discounted price of an item if it is currently in a sale.
+        /// If it is not in a sale, the original price is returned.
+        /// <br/>
+        /// <code>Example: GetDiscountPrice(item, sales)</code>
+        /// </summary>
+        /// <remarks>Liam De Rivers</remarks>
+        /// <param name="item">The item to check.</param>
+        /// <param name="sales">The list of sales currently being run by the business.</param>
+        /// <returns>The current* price of an item.</returns>
+        public static decimal GetDiscountPrice(Item item, List<Sale> sales)
+        {
+            foreach (var sale in sales.Where(sale => item.SaleItem.Any(s => s.SaleId.Equals(sale.SaleId))))
+            {
+                return (decimal) item.Price-((decimal)item.Price*sale.SaleDiscountPercentage);
+            }
+
+            return (decimal)item.Price;
+        }
     }
 }

@@ -1,0 +1,45 @@
+﻿.zoom {
+    height: 50px;
+    max-width: 100px;
+    display: block;
+    cursor: pointer;
+    background-color: transparent;
+    -webkit-transition-property: all;
+    -webkit-transition-duration: 0.3s;
+    -webkit-transition-timing-function: ease;
+}
+
+.zoom:hover {
+    opacity: 1 !important;
+    transform: scale(2.75);
+    border-radius: 3px;
+    z-index: 999999 !important;
+    position: relative;
+    background-color: white;
+    box-shadow: rgba(0,0,0,0.25) 0px 0px 3px;
+}
+
+div.addToCart {
+    position: relative;
+}
+
+input.addToCart {
+    font-weight: bold;
+}
+
+span.addToCartPrepend {
+    background-color: #FF1744; 
+    border-color: #ff1744; 
+    color: white;
+    font-weight: bold;
+}
+
+span.addToCartSale {
+    position: absolute;
+    left: 75px;
+    bottom: 25px;
+    z-index: 999;
+    background-color: #ff1744;
+    color: white;
+    font-weight: bold;
+}
