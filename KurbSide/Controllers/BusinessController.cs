@@ -648,7 +648,7 @@ namespace KurbSide.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ManageSaleItem(Guid saleId)
+        public async Task<IActionResult> ManageSaleItem(Guid saleId, string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
             var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -669,7 +669,7 @@ namespace KurbSide.Controllers
                 .Where(s => s.BusinessId.Equals(business.BusinessId))
                 .Where(s => s.SaleId.Equals(saleId))
                 .FirstOrDefaultAsync();
-
+            
             if (sale == null)
             {
                 _logger.LogDebug($"Debug: Sale ID mismatch. Sale {saleId} not found for business {business.BusinessId}.");
@@ -682,9 +682,41 @@ namespace KurbSide.Controllers
                 .Include(si => si.SaleItem)
                 .ToListAsync();
 
-            ViewData["salePercentage"] = sale.SaleDiscountPercentage;
-            ViewData["saleId"] = saleId;
-            return View(items);
+            var categories = items
+                .Select(i => i.Category)
+                .Distinct()
+                .ToList();
+            
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                TempData["saleFilter"] = filter;
+                if (categories.Contains(filter))
+                {
+                    items = items
+                        .Where(i => i.Category.Equals(filter))
+                        .ToList();
+                }
+                else
+                {
+                    items = items
+                        .Where(i => i.ItemName.ToLower().Contains(filter.ToLower()))
+                        .ToList();
+                }
+            }
+            
+            var paginatedItems = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
+            
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["itemCategories"] = categories;
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedItems.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedItems.HasNextPage;
+            TempData["hasPrevPage"] = paginatedItems.HasPreviousPage;
+
+            ViewData["sale"] = sale;
+            return View(paginatedItems);
         }
 
         public enum AddOrRemove
