@@ -531,6 +531,7 @@ namespace KurbSide.Controllers
             //Gather temp data and pagination/filter info
             //  all in to one place for use 
             TempData["status"] = status;
+            TempData["statusFull"] = await _context.OrderStatus.ToListAsync();
             TempData["currentPage"] = page;
             TempData["totalPage"] = paginatedList.TotalPages;
             TempData["perPage"] = perPage;

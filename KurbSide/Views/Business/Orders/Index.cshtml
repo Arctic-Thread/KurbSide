@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Business Orders";
 
+    var statusFull = (IEnumerable<OrderStatus>) TempData["statusFull"];
+    
     var rawCategories = (IEnumerable<string>) TempData["status"];
     var rawFilter = (string) TempData["filter"];
 
@@ -91,6 +93,10 @@
                 tr:not(.hover-controls):hover + tr.hover-controls {
                     display: table-row;
                 }
+                
+                .hiddenbtn{
+                    display: none;
+                }
             </style>
             <tbody>
             @foreach (var order in Model)
@@ -116,29 +122,22 @@
                 </tr>
                 <tr class="hover-controls text-center align-middle">
                     <td colspan="100">
-                        <span class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-                            <label class="btn btn-dark disabled">
-                                <span>Quick Actions:</span>
-                            </label>
-                            <label class="btn btn-outline-primary active disabled">
-                                <input type="radio" name="status" id="status1" autocomplete="off" value=""> Pending
-                            </label>
-                            <label class="btn btn-outline-warning">
-                                <input type="radio" name="status" id="status1" autocomplete="off" value=""> Accepted
-                            </label>
-                            <label class="btn btn-outline-info">
-                                <input type="radio" name="status" id="status2" autocomplete="off"> Preparing
-                            </label>
-                            <label class="btn btn-outline-success">
-                                <input type="radio" name="status" id="status3" autocomplete="off"> Ready For Pickup
-                            </label>
-                            <label class="btn btn-outline-secondary">
-                                <input type="radio" name="status" id="status3" autocomplete="off"> Picked Up
-                            </label>
-                            <label class="btn btn-outline-danger">
-                                <input type="radio" name="status" id="status3" autocomplete="off"> Cancel
-                            </label>
-                        </span>
+                            <span class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-dark disabled">
+                                    <span>Quick Actions:</span>
+                                </label>
+                                <a class="btn @(order.StatusNavigation.StatusId<1?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<1?"-outline":null)-warning" asp-controller="Business" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="1">Accept</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<2?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<2?"-outline":null)-info" asp-controller="Business" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="2">Preparing</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<3?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<3?"-outline":null)-success" asp-controller="Business" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="3">Ready</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<4?"-outline":null)-secondary" asp-controller="Business" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="4">Picked Up</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<5?"-outline":null)-danger" asp-controller="Business" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="5">Cancel</a>
+                                @if (order.StatusNavigation.StatusId >= 4)
+                                {
+                                    <label class="btn btn-light border-dark disabled">
+                                        <span>None</span>
+                                    </label> 
+                                }
+                            </span>
                         <small class="d-block w-100 text-center p-1">These Actions are Permanent and will Notify the Customer.</small>
                     </td>
                 </tr>
