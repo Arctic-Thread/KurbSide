@@ -444,5 +444,35 @@ namespace KurbSide.Controllers
 
             return RedirectToAction("Index", "Store");
         }
+
+        public async Task<IActionResult> UpdateStatus(Guid id, int status)
+        {
+            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var order = await _context.Order
+                .Include(o => o.Business)
+                .Include(o => o.Member)
+                .FirstAsync(o => o.OrderId.Equals(id));
+
+            if (accountType == KSCurrentUser.AccountType.BUSINESS && order.Business.AspNetId.Equals(currentUser.Id))
+            {
+                if (!status.Equals(5) && order.Status < status)
+                {
+                    order.Status = status;
+                    _context.Order.Update(order);
+                }
+            }
+            else if(accountType == KSCurrentUser.AccountType.MEMBER && order.Member.AspNetId.Equals(currentUser.Id))
+            {
+                if (status.Equals(5) && order.Status < status)
+                {
+                    order.Status = status;
+                    _context.Order.Update(order);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return Redirect(HttpContext.Request.Headers["Referer"]);
+        }
     }
 }

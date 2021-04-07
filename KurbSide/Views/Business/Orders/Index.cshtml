@@ -83,17 +83,26 @@
             <style>
                 tr.hover-controls {
                     display: none;
-                    margin: auto;
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    margin-left: auto;
+                    margin-right: auto;
+                    z-index: 1000000000000;
                 }
                 tr.hover-controls > td{
                     padding-top: 0;
-                    border: 0;
+                    border: 1px solid #dee2e6;;
+                    border-top: 0 !important;
+                    border-bottom-left-radius: 5px;
+                    border-bottom-right-radius: 5px;
+                    background-color: #FFF;
+                    box-shadow: 0 4px 4px #AAA;
                 }
                 tr.hover-controls:hover,
                 tr:not(.hover-controls):hover + tr.hover-controls {
-                    display: table-row;
+                    display: table;
                 }
-                
                 .hiddenbtn{
                     display: none;
                 }
@@ -117,7 +126,7 @@
                         @order.SubTotal
                     </td>
                     <td style="width: 1px">
-                        <span style="width: 10rem;" class="btn disabled btn-block btn-@order.StatusNavigation.BootstrapClass">@order.StatusNavigation.StatusName</span>
+                        <span style="width: 10rem;" class="btn disabled btn-block btn-@order.StatusNavigation.BootstrapClass" title="@order.StatusNavigation.StatusText">@order.StatusNavigation.StatusName</span>
                     </td>
                 </tr>
                 <tr class="hover-controls text-center align-middle">
@@ -130,7 +139,7 @@
                                 <a class="btn @(order.StatusNavigation.StatusId<2?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<2?"-outline":null)-info" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="2">Preparing</a>
                                 <a class="btn @(order.StatusNavigation.StatusId<3?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<3?"-outline":null)-success" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="3">Ready</a>
                                 <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<4?"-outline":null)-secondary" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="4">Picked Up</a>
-                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<5?"-outline":null)-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="5">Cancel</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<5?"-outline":null)-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="6">Cancel</a>
                                 @if (order.StatusNavigation.StatusId >= 4)
                                 {
                                     <label class="btn btn-light border-dark disabled">
