@@ -296,6 +296,7 @@ namespace KurbSide.Controllers
                 }
             }
 
+            ViewData["sales"] = businessSales;
             ViewData["discountTotal"] = discountTotal;
             return View(cart);
         }
