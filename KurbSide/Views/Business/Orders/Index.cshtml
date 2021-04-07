@@ -126,11 +126,11 @@
                                 <label class="btn btn-dark disabled">
                                     <span>Quick Actions:</span>
                                 </label>
-                                <a class="btn @(order.StatusNavigation.StatusId<1?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<1?"-outline":null)-warning" asp-controller="Business" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="1">Accept</a>
-                                <a class="btn @(order.StatusNavigation.StatusId<2?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<2?"-outline":null)-info" asp-controller="Business" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="2">Preparing</a>
-                                <a class="btn @(order.StatusNavigation.StatusId<3?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<3?"-outline":null)-success" asp-controller="Business" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="3">Ready</a>
-                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<4?"-outline":null)-secondary" asp-controller="Business" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="4">Picked Up</a>
-                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<5?"-outline":null)-danger" asp-controller="Business" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="5">Cancel</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<1?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<1?"-outline":null)-warning" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="1">Accept</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<2?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<2?"-outline":null)-info" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="2">Preparing</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<3?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<3?"-outline":null)-success" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="3">Ready</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<4?"-outline":null)-secondary" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="4">Picked Up</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<5?"-outline":null)-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="5">Cancel</a>
                                 @if (order.StatusNavigation.StatusId >= 4)
                                 {
                                     <label class="btn btn-light border-dark disabled">
