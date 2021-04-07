@@ -339,6 +339,8 @@ namespace KurbSide.Models
                     .IsRequired()
                     .HasMaxLength(100);
 
+                entity.Property(e => e.Price).HasColumnType("decimal(19, 4)");
+
                 entity.Property(e => e.Removed)
                     .IsRequired()
                     .HasDefaultValueSql("('FALSE')");

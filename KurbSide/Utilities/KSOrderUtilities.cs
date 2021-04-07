@@ -52,10 +52,10 @@ namespace KurbSide.Utilities
         {
             foreach (var sale in sales.Where(sale => item.SaleItem.Any(s => s.SaleId.Equals(sale.SaleId))))
             {
-                return (decimal) item.Price-((decimal)item.Price*sale.SaleDiscountPercentage);
+                return item.Price-(item.Price*sale.SaleDiscountPercentage);
             }
 
-            return (decimal)item.Price;
+            return item.Price;
         }
     }
 }

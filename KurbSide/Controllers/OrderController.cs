@@ -293,7 +293,7 @@ namespace KurbSide.Controllers
                 if (saleId != new Guid())
                 {
                     var sale = await _context.Sale.Where(s => s.SaleId.Equals(saleId)).FirstOrDefaultAsync();
-                    discountTotal += (decimal)(cartItem.Item.Price * cartItem.Quantity) * sale.SaleDiscountPercentage;
+                    discountTotal += (cartItem.Item.Price * cartItem.Quantity) * sale.SaleDiscountPercentage;
                 }
             }
 
@@ -337,7 +337,7 @@ namespace KurbSide.Controllers
                 return RedirectToAction("Index", "Store");
             }
 
-            var cartSubTotal = (decimal) cartItems.Sum(ci => ci.Quantity * ci.Item.Price).Value;
+            var cartSubTotal = cartItems.Sum(ci => ci.Quantity * ci.Item.Price);
 
             decimal discountTotal = 0;
             
@@ -351,7 +351,7 @@ namespace KurbSide.Controllers
                 if (saleId != new Guid())
                 {
                     var sale = await _context.Sale.Where(s => s.SaleId.Equals(saleId)).FirstOrDefaultAsync();
-                    discountTotal += (decimal)(cartItem.Item.Price * cartItem.Quantity) * sale.SaleDiscountPercentage;
+                    discountTotal += (cartItem.Item.Price * cartItem.Quantity) * sale.SaleDiscountPercentage;
                 }
             }
 
