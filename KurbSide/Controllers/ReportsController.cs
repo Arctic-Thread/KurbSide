@@ -215,6 +215,7 @@ namespace KurbSide.Controllers
                 pdfGrid.DataSource = itemTable;
                 
             }
+            //Downloads report for all the removed items
             else if (pdfName=="RemovedItemsReport")
             {
                 var itemsList =  await _context.Item

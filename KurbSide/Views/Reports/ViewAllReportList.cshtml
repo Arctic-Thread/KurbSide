@@ -9,16 +9,34 @@
 
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title text-sm-center">Navigation</h5>
+            <h5 class="card-title text-sm-center">Item Reports</h5>
             <p class="card-text">
-                <div class="btn-group-vertical w-100" role="group">
-                    <a asp-controller="Reports" asp-action="ViewAllItemsReport" class="btn btn-secondary">View All Items Report</a>
-                    <a asp-controller="Reports" asp-action="ViewAvailableItemsReport" class="btn btn-secondary">View All Available Items Report</a>
-                    <a asp-controller="Reports" asp-action="ViewRemovedItemsReport" class="btn btn-secondary">View all Removed Items Report</a>
-                    <a asp-controller="Reports" asp-action="" class="btn btn-secondary">Work in progress</a>
-                    
+            <div class="btn-group-vertical w-100" role="group">
+                <a asp-controller="Reports" asp-action="ViewAllItemsReport" class="btn btn-secondary">View All Items Report</a>
+                <a asp-controller="Reports" asp-action="ViewAvailableItemsReport" class="btn btn-secondary">View All Available Items Report</a>
+                <a asp-controller="Reports" asp-action="ViewRemovedItemsReport" class="btn btn-secondary">View all Removed Items Report</a>
+            </div>
+            <hr/>
+            <div class="container container-fluid justify-content-center">
+                <div class="row justify-content-between">
+                    <a class="btn btn-sm btn-secondary" asp-controller="Business" asp-action="Index">Back to Dashboard</a>
                 </div>
-            </p>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title text-sm-center">Sales Reports</h5>
+            <p class="card-text">
+            <div class="btn-group-vertical w-100" role="group">
+                <a asp-controller="Reports" asp-action="" class="btn btn-secondary">Work in progress</a>
+                <a asp-controller="Reports" asp-action="" class="btn btn-secondary">Work in progress</a>
+                <a asp-controller="Reports" asp-action="" class="btn btn-secondary">Work in progress</a>
+            </div>
         </div>
     </div>
+    <hr/>
+
 </div>
