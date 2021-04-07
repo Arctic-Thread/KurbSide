@@ -483,7 +483,7 @@ namespace KurbSide.Controllers
             //Retrieve the existing status(es) that are relevant
             //to the current business
             var status = orders
-                .Select(o => o.StatusNavigation.StatusName)
+                .Select(o => o.StatusNavigation.StatusName.ToUpper().Trim())
                 .Distinct()
                 .ToList();
 
@@ -494,8 +494,12 @@ namespace KurbSide.Controllers
                 TempData["filter"] = filter;
                 //sort by category if the search term/filter
                 //  is contained in the categories list
-                if (false)
-                { }
+                if (status.Contains(filter.ToUpper()))
+                {
+                    orders = orders
+                        .Where(o => o.StatusNavigation.StatusName.ToUpper().Equals(filter))
+                        .ToList();
+                }
                 //try filtering orders in the following order
                 // 1. OrderId
                 // 2. FirstName
@@ -512,21 +516,21 @@ namespace KurbSide.Controllers
                             o.Member.FirstName.ToUpper().Contains(filter.ToUpper()) ||
                             o.Member.LastName.ToUpper().Contains(filter.ToUpper()))
                         .ToList();
-                }
-
-                if (orders.Count() == 1)
-                {
-                    //this seems like an excellent idea :)
-                    TempData["sysMessage"] = $"Only one order found for {filter}, redirecting.";
-                    return RedirectToAction("EditOrder", new {id = orders.First().OrderId});
+                    
+                    if (orders.Count() == 1)
+                    {
+                        //this seems like an excellent idea :)
+                        TempData["sysMessage"] = $"Only one order found for {filter}, redirecting to order.";
+                        return RedirectToAction("EditOrder", new {id = orders.First().OrderId});
+                    }
                 }
             }
             
-            var paginatedList = KurbSideUtils.KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
+            var paginatedList = KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
 
             //Gather temp data and pagination/filter info
             //  all in to one place for use 
-            // TempData["itemCategories"] = categories;
+            TempData["status"] = status;
             TempData["currentPage"] = page;
             TempData["totalPage"] = paginatedList.TotalPages;
             TempData["perPage"] = perPage;
