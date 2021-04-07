@@ -356,7 +356,7 @@ namespace KurbSide.Controllers
             }
 
             cartSubTotal -= discountTotal;
-            var taxRate = (decimal) currentMember.ProvinceCodeNavigation.TaxRate;
+            var taxRate = currentMember.ProvinceCodeNavigation.TaxRate;
             var taxTotal = taxRate * cartSubTotal;
             var pendingOrderStatus =
                 await _context.OrderStatus.Where(s => s.StatusName.Equals("Pending")).FirstOrDefaultAsync();

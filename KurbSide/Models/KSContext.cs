@@ -555,7 +555,7 @@ namespace KurbSide.Models
                     .HasMaxLength(5)
                     .HasDefaultValueSql("('')");
 
-                entity.Property(e => e.TaxRate).HasDefaultValueSql("((0))");
+                entity.Property(e => e.TaxRate).HasColumnType("decimal(19, 4)");
 
                 entity.HasOne(d => d.CountryCodeNavigation)
                     .WithMany(p => p.Province)

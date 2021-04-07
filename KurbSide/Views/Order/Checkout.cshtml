@@ -120,7 +120,7 @@ else
                         decimal discountTotal = (decimal) ViewData["discountTotal"];
                         decimal subtotalAfterDiscount = subtotalBeforeDiscount - discountTotal;
 
-                        decimal taxRate = (decimal) Math.Round(Model.Member.ProvinceCodeNavigation.TaxRate.Value, 2);
+                        decimal taxRate = Math.Round(Model.Member.ProvinceCodeNavigation.TaxRate, 2);
                         decimal tax = Math.Round(taxRate * subtotalAfterDiscount, 2);
                         decimal serviceFee = 3.50m;
                         decimal grandTotal = subtotalAfterDiscount + tax + serviceFee;
