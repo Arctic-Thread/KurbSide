@@ -32,7 +32,7 @@
         </form>
     </div>
     <div class="card-body row">
-        <table class="table table-responsive-sm">
+        <table class="table">
             <thead>
             <tr>
                 <th scope="col">
@@ -49,7 +49,17 @@
                 </th>
             </tr>
             </thead>
-            <tboddy>
+            <style>
+                tr.hover-controls {
+                    display: none;
+                    margin: auto;
+                }
+                tr.hover-controls:hover,
+                tr:not(.hover-controls):hover + tr.hover-controls {
+                    display: table-row;
+                }
+            </style>
+            <tbody>
                 @foreach (var order in Model)
                 {
                     <tr>
@@ -63,23 +73,37 @@
                             <td>
                                 @order.SubTotal
                             </td>
-                            <td>
-                                <span class="btn-group btn-group-toggle" data-toggle="buttons">
-                                    <label class="btn btn-outline-secondary active">
-                                      <input type="radio" name="status" id="status1" autocomplete="off"> Active
-                                    </label>
-                                    <label class="btn btn-outline-secondary">
-                                      <input type="radio" name="status" id="status2" autocomplete="off"> Radio
-                                    </label>
-                                    <label class="btn btn-outline-secondary">
-                                      <input type="radio" name="status" id="status3" autocomplete="off"> Radio
-                                    </label>
-                                </span>
+                            <td style="width: 1px">
+                                <span style="width: 10rem;" class="btn disabled btn-block btn-@order.StatusNavigation.BootstrapClass">@order.StatusNavigation.StatusName</span>
                             </td>
                         </form>
                     </tr>
+                    <tr class="hover-controls text-center align-middle bg-light">
+                        <td colspan="4">
+                            <span class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-outline-secondary active disabled">
+                                    <input type="radio" name="status" id="status1" autocomplete="off" value=""> Pending
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    <input type="radio" name="status" id="status1" autocomplete="off" value=""> Accepted
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    <input type="radio" name="status" id="status2" autocomplete="off"> Preparing
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    <input type="radio" name="status" id="status3" autocomplete="off"> Ready For Pickup
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    <input type="radio" name="status" id="status3" autocomplete="off"> Picked Up
+                                </label>
+                                <label class="btn btn-outline-secondary">
+                                    <input type="radio" name="status" id="status3" autocomplete="off"> Cancel
+                                </label>
+                            </span>
+                        </td>
+                    </tr>
                 }
-            </tboddy>
+            </tbody>
         </table>
     </div>
 </div>

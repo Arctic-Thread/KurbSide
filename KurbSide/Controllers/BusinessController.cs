@@ -553,6 +553,8 @@ namespace KurbSide.Controllers
             var orders = await _context.Order
                 .Where(o => o.Business.BusinessId.Equals(business.BusinessId))
                 .Include(o => o.Member)
+                .Include(o => o.StatusNavigation)
+                .OrderBy(o => o.Status)
                 .ToListAsync();
             
             return View("Orders/Index", orders);
