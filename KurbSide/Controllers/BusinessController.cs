@@ -490,7 +490,8 @@ namespace KurbSide.Controllers
             //Filtering functions
             if (!string.IsNullOrEmpty(filter))
             {
-                TempData["catalogueFilter"] = filter;
+                filter = filter.Trim();
+                TempData["filter"] = filter;
                 //sort by category if the search term/filter
                 //  is contained in the categories list
                 if (false)
@@ -507,16 +508,32 @@ namespace KurbSide.Controllers
                     orders = orders
                         .Where
                             (o =>
-                            o.OrderId.ToString().Contains(filter) ||
-                            o.Member.FirstName.Contains(filter) ||
-                            o.Member.LastName.Contains(filter))
+                            o.OrderId.ToString().ToUpper().Contains(filter.ToUpper()) ||
+                            o.Member.FirstName.ToUpper().Contains(filter.ToUpper()) ||
+                            o.Member.LastName.ToUpper().Contains(filter.ToUpper()))
                         .ToList();
+                }
+
+                if (orders.Count() == 1)
+                {
+                    //this seems like an excellent idea :)
+                    TempData["sysMessage"] = $"Only one order found for {filter}, redirecting.";
+                    return RedirectToAction("EditOrder", new {id = orders.First().OrderId});
                 }
             }
             
             var paginatedList = KurbSideUtils.KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
 
-            return View("Orders/Index", orders);
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            // TempData["itemCategories"] = categories;
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedList.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedList.HasNextPage;
+            TempData["hasPrevPage"] = paginatedList.HasPreviousPage;
+            
+            return View("Orders/Index", paginatedList);
         }
         #endregion
 

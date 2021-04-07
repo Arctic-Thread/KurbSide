@@ -2,16 +2,22 @@
 @{
     ViewData["Title"] = "Business Orders";
 
-    var rawFilter = (string)TempData["catalogueFilter"];
+    // var rawCategories = (IEnumerable<string>)TempData["status"];
+    var rawFilter = (string)TempData["filter"];
 
+    // var categories = new List<string>();
     var activeFilter = "";
 
-    // var page = (int)TempData["currentPage"];
-    // var perPage = (int)TempData["perPage"];
-    // var totalPage = (int)TempData["totalPage"];
-    // var hasNext = (bool)TempData["hasNextPage"];
-    // var hasPrev = (bool)TempData["hasPrevPage"];
-    
+    var page = (int)TempData["currentPage"];
+    var perPage = (int)TempData["perPage"];
+    var totalPage = (int)TempData["totalPage"];
+    var hasNext = (bool)TempData["hasNextPage"];
+    var hasPrev = (bool)TempData["hasPrevPage"];
+
+    // if (rawCategories != null)
+    // {
+    //     categories.AddRange(rawCategories);
+    // }
     if (rawFilter != null)
     {
         activeFilter = rawFilter;
@@ -28,6 +34,12 @@
                 <div class="input-group-append">
                     <input type="submit" class="input-group-text btn-dark text-light bg-dark border-dark" id="btnGroupAddon" value="Search" />
                 </div>
+                    @if (!string.IsNullOrWhiteSpace(activeFilter))
+                    {
+                        <div class="input-group-append">
+                            <a asp-action="Orders" class="input-group-text btn btn-dark text-light bg-danger border-dark">Clear Search</a>
+                        </div>
+                    }
             </div>
         </form>
     </div>
@@ -60,50 +72,109 @@
                 }
             </style>
             <tbody>
-                @foreach (var order in Model)
-                {
-                    <tr>
-                        <form method="post" asp-controller="Order" asp-action="UpdateStatus">
-                            <td>
-                                @order.OrderId.ToString().Substring(order.OrderId.ToString().Length - 6).ToUpper()
-                            </td>
-                            <td>
-                                @(order.Member.FirstName + " " + order.Member.LastName)
-                            </td>
-                            <td>
-                                @order.SubTotal
-                            </td>
-                            <td style="width: 1px">
-                                <span style="width: 10rem;" class="btn disabled btn-block btn-@order.StatusNavigation.BootstrapClass">@order.StatusNavigation.StatusName</span>
-                            </td>
-                        </form>
-                    </tr>
-                    <tr class="hover-controls text-center align-middle bg-light">
-                        <td colspan="4">
-                            <span class="btn-group btn-group-toggle" data-toggle="buttons">
-                                <label class="btn btn-outline-secondary active disabled">
-                                    <input type="radio" name="status" id="status1" autocomplete="off" value=""> Pending
-                                </label>
-                                <label class="btn btn-outline-secondary">
-                                    <input type="radio" name="status" id="status1" autocomplete="off" value=""> Accepted
-                                </label>
-                                <label class="btn btn-outline-secondary">
-                                    <input type="radio" name="status" id="status2" autocomplete="off"> Preparing
-                                </label>
-                                <label class="btn btn-outline-secondary">
-                                    <input type="radio" name="status" id="status3" autocomplete="off"> Ready For Pickup
-                                </label>
-                                <label class="btn btn-outline-secondary">
-                                    <input type="radio" name="status" id="status3" autocomplete="off"> Picked Up
-                                </label>
-                                <label class="btn btn-outline-secondary">
-                                    <input type="radio" name="status" id="status3" autocomplete="off"> Cancel
-                                </label>
-                            </span>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <form method="post" asp-controller="Order" asp-action="UpdateStatus">
+                        <td>
+                            @order.OrderId.ToString().Substring(order.OrderId.ToString().Length - 6).ToUpper()
                         </td>
-                    </tr>
-                }
+                        <td>
+                            @(order.Member.FirstName + " " + order.Member.LastName)
+                        </td>
+                        <td>
+                            @order.SubTotal
+                        </td>
+                        <td style="width: 1px">
+                            <span style="width: 10rem;" class="btn disabled btn-block btn-@order.StatusNavigation.BootstrapClass">@order.StatusNavigation.StatusName</span>
+                        </td>
+                    </form>
+                </tr>
+                <tr class="hover-controls text-center align-middle bg-light">
+                    <td colspan="4">
+                        <span class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-outline-secondary active disabled">
+                                <input type="radio" name="status" id="status1" autocomplete="off" value=""> Pending
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                <input type="radio" name="status" id="status1" autocomplete="off" value=""> Accepted
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                <input type="radio" name="status" id="status2" autocomplete="off"> Preparing
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                <input type="radio" name="status" id="status3" autocomplete="off"> Ready For Pickup
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                <input type="radio" name="status" id="status3" autocomplete="off"> Picked Up
+                            </label>
+                            <label class="btn btn-outline-secondary">
+                                <input type="radio" name="status" id="status3" autocomplete="off"> Cancel
+                            </label>
+                        </span>
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
+                <div class="container container-fluid justify-content-center">
+                    <div class="row justify-content-between">
+                        <a class="btn btn-sm btn-light border-secondary @(hasPrev?null:"disabled")" asp-action="Orders" asp-route-page="@(page-1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("<Prev Page")</a>
+                        <span>
+                            <form class="col" method="GET" asp-action="Orders" asp-route-page="@(page)" asp-route-filter="@(activeFilter)">
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text bg-light border-secondary">
+                                            Page @(page) / @(totalPage)
+                                        </label>
+                                    </div>
+                                    <select name="perPage" id="perPage" class="custom-select bg-light border-secondary" style="max-width: 200px;" onchange="submit();">
+                                        @if (perPage == 5)
+                                        {
+                                            <option value="5" selected>5 Per Page</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="5">5 Per Page</option>
+                                        }
+                                        @if (perPage == 10)
+                                        {
+                                            <option value="10" selected>10 Per Page</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="10">10 Per Page</option>
+                                        }
+                                        @if (perPage == 25)
+                                        {
+                                            <option value="25" selected>25 Per Page</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="25">25 Per Page</option>
+                                        }
+                                        @if (perPage == 50)
+                                        {
+                                            <option value="50" selected>50 Per Page</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="50">50 Per Page</option>
+                                        }
+                                        @if (perPage == 100)
+                                        {
+                                            <option value="100" selected>100 Per Page</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="100">100 Per Page</option>
+                                        }
+                                    </select>
+                                </div>
+                            </form>
+                        </span>
+                        <a class="btn btn-sm btn-light border-secondary @(hasNext?null:"disabled")" asp-action="Orders" asp-route-page="@(page+1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("Next Page>")</a>
+                    </div>
+                </div>
     </div>
 </div>
