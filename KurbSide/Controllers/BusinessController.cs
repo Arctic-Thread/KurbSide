@@ -456,7 +456,7 @@ namespace KurbSide.Controllers
             return View("Orders/Edit");
         }
 
-        public async Task<IActionResult> Orders()
+        public async Task<IActionResult> Orders(string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
             var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -480,6 +480,42 @@ namespace KurbSide.Controllers
                 .OrderBy(o => o.Status)
                 .ToListAsync();
             
+            //Retrieve the existing status(es) that are relevant
+            //to the current business
+            var status = orders
+                .Select(o => o.StatusNavigation.StatusName)
+                .Distinct()
+                .ToList();
+
+            //Filtering functions
+            if (!string.IsNullOrEmpty(filter))
+            {
+                TempData["catalogueFilter"] = filter;
+                //sort by category if the search term/filter
+                //  is contained in the categories list
+                if (false)
+                { }
+                //try filtering orders in the following order
+                // 1. OrderId
+                // 2. FirstName
+                // 3. LastName
+                //HACK: this is a ham-fisted way to do this, but it is unlikely
+                // that any user will be named 22BBF0/etc so there should be very little
+                // collision.
+                else
+                {
+                    orders = orders
+                        .Where
+                            (o =>
+                            o.OrderId.ToString().Contains(filter) ||
+                            o.Member.FirstName.Contains(filter) ||
+                            o.Member.LastName.Contains(filter))
+                        .ToList();
+                }
+            }
+            
+            var paginatedList = KurbSideUtils.KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
+
             return View("Orders/Index", orders);
         }
         #endregion
