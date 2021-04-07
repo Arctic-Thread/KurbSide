@@ -37,9 +37,13 @@ namespace KurbSide.ViewComponents
                 .ThenInclude(ci => ci.Item)
                 .FirstOrDefaultAsync();
 
-            var sales = await _context.Sale
-                .Where(b => b.BusinessId.Equals(cart.BusinessId))
-                .ToListAsync();
+            List<Sale> sales = null;
+            if (cart != null)
+            {
+                sales = await _context.Sale
+                    .Where(b => b.BusinessId.Equals(cart.BusinessId))
+                    .ToListAsync();
+            }
 
             if (cart != null && cart.ExpiryDate < DateTime.Today)
             {
