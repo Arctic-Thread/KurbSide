@@ -192,8 +192,6 @@ namespace KurbSide.Models
                     .IsRequired()
                     .HasMaxLength(60);
 
-                entity.Property(e => e.CloseTime).HasDefaultValueSql("(getdate())");
-
                 entity.Property(e => e.ContactFirst)
                     .IsRequired()
                     .HasMaxLength(100);
@@ -211,8 +209,6 @@ namespace KurbSide.Models
                     .HasDefaultValueSql("('CA')");
 
                 entity.Property(e => e.LogoLocation).HasMaxLength(255);
-
-                entity.Property(e => e.OpenTime).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.PhoneNumber)
                     .IsRequired()
