@@ -159,17 +159,27 @@ namespace KurbSide.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var item = await _context.Item.FirstOrDefaultAsync(i => i.ItemId == id);
+            var item = await _context.Item
+                .Include(si => si.SaleItem)
+                .FirstOrDefaultAsync(i => i.ItemId == id);
+            
             var business = await _context.Business
                 .Where(b => b.BusinessId == item.BusinessId)
                 .Include(b => b.BusinessHours)
                 .FirstOrDefaultAsync();
+
+            var sales = await _context.Sale
+                .Where(b => b.BusinessId.Equals(business.BusinessId))
+                .Include(si => si.SaleItem)
+                .ToListAsync();
 
             if (item == null)
             {
                 _logger.LogDebug("ID Mismatch. Item does not exist.");
                 return RedirectToAction("Index");
             }
+
+            ViewData["sales"] = sales;
 
             return View(Tuple.Create(business, item));
         }
