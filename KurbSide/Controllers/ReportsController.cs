@@ -117,7 +117,9 @@ namespace KurbSide.Controllers
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
                 .FirstOrDefaultAsync();
-
+            
+            TempData["businessId"] = business.BusinessId;
+            
             //Gets removed items
             var items = await _context.Item
                 .Where(b => b.BusinessId.Equals(business.BusinessId))
@@ -147,7 +149,8 @@ namespace KurbSide.Controllers
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
                 .FirstOrDefaultAsync();
-
+            
+            TempData["businessId"] = business.BusinessId;
             //Get for sale items
             var items = await _context.Item
                 .Where(b => b.BusinessId.Equals(business.BusinessId))
@@ -163,7 +166,7 @@ namespace KurbSide.Controllers
         /// <param name="pdfName"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<FileResult> CreateItemsReportsPdf(string pdfName, string name, Guid businessId)
+        public async Task<FileResult> CreateItemsReportsPdf(string pdfName, Guid businessId)
         {
             MemoryStream workStream = new MemoryStream();
             DateTime currentDate= DateTime.Now;
@@ -183,16 +186,49 @@ namespace KurbSide.Controllers
             //Set the standard font
             PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 20);
             
-            var itemsList =  await _context.Item
-                .Where(b => b.BusinessId.Equals(businessId))
-                .Select(i=> new{i.ItemName, i.Price,i.Category,i.Sku,i.Upc,i.Removed })
-                .ToListAsync();
-
-            //Make the list to IEnumerable
-            IEnumerable<object> itemTable = itemsList;
+            //Downloads report for all the items
+            if (pdfName == "AllItemsReport")
+            {
+                 var itemsList =  await _context.Item
+                    .Where(b => b.BusinessId.Equals(businessId))
+                    .Select(i=> new{i.ItemName, i.Price,i.Category,i.Sku,i.Upc,i.Removed })
+                    .ToListAsync();
+                 
+                 //Make the list to IEnumerable
+                 IEnumerable<object> itemTable = itemsList;
+                 //Assign to data source
+                 pdfGrid.DataSource = itemTable;
+                
+            }
+            //DownLoads report for all the Available items 
+            else if (pdfName == "AvailableItemsReport")
+            {
+                var itemsList =  await _context.Item
+                    .Where(b => b.BusinessId.Equals(businessId))
+                    .Where(i=> i.Removed==false)
+                    .Select(i=> new{i.ItemName, i.Price,i.Category,i.Sku,i.Upc,i.Removed })
+                    .ToListAsync();
+                
+                //Make the list to IEnumerable
+                IEnumerable<object> itemTable = itemsList;
+                //Assign to data source
+                pdfGrid.DataSource = itemTable;
+                
+            }
+            else if (pdfName=="RemovedItemsReport")
+            {
+                var itemsList =  await _context.Item
+                    .Where(b => b.BusinessId.Equals(businessId))
+                    .Where(i => i.Removed==true)
+                    .Select(i=> new{i.ItemName, i.Price,i.Category,i.Sku,i.Upc,i.Removed })
+                    .ToListAsync();
+                
+                //Make the list to IEnumerable
+                IEnumerable<object> itemTable = itemsList;
+                //Assign to data source
+                pdfGrid.DataSource = itemTable;
+            }
             
-            //Assign to data source
-            pdfGrid.DataSource = itemTable;
             
             //Draw the table to a pdf page
             pdfGrid.Draw(page, new Syncfusion.Drawing.PointF(10, 10));

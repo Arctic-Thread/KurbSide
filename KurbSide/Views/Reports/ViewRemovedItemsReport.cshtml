@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<KurbSide.Models.Item>
 
+@{
+    var businessId = (Guid)TempData["businessId"];
+}
+
 @* Stlyes for the barcode and qrcode *@
 <style>
         .barcode {
@@ -94,6 +98,6 @@
 
 
     </table>
-
+    <a id="btnDownloadGameListReport" class="btn btn-primary" asp-action="CreateItemsReportsPdf" asp-route-pdfName="RemovedItemsReport" asp-route-businessId="@businessId">Download PDF</a>
 
 </div>
