@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<KurbSide.Models.Item>
 
+@{
+    var businessId = (Guid)TempData["businessId"];
+}
+
 @* Stlyes for the barcode and qrcode *@
 <style>
         .barcode {
@@ -24,7 +28,7 @@
 
 @* Buisness head display *@
 <vc:business-head/>
-
+<div>
     @* Table for item for report listings *@
     <table class="table table-responsive-sm">
         <thead>
@@ -92,5 +96,5 @@
 
     </table>
 
-
+    <a id="btnDownloadGameListReport" class="btn btn-primary" asp-action="CreateItemsReportsPdf" asp-route-pdfName="AllItemsReport" asp-route-businessId="@businessId">Download PDF</a>
 </div>
