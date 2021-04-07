@@ -1,0 +1,211 @@
+﻿@using KurbSide.Controllers
+@using KurbSide.Utilities
+@model IEnumerable<KurbSide.Models.Item>
+
+@{
+    ViewData["Title"] = "AddItemsToSale";
+
+    var sale = (Sale) ViewData["sale"];
+
+    var rawCategories = (IEnumerable<string>) TempData["itemCategories"];
+    var rawFilter = (string) TempData["saleFilter"];
+
+    var categories = new List<string>();
+    var activeFilter = "";
+
+    var page = (int) TempData["currentPage"];
+    var perPage = (int) TempData["perPage"];
+    var totalPage = (int) TempData["totalPage"];
+    var hasNext = (bool) TempData["hasNextPage"];
+    var hasPrev = (bool) TempData["hasPrevPage"];
+
+    if (rawCategories != null)
+    {
+        categories.AddRange(rawCategories);
+    }
+    if (rawFilter != null)
+    {
+        activeFilter = rawFilter;
+    }
+}
+<script src="~/js/Business/Sales/AddItemToSale.js"></script>
+<link rel="stylesheet" href="~/css/site.css"/>
+
+<vc:business-head/>
+
+<h1>Add items to @sale.SaleName</h1>
+
+<div class="card">
+    <div class="card-body row">
+        <div class="col">
+            <div class="btn-group btn-group-sm" style="flex-wrap: wrap;">
+                <a class="btn btn-sm btn-dark btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-controller="Business" asp-action="ManageSaleItem" asp-route-saleId="@sale.SaleId" asp-route-perPage="@(perPage)"> @((activeFilter != "") ? "Clear Filter" : "Filter By Category") </a>
+                @foreach (string category in categories)
+                {
+                    <a class="btn btn-sm btn-light border-secondary rounded @(category.Equals(activeFilter) ? "active" : null)" style="margin:1px 1px 3px 1px;" asp-route-saleId="@sale.SaleId" asp-route-filter="@category" asp-route-perPage="@(perPage)">@category</a>
+                }
+                @if (categories.Count <= 0)
+                {
+                    <span class="btn btn-sm btn-outline-light active border-secondary rounded" style="margin:1px 1px 3px 1px; opacity: 0.50;">No Categories</span>
+                }
+            </div>
+        </div>
+        <form class="col" method="GET" asp-controller="Business" asp-action="ManageSaleItem">
+            <div class="input-group input-group-sm">
+                <input type="hidden" name="page" value="@(page)"/>
+                <input type="hidden" name="perPage" value="@(perPage)"/>
+                <input type="hidden" id="saleId" name="saleId" value="@sale.SaleId">
+                <input type="text" id="filter" name="filter" class="form-control border-secondary" placeholder="Search Items" value="@(activeFilter)">
+                <div class="input-group-append">
+                    <input type="submit" class="input-group-text btn-dark text-light bg-dark border-dark" id="btnGroupAddon" value="Search"/>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-responsive-sm">
+            <thead>
+            <tr>
+                <th class="align-middle text-center">
+                    @Html.DisplayNameFor(model => model.ItemName)
+                </th>
+                <th class="align-middle text-center">
+                    @Html.DisplayNameFor(model => model.Details)
+                </th>
+                <th class="align-middle text-center">
+                    Original Price
+                </th>
+                <th class="align-middle text-center">
+                    Price With Discount
+                </th>
+                <th class="align-middle text-center">
+                    @Html.DisplayNameFor(model => model.Category)
+                </th>
+                <th class="align-middle text-center">
+                    Controls
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="align-middle text-center">
+                        @Html.DisplayFor(modelItem => item.ItemName)
+                    </td>
+                    <td class="align-middle text-center ellipsisForLongText">
+                        @Html.DisplayFor(modelItem => item.Details)
+                    </td>
+                    <td class="align-middle text-center">
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td class="align-middle text-center">
+                        @(((decimal) item.Price - ((decimal) item.Price * (decimal) @sale.SaleDiscountPercentage)).ToString("$#0.00"))
+                    </td>
+                    <td class="align-middle text-center">
+                        @Html.DisplayFor(modelItem => item.Category)
+                    </td>
+                    <td class="align-middle text-center">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            @if (KSOrderUtilities.KSCheckIfItemInSale(item, sale.SaleId))
+                            {
+                                <label class="btn btn-outline-success active" style="width: 85px;">
+                                    <input type="radio" name="saleItem-@item.ItemId" id="addToSale-@item.ItemId" checked>Add
+                                </label>
+
+                                <label class="btn btn-outline-danger" style="width: 85px;">
+                                    <input type="radio" name="saleItem-@item.ItemId" id="removeFromSale-@item.ItemId">Remove
+                                </label>
+                            }
+                            else
+                            {
+                                <label class="btn btn-outline-success" style="width: 85px;">
+                                    <input type="radio" name="saleItem-@item.ItemId" id="addToSale-@item.ItemId">Add
+                                </label>
+
+                                <label class="btn btn-outline-danger active" style="width: 85px;">
+                                    <input type="radio" name="saleItem-@item.ItemId" id="removeFromSale-@item.ItemId" checked>Remove
+                                </label>
+                            }
+                        </div>
+                    </td>
+                </tr>
+
+                <script type="text/javascript">
+                                    document.getElementById('addToSale-@item.ItemId').addEventListener("click", function (){ addToSale('@sale.SaleId', '@item.ItemId', '@BusinessController.AddOrRemove.ADD')})
+                                    document.getElementById('removeFromSale-@item.ItemId').addEventListener("click", function(){ addToSale('@sale.SaleId', '@item.ItemId', '@BusinessController.AddOrRemove.REMOVE')})
+                        </script>
+            }
+            </tbody>
+        </table>
+        <div class="container container-fluid justify-content-center">
+            <div class="row justify-content-between">
+                <a class="btn btn-sm btn-light border-secondary @(hasPrev ? null : "disabled")" asp-controller="Business" asp-action="ManageSaleItem" asp-route-saleId="@sale.SaleId" asp-route-page="@(page - 1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("<Prev Page")</a>
+                <span>
+                    <form class="col" method="GET" asp-controller="Business" asp-action="ManageSaleItem" asp-route-page="@(page)" asp-route-filter="@(activeFilter)">
+                        <input type="hidden" id="saleId" name="saleId" value="@sale.SaleId">
+                        <input type="hidden" id="filter" name="filter" value="@(activeFilter)">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text bg-light border-secondary">
+                                    Page @(page) / @(totalPage)
+                                </label>
+                            </div>
+                            <select name="perPage" id="perPage" class="custom-select bg-light border-secondary" style="max-width: 200px;" onchange="submit();">
+                                @if (perPage == 5)
+                                {
+                                    <option value="5" selected>5 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="5">5 Per Page</option>
+                                }
+                                @if (perPage == 10)
+                                {
+                                    <option value="10" selected>10 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="10">10 Per Page</option>
+                                }
+                                @if (perPage == 25)
+                                {
+                                    <option value="25" selected>25 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="25">25 Per Page</option>
+                                }
+                                @if (perPage == 50)
+                                {
+                                    <option value="50" selected>50 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="50">50 Per Page</option>
+                                }
+                                @if (perPage == 100)
+                                {
+                                    <option value="100" selected>100 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="100">100 Per Page</option>
+                                }
+                            </select>
+                        </div>
+                    </form>
+                </span>
+                <a class="btn btn-sm btn-light border-secondary @(hasNext ? null : "disabled")" asp-controller="Business" asp-action="ManageSaleItem" asp-route-saleId="@sale.SaleId" asp-route-page="@(page + 1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("Next Page>")</a>
+            </div>
+        </div>
+        <hr/>
+        <div class="container container-fluid justify-content-center">
+            <div class="row justify-content-between">
+                <a class="btn btn-sm btn-secondary" asp-action="ViewSales">Back to Sales</a>
+            </div>
+        </div>
+    </div>
+</div>

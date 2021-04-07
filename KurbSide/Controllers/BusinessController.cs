@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using KurbSide.Service;
 using KurbSide.Utilities;
+using KurbSideUtils;
 
 namespace KurbSide.Controllers
 {
@@ -560,6 +561,430 @@ namespace KurbSide.Controllers
             return View(businessHours);
         }
         #endregion
+
+        #region Sales
+
+        [HttpGet]
+        public async Task<IActionResult> ViewSales(string filter = "", int page = 1, int perPage = 5, string viewInactive = "false")
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            bool viewInactiveSales = bool.Parse(viewInactive.KSTitleCase());
+
+            var sales = await _context.Sale
+                .Where(s => s.BusinessId.Equals(business.BusinessId))
+                .Where(s => s.Active == !viewInactiveSales)
+                .OrderBy(s => s.SaleName)
+                .ToListAsync();
+
+            var categories = sales
+                .Select(s => s.SaleCategory)
+                .Distinct()
+                .ToList();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                TempData["saleFilter"] = filter;
+                sales = sales
+                    .Where(i => i.SaleName.ToLower().Contains(filter.ToLower()))
+                    .ToList();
+                    
+                ViewData["NoItemsFoundReason"] = $"Sorry, no results found for {filter}.";
+            }
+
+            var paginatedSales = KSPaginatedList<Sale>.Create(sales.AsQueryable(), page, perPage);
+
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["saleCategories"] = categories;
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedSales.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedSales.HasNextPage;
+            TempData["hasPrevPage"] = paginatedSales.HasPreviousPage;
+            TempData["viewInactiveSales"] = viewInactiveSales;
+
+            return View("SalesList", paginatedSales);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateSale()
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var blankSale = new Sale
+            {
+                BusinessId = business.BusinessId
+            };
+
+            var items = await _context.Item
+                .Where(i => i.BusinessId.Equals(business.BusinessId))
+                .ToListAsync();
+
+            return View(blankSale);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateSale(Guid businessId, Sale sale)
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            //Ensure that the business can only add items for themselves
+            if (businessId != sale.BusinessId)
+            {
+                _logger.LogDebug("Debug: Id Mismatch. Edit not performed.");
+                return RedirectToAction("Index");
+            }
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    sale.SaleDiscountPercentage /= 100; //User enters discount as whole numbers(15), they are saved as decimals(0.15).
+                    await _context.AddAsync(sale);
+                    await _context.SaveChangesAsync();
+                    _logger.LogDebug($"Debug: Sale created. {sale.BusinessId} - {sale.SaleId}");
+                    return RedirectToAction("ManageSaleItem", new{ sale.SaleId});
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                _logger.LogError("Error: Business does not exist, sale creation failed.");
+                return RedirectToAction("ViewSales");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex.GetBaseException().Message}. Sale creation not performed.");
+                return RedirectToAction("ViewSales");
+            }
+
+            return View(sale);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ManageSaleItem(Guid saleId, string filter = "", int page = 1, int perPage = 5)
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var sale = await _context.Sale
+                .Where(s => s.BusinessId.Equals(business.BusinessId))
+                .Where(s => s.SaleId.Equals(saleId))
+                .FirstOrDefaultAsync();
+
+            if (sale == null)
+            {
+                _logger.LogDebug($"Debug: Sale ID mismatch. Sale {saleId} not found for business {business.BusinessId}.");
+                TempData["sysMessage"] = "Error: Something went wrong while finding your sale.";
+                return RedirectToAction("ViewSales");
+            }
+
+            var items = await _context.Item
+                .Where(i => i.BusinessId.Equals(business.BusinessId))
+                .Where(si => si.Removed == false)
+                .Include(si => si.SaleItem)
+                .ToListAsync();
+            
+            var categories = items
+                .Select(i => i.Category)
+                .Distinct()
+                .ToList();
+            
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                TempData["saleFilter"] = filter;
+                if (categories.Contains(filter))
+                {
+                    items = items
+                        .Where(i => i.Category.Equals(filter))
+                        .ToList();
+                }
+                else
+                {
+                    items = items
+                        .Where(i => i.ItemName.ToLower().Contains(filter.ToLower()))
+                        .ToList();
+                }
+            }
+            
+            var paginatedItems = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
+            
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["itemCategories"] = categories;
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedItems.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedItems.HasNextPage;
+            TempData["hasPrevPage"] = paginatedItems.HasPreviousPage;
+
+            ViewData["sale"] = sale;
+            return View(paginatedItems);
+        }
+
+        public enum AddOrRemove
+        {
+            ADD,
+            REMOVE
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ManageSaleItem(Guid saleId, Guid itemId, AddOrRemove addOrRemove)
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var sale = await _context.Sale
+                .Where(s => s.BusinessId.Equals(business.BusinessId))
+                .Where(s => s.SaleId.Equals(saleId))
+                .FirstOrDefaultAsync();
+
+            var item = await _context.Item
+                .Where(i => i.BusinessId.Equals(business.BusinessId))
+                .Where(i => i.ItemId.Equals(itemId))
+                .FirstOrDefaultAsync();
+
+            if (sale == null)
+            {
+                _logger.LogDebug($"Debug: Sale ID mismatch. Sale {saleId} not found for business {business.BusinessId}.");
+                TempData["sysMessage"] = "Error: Something went wrong while finding your sale.";
+                return RedirectToAction("ViewSales");
+            }
+
+            if (item == null)
+            {
+                _logger.LogDebug($"Debug: Item ID mismatch. Sale {itemId} not found for business {business.BusinessId}.");
+                TempData["sysMessage"] = "Error: Something went wrong while finding your sale.";
+                return RedirectToAction("ViewSales");
+            }
+
+            try
+            {
+                var saleItem = await _context.SaleItem
+                    .Where(s => s.SaleId.Equals(saleId))
+                    .Where(i => i.ItemId.Equals(itemId))
+                    .FirstOrDefaultAsync();
+                
+                if (addOrRemove == AddOrRemove.ADD)
+                {
+                    if (saleItem == null)
+                    {
+                        SaleItem saleItemAdd = new SaleItem
+                        {
+                            SaleId = saleId,
+                            ItemId = itemId
+                        };
+
+                        await _context.SaleItem.AddAsync(saleItemAdd);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                else if (addOrRemove == AddOrRemove.REMOVE)
+                {
+                    if (saleItem != null)
+                    {
+                        _context.Remove(saleItem);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                _logger.LogError($"Error: Sale {sale.SaleId} does not exist, Update Failed.");
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex.GetBaseException().Message}. Update not performed.");
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("ManageSaleItem", new{saleId});
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditSale(Guid saleId)
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var sale = await _context.Sale
+                .Where(s => s.BusinessId.Equals(business.BusinessId))
+                .Where(s => s.SaleId.Equals(saleId))
+                .FirstOrDefaultAsync();
+
+            if (sale == null)
+            {
+                _logger.LogDebug($"Debug: Sale ID mismatch. Sale {saleId} not found for business {business.BusinessId}.");
+                TempData["sysMessage"] = "Error: Something went wrong while finding your sale.";
+                return RedirectToAction("ViewSales");
+            }
+            
+            sale.SaleDiscountPercentage = Math.Round(sale.SaleDiscountPercentage * 100, 2); //User enters discount as whole numbers(15), they are saved as decimals(0.15).
+
+            return View(sale);
+        }
         
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditSale(Guid businessId, Sale sale)
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            //Ensure that the business can only add items for themselves
+            if (businessId != sale.BusinessId)
+            {
+                _logger.LogDebug("Debug: Id Mismatch. Edit not performed.");
+                return RedirectToAction("Index");
+            }
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    sale.SaleDiscountPercentage /= 100; //User enters discount as whole numbers(15), they are saved as decimals(0.15).
+                    _context.Update(sale);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("ViewSales");
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                _logger.LogError($"Error: Sale {sale.SaleId} does not exist, Update Failed.");
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex.GetBaseException().Message}. Update not performed.");
+                return RedirectToAction("Index");
+            }
+
+            return View(sale);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SwapSaleStatus(Guid saleId)
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var sale = await _context.Sale
+                .Where(s => s.BusinessId.Equals(business.BusinessId))
+                .Where(s => s.SaleId.Equals(saleId))
+                .FirstOrDefaultAsync();
+            
+            try
+            {
+                sale.Active = !sale.Active;
+                _context.Update(sale);
+                await _context.SaveChangesAsync();
+                TempData["sysMessage"] = "Sale status changed successfully.";
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                _logger.LogError($"Error: Sale {sale.SaleId} does not exist, status change Failed.");
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex.GetBaseException().Message}. status change not performed.");
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("ViewSales");
+        }
+
+        #endregion
     }
 }

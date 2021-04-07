@@ -1,0 +1,73 @@
+﻿@model KurbSide.Models.Sale
+
+@{
+    ViewData["Title"] = "Create Sale";
+}
+
+<link href="~/css/Business/BusinessSales.css" rel="stylesheet"/>
+
+<vc:business-head/>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-controller="Business" asp-action="CreateSale" method="post" asp-route-businessId="@Model.BusinessId">
+            <h5 class="card-title text-sm-center align-content-center">Create Sale</h5>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BusinessId"/>
+
+            <div class="container container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="SaleName" class="control-label"></label>
+                            <input asp-for="SaleName" class="form-control"/>
+                            <span asp-validation-for="SaleName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="SaleDescription" class="control-label"></label>
+                            <textarea asp-for="SaleDescription" class="form-control" style="height: 77px;"></textarea>
+                            <span asp-validation-for="SaleDescription" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="SaleCategory" class="control-label"></label>
+                            <input asp-for="SaleCategory" class="form-control"/>
+                            <span asp-validation-for="SaleCategory" class="text-danger"></span>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <label asp-for="SaleDiscountPercentage" class="control-label"></label>
+                            <div class="input-group">
+                                <input type="number" asp-for="SaleDiscountPercentage" class="form-control noArrowsOnInputNumber" min="1" max="100">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="basic-addon2">%</span>
+                                </div>
+                            </div>
+                            <span asp-validation-for="SaleDiscountPercentage" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-check custom-control custom-checkbox checkbox-lg">
+                                <input type="checkbox" asp-for="Active" class="form-check-input custom-control-input"/>
+                                <label asp-for="Active" class="form-check-label custom-control-label"></label>
+                            </div>
+                            <span asp-validation-for="Active" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+                    <a class="btn btn-sm btn-secondary" asp-action="ViewSales">Back to Sales</a>
+                    <button class="btn btn-sm btn-success" id="sales-createSale" type="submit">Create Sale</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}
