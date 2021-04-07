@@ -1,4 +1,5 @@
-﻿@model Tuple<Business, Item>
+﻿@using KurbSide.Utilities
+@model Tuple<Business, Item>
 @{
     ViewData["Title"] = Model.Item2.ItemName;
 
@@ -9,7 +10,10 @@
 
     }
 
+    var sales = (List<Sale>)ViewData["sales"];
 }
+<link href="~/css/Store/ViewItem.css" rel="stylesheet" />
+
 
 <div class="container">
     <div class="row">
@@ -43,7 +47,7 @@
                     <div class="col">
                         @if (Model.Item2.ImageLocation == null)
                         {
-                            <img id="itemImage" alt="No image available for @Model.Item2.ItemName" src="~/img/NoImageAvailable.png" width="55%" />
+                            <img id="itemImage" alt="No image available for @Model.Item2.ItemName" src="~/img/NoImageAvailable.png" width="55%" style="margin: auto; width: 100%;" />
                         }
                         else
                         {
@@ -57,10 +61,21 @@
                         @*<button type="button" class="btn2 btn-primary btn-lg btn-block">Add to cart</button>*@
                         <form method="POST" asp-controller="Order" asp-action="CartAdd">
                             <input type="hidden" name="id" value="@Model.Item2.ItemId" />
-                            <input class="btn btn-lg btn-block btn-success" type="submit" name="submit" value="Add to Cart" />
+                            <div class="addToCart">
+                                <input class="btn btn-lg btn-block btn-success addToCart" type="submit" name="submit" value="Add to Cart"/>
+                            </div>
                         </form>
                         <hr />
-                        <h5>Price: $@Html.DisplayFor(model => model.Item2.Price)</h5>
+                        @{ var discountedPrice = KSOrderUtilities.GetDiscountPrice(Model.Item2, sales); }
+                        @if (discountedPrice == (decimal) Model.Item2.Price)
+                        {
+                            <h5>Price: @Html.DisplayFor(model => model.Item2.Price)</h5>
+                        }
+                        else
+                        {
+                            <h6 style="text-decoration: line-through">Original Price: @Html.DisplayFor(model => model.Item2.Price)</h6>
+                            <h4 class="salePrice">Sale Price: @discountedPrice.ToString("$#0.00")</h4>
+                        }                        
                         <br />
                         <h5>Category: @Html.DisplayFor(model => model.Item2.Category)</h5>
                         <br />

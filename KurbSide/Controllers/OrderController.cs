@@ -268,17 +268,18 @@ namespace KurbSide.Controllers
                 .ThenInclude(ci => ci.Item)
                 .FirstOrDefault();
 
+            if (cart == null) // If the member does not have a cart (e.g. they clear all items while viewing checkout.)
+                return View();
+
             var cartItems = await _context.CartItem
                 .Where(m => m.CartId.Equals(cart.CartId))
                 .Include(i => i.Item)
                 .ThenInclude(si => si.SaleItem)
                 .ThenInclude(s => s.Sale)
                 .ToListAsync();
-            
-            if (cart == null || !cart.CartItem.Any())
-            {
-                return RedirectToAction("Index", "Store");
-            }
+
+            if (cartItems.Count == 0) // If the member has a cart with no items.
+                return View();
 
             decimal discountTotal = 0;
             
@@ -296,6 +297,7 @@ namespace KurbSide.Controllers
                 }
             }
 
+            ViewData["sales"] = businessSales;
             ViewData["discountTotal"] = discountTotal;
             return View(cart);
         }
