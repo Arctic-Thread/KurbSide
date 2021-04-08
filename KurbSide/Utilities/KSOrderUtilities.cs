@@ -64,7 +64,7 @@ namespace KurbSide.Utilities
                 return item.Price - (item.Price * sale.SaleDiscountPercentage);
             }
 
-            return (decimal)item.Price;
+            return item.Price;
         }
     }
 }

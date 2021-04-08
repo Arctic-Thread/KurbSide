@@ -18,7 +18,7 @@ namespace KurbSide.Models
         public string ProvinceCode { get; set; }
         public string CountryCode { get; set; }
         public string FullName { get; set; }
-        public double? TaxRate { get; set; }
+        public decimal TaxRate { get; set; }
         public string TaxCode { get; set; }
 
         public virtual Country CountryCodeNavigation { get; set; }

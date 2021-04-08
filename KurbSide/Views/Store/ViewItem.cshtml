@@ -67,7 +67,7 @@
                         </form>
                         <hr />
                         @{ var discountedPrice = KSOrderUtilities.GetDiscountPrice(Model.Item2, sales); }
-                        @if (discountedPrice == (decimal) Model.Item2.Price)
+                        @if (discountedPrice == Model.Item2.Price)
                         {
                             <h5>Price: @Html.DisplayFor(model => model.Item2.Price)</h5>
                         }

@@ -13,7 +13,7 @@
     <div class="card">
         <div class="card-body text-center">
             <h3>Your cart is empty.</h3>
-            <p>Why dont you head on back to the store and fill it up.</p>
+            <p>Why don't you head on back to the store and fill it up.</p>
             <a class="btn btn-primary" asp-controller="Store" asp-action="Index">Start shopping here!</a>
         </div>
     </div>
@@ -44,9 +44,9 @@ else
                 <tbody>
                 @foreach (var cartItem in Model.CartItem)
                 {
-                    var itemTotal = ((decimal) cartItem.Item.Price.Value * (decimal) cartItem.Quantity);
+                    var itemTotal = cartItem.Item.Price * cartItem.Quantity;
                     var itemDiscount = KSOrderUtilities.GetDiscountPrice(cartItem.Item, sales);
-                    var itemTotalWithDiscount = (itemDiscount * cartItem.Quantity);
+                    var itemTotalWithDiscount = itemDiscount * cartItem.Quantity;
                     <tr style="height: 100px">
                         <td>
                             @{
@@ -116,11 +116,11 @@ else
             <div>
                 <p style="font-family:monospace;">
                     @{
-                        decimal subtotalBeforeDiscount = (decimal) Model.CartItem.Sum(ci => ci.Quantity * ci.Item.Price).Value;
+                        decimal subtotalBeforeDiscount = Model.CartItem.Sum(ci => ci.Quantity * ci.Item.Price);
                         decimal discountTotal = (decimal) ViewData["discountTotal"];
                         decimal subtotalAfterDiscount = subtotalBeforeDiscount - discountTotal;
 
-                        decimal taxRate = (decimal) Math.Round(Model.Member.ProvinceCodeNavigation.TaxRate.Value, 2);
+                        decimal taxRate = Math.Round(Model.Member.ProvinceCodeNavigation.TaxRate, 2);
                         decimal tax = Math.Round(taxRate * subtotalAfterDiscount, 2);
                         decimal serviceFee = 3.50m;
                         decimal grandTotal = subtotalAfterDiscount + tax + serviceFee;

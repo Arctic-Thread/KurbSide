@@ -103,7 +103,7 @@
                         @item.Price.ToString("$#0.00")
                     </td>
                     <td class="align-middle text-center">
-                        @(((decimal) item.Price - ((decimal) item.Price * (decimal) @sale.SaleDiscountPercentage)).ToString("$#0.00"))
+                        @((item.Price - (item.Price * sale.SaleDiscountPercentage)).ToString("$#0.00"))
                     </td>
                     <td class="align-middle text-center">
                         @Html.DisplayFor(modelItem => item.Category)
