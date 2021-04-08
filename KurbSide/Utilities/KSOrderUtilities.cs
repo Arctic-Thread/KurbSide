@@ -30,7 +30,11 @@ namespace KurbSide.Utilities
         /// <returns>The Guid of the sale, if the item is present in it. Otherwise new Guid()</returns>
         public static Guid KSCheckIfItemInSale(Item item, List<Sale> sales)
         {
-            foreach (var sale in sales.Where(sale => item.SaleItem.Any(s => s.SaleId.Equals(sale.SaleId))))
+            var activeSales = sales
+                .Where(s => s.Active)
+                .Where(sale => item.SaleItem.Any(s => s.SaleId.Equals(sale.SaleId)));
+            
+            foreach (var sale in activeSales)
             {
                 return sale.SaleId;
             }
@@ -50,9 +54,14 @@ namespace KurbSide.Utilities
         /// <returns>The current* price of an item.</returns>
         public static decimal GetDiscountPrice(Item item, List<Sale> sales)
         {
-            foreach (var sale in sales.Where(sale => item.SaleItem.Any(s => s.SaleId.Equals(sale.SaleId))))
+            var activeSales = sales
+                .Where(s => s.Active)
+                .Where(sale => item.SaleItem.Any(s => s.SaleId.Equals(sale.SaleId)))
+                .OrderByDescending(s => s.SaleDiscountPercentage);
+            
+            foreach (var sale in activeSales)
             {
-                return (decimal) item.Price-((decimal)item.Price*sale.SaleDiscountPercentage);
+                return item.Price - (item.Price * sale.SaleDiscountPercentage);
             }
 
             return (decimal)item.Price;
