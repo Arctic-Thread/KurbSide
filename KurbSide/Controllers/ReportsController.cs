@@ -168,6 +168,8 @@ namespace KurbSide.Controllers
         /// <returns></returns>
         public async Task<FileResult> CreateItemsReportsPdf(string pdfName, Guid businessId)
         {
+            string fileName = "";
+            
             MemoryStream workStream = new MemoryStream();
             DateTime currentDate= DateTime.Now;
             
@@ -185,7 +187,7 @@ namespace KurbSide.Controllers
             
             //Set the standard font
             PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 20);
-            
+
             //Downloads report for all the items
             if (pdfName == "AllItemsReport")
             {
@@ -198,6 +200,7 @@ namespace KurbSide.Controllers
                  IEnumerable<object> itemTable = itemsList;
                  //Assign to data source
                  pdfGrid.DataSource = itemTable;
+                 fileName = "All Items Report";
                 
             }
             //DownLoads report for all the Available items 
@@ -213,6 +216,7 @@ namespace KurbSide.Controllers
                 IEnumerable<object> itemTable = itemsList;
                 //Assign to data source
                 pdfGrid.DataSource = itemTable;
+                fileName = "Available Items Report";
                 
             }
             //Downloads report for all the removed items
@@ -228,11 +232,16 @@ namespace KurbSide.Controllers
                 IEnumerable<object> itemTable = itemsList;
                 //Assign to data source
                 pdfGrid.DataSource = itemTable;
+                fileName = "Removed Items Report";
             }
             
+            //Styling the grid
+            pdfGrid.Style.Font = new PdfStandardFont(PdfFontFamily.Helvetica, 8);
+            pdfGrid.Style.CellPadding = new PdfPaddings(4, 4, 4, 4);
             
             //Draw the table to a pdf page
-            pdfGrid.Draw(page, new Syncfusion.Drawing.PointF(10, 10));
+            graphics.DrawString(fileName, font,PdfBrushes.Black, new PointF(10,0));
+            pdfGrid.Draw(page, new Syncfusion.Drawing.PointF(10, 30));
             
             //Saves the Pdf to the stream
             itemsReportDocument.Save(workStream);
@@ -243,11 +252,10 @@ namespace KurbSide.Controllers
             
             //Content type for pdf as well as file name
             string type = "application/pdf";
-            string fileName = "All Items.pdf";
+
+            fileName = fileName + ".pdf";
 
             return File(workStream, type, fileName);
         }
-        
-
     }
 }
