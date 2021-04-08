@@ -561,9 +561,18 @@ namespace KurbSide.Controllers
             if (!string.IsNullOrWhiteSpace(filter))
             {
                 TempData["saleFilter"] = filter;
-                sales = sales
-                    .Where(i => i.SaleName.ToLower().Contains(filter.ToLower()))
-                    .ToList();
+                if (categories.Contains(filter.KSTitleCase()))
+                {
+                    sales = sales
+                        .Where(i => i.SaleCategory.ToLower().Contains(filter.ToLower()))
+                        .ToList();
+                }
+                else
+                {
+                    sales = sales
+                        .Where(i => i.SaleName.ToLower().Contains(filter.ToLower()))
+                        .ToList();
+                }
                     
                 ViewData["NoItemsFoundReason"] = $"Sorry, no results found for {filter}.";
             }
@@ -703,10 +712,10 @@ namespace KurbSide.Controllers
             if (!string.IsNullOrWhiteSpace(filter))
             {
                 TempData["saleFilter"] = filter;
-                if (categories.Contains(filter))
+                if (categories.Contains(filter.KSTitleCase()))
                 {
                     items = items
-                        .Where(i => i.Category.Equals(filter))
+                        .Where(i => i.Category.Equals(filter.KSTitleCase()))
                         .ToList();
                 }
                 else
