@@ -948,6 +948,53 @@ namespace KurbSide.Controllers
             return RedirectToAction("ViewSales");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DeleteSale(Guid saleId)
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var sale = await _context.Sale
+                .Where(s => s.BusinessId.Equals(business.BusinessId))
+                .Where(s => s.SaleId.Equals(saleId))
+                .Include(si => si.SaleItem)
+                .FirstOrDefaultAsync();
+
+            try
+            {
+                _context.SaleItem.RemoveRange(sale.SaleItem);
+                _context.Sale.Remove(sale);
+                await _context.SaveChangesAsync();
+
+                TempData["sysMessage"] = $"The sale: {sale.SaleName} has been deleted";
+                return RedirectToAction("ViewSales");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                TempData["sysMessage"] = "Error: Something went wrong. Your sale was not deleted";
+                _logger.LogError($"Error: Sale {sale.SaleId} does not exist, status change Failed.");
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["sysMessage"] = "Error: Something went wrong. Your sale was not deleted";
+                _logger.LogError($"Error: {ex.GetBaseException().Message}. status change not performed.");
+                return RedirectToAction("Index");
+            }
+        }
+
         #endregion
     }
 }
