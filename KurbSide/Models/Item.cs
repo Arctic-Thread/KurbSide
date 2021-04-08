@@ -20,7 +20,7 @@ namespace KurbSide.Models
         public Guid BusinessId { get; set; }
         public string ItemName { get; set; }
         public string Details { get; set; }
-        public double? Price { get; set; }
+        public decimal Price { get; set; }
         public string Sku { get; set; }
         public string Upc { get; set; }
         public string ImageLocation { get; set; }

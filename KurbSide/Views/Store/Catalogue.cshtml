@@ -135,10 +135,10 @@
                                                 <input type="hidden" name="id" value="@item.ItemId" />
                                                 <div class="input-group input-group-sm">
                                                     @{ var discountedPrice = KSOrderUtilities.GetDiscountPrice(item, sales); }
-                                                    @if (discountedPrice == (decimal)item.Price)
+                                                    @if (discountedPrice == item.Price)
                                                     {
                                                         <div class="input-group-prepend">
-                                                            <span class="input-group-text"><strong>@item.Price.Value.ToString("$#0.00")</strong></span>
+                                                            <span class="input-group-text"><strong>@item.Price.ToString("$#0.00")</strong></span>
                                                         </div>
                                                         <div class="input-group-append addToCart">
                                                             <input class="btn btn-sm btn-success addToCart" id="addToCart" type="submit" name="submit" value="Add to Cart" />

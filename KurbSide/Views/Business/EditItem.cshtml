@@ -42,7 +42,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">$</span>
                                 </div>
-                                <input type="number" asp-for="Price" class="form-control" step="0.01" />
+                                <input type="number" asp-for="Price" class="form-control" step="0.01" value="@Model.Price.ToString("F")" />
                             </div>
                             <span asp-validation-for="Price" class="text-danger"></span>
                         </div>
