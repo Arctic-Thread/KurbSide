@@ -268,11 +268,37 @@ namespace KurbSide.Controllers
                 .ThenInclude(ci => ci.Item)
                 .FirstOrDefault();
 
-            if (cart == null || !cart.CartItem.Any())
+            if (cart == null) // If the member does not have a cart (e.g. they clear all items while viewing checkout.)
+                return View();
+
+            var cartItems = await _context.CartItem
+                .Where(m => m.CartId.Equals(cart.CartId))
+                .Include(i => i.Item)
+                .ThenInclude(si => si.SaleItem)
+                .ThenInclude(s => s.Sale)
+                .ToListAsync();
+
+            if (cartItems.Count == 0) // If the member has a cart with no items.
+                return View();
+
+            decimal discountTotal = 0;
+            
+            var businessSales = await _context.Sale
+                .Where(s => s.BusinessId.Equals(cart.BusinessId))
+                .ToListAsync();
+            
+            foreach (var cartItem in cartItems)
             {
-                return RedirectToAction("Index", "Store");
+                var saleId = KSOrderUtilities.KSCheckIfItemInSale(cartItem.Item, businessSales);
+                if (saleId != new Guid())
+                {
+                    var sale = await _context.Sale.Where(s => s.SaleId.Equals(saleId)).FirstOrDefaultAsync();
+                    discountTotal += (cartItem.Item.Price * cartItem.Quantity) * sale.SaleDiscountPercentage;
+                }
             }
 
+            ViewData["sales"] = businessSales;
+            ViewData["discountTotal"] = discountTotal;
             return View(cart);
         }
 
@@ -299,17 +325,38 @@ namespace KurbSide.Controllers
                 .ThenInclude(ci => ci.Item)
                 .FirstOrDefault();
 
-            var cartItems = await _context.CartItem.Where(m => m.CartId.Equals(cart.CartId)).ToListAsync();
+            var cartItems = await _context.CartItem
+                .Where(m => m.CartId.Equals(cart.CartId))
+                .Include(i => i.Item)
+                .ThenInclude(si => si.SaleItem)
+                .ThenInclude(s => s.Sale)
+                .ToListAsync();
 
             if (cart == null || !cart.CartItem.Any())
             {
                 return RedirectToAction("Index", "Store");
             }
 
-            var cartSubTotal = (decimal) cartItems.Sum(ci => ci.Quantity * ci.Item.Price).Value;
-            var discountTotal = 0; //TODO Discounts & Sales
+            var cartSubTotal = cartItems.Sum(ci => ci.Quantity * ci.Item.Price);
 
-            var taxRate = (decimal) currentMember.ProvinceCodeNavigation.TaxRate;
+            decimal discountTotal = 0;
+            
+            var businessSales = await _context.Sale
+                .Where(s => s.BusinessId.Equals(cart.BusinessId))
+                .ToListAsync();
+            
+            foreach (var cartItem in cartItems)
+            {
+                var saleId = KSOrderUtilities.KSCheckIfItemInSale(cartItem.Item, businessSales);
+                if (saleId != new Guid())
+                {
+                    var sale = await _context.Sale.Where(s => s.SaleId.Equals(saleId)).FirstOrDefaultAsync();
+                    discountTotal += (cartItem.Item.Price * cartItem.Quantity) * sale.SaleDiscountPercentage;
+                }
+            }
+
+            cartSubTotal -= discountTotal;
+            var taxRate = currentMember.ProvinceCodeNavigation.TaxRate;
             var taxTotal = taxRate * cartSubTotal;
             var pendingOrderStatus =
                 await _context.OrderStatus.Where(s => s.StatusName.Equals("Pending")).FirstOrDefaultAsync();
@@ -356,9 +403,9 @@ namespace KurbSide.Controllers
                 {
                     MemberId = currentMember.MemberId,
                     SubTotal = cartSubTotal,
-                    DiscountTotal = 0, //TODO Discounts & Sales
+                    DiscountTotal = discountTotal,
                     Tax = taxTotal,
-                    GrandTotal = cartSubTotal + taxRate,
+                    GrandTotal = cartSubTotal + cartSubTotal * taxRate,
                     Status = pendingOrderStatus.StatusId,
                     CreationDate = DateTime.Now,
                     BusinessId = cart.BusinessId
@@ -376,7 +423,7 @@ namespace KurbSide.Controllers
                         OrderId = order.OrderId,
                         ItemId = cartItem.ItemId,
                         Quantity = cartItem.Quantity,
-                        Discount = 0 //TODO Discounts & Sales
+                        Discount = discountTotal
                     };
 
                     orderItems.Add(orderItem);

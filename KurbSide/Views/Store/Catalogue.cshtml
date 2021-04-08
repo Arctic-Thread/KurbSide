@@ -1,5 +1,6 @@
 ﻿@*@model List<KurbSide.Models.Item>*@
 @*@model Dictionary<string, IEnumerable<Item>>*@
+@using KurbSide.Utilities
 @model Tuple<Business, Dictionary<string, IEnumerable<Item>>>
 
 @{
@@ -20,8 +21,10 @@
     {
         activeFilter = rawFilter;
     }
+
+    var sales = (List<Sale>)ViewData["sales"];
 }
-<link href="~/css/Store/BusinessListings.css" rel="stylesheet" />
+<link href="~/css/Store/Catalogue.css" rel="stylesheet" />
 <div class="container">
     <div class="row">
         <div class="col">
@@ -131,13 +134,26 @@
                                             <form method="POST" asp-controller="Order" asp-action="CartAdd">
                                                 <input type="hidden" name="id" value="@item.ItemId" />
                                                 <div class="input-group input-group-sm">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text ">@item.Price.Value.ToString("$#0.00")</span>
-                                                    </div>
-                                                    @*<input class="form-control" type="number" name="q" value="1" />*@
-                                                    <div class="input-group-append">
-                                                        <input class="btn btn-sm btn-success" id="addToCart" type="submit" name="submit" value="Add to Cart" />
-                                                    </div>
+                                                    @{ var discountedPrice = KSOrderUtilities.GetDiscountPrice(item, sales); }
+                                                    @if (discountedPrice == item.Price)
+                                                    {
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><strong>@item.Price.ToString("$#0.00")</strong></span>
+                                                        </div>
+                                                        <div class="input-group-append addToCart">
+                                                            <input class="btn btn-sm btn-success addToCart" id="addToCart" type="submit" name="submit" value="Add to Cart" />
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text addToCartPrepend">@KSOrderUtilities.GetDiscountPrice(item, sales).ToString("$#0.00")</span>
+                                                        </div>
+                                                        <div class="input-group-append addToCart">
+                                                            <span class="badge addToCartSale">Sale!</span>
+                                                            <input class="btn btn-sm btn-success addToCart" id="addToCart" type="submit" name="submit" value="Add to Cart" />
+                                                        </div>
+                                                    }
                                                 </div>
                                             </form>
                                         </td>

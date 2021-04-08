@@ -29,12 +29,21 @@ namespace KurbSide.ViewComponents
             var currentMember = await _context.Member
                 .Where(m => m.AspNetId.Equals(currentUser.Id))
                 .FirstOrDefaultAsync();
+
             var cart = await _context.Cart
                 .Where(c => c.MemberId.Equals(currentMember.MemberId))
                 .Include(c => c.Business)
                 .Include(c => c.CartItem)
                 .ThenInclude(ci => ci.Item)
                 .FirstOrDefaultAsync();
+
+            List<Sale> sales = null;
+            if (cart != null)
+            {
+                sales = await _context.Sale
+                    .Where(b => b.BusinessId.Equals(cart.BusinessId))
+                    .ToListAsync();
+            }
 
             if (cart != null && cart.ExpiryDate < DateTime.Today)
             {
@@ -43,7 +52,7 @@ namespace KurbSide.ViewComponents
                 await _context.SaveChangesAsync();
             }
 
-            return await Task.FromResult((IViewComponentResult)View("Default", cart));
+            return await Task.FromResult((IViewComponentResult)View("Default", Tuple.Create(cart, sales)));
         }
     }
 }

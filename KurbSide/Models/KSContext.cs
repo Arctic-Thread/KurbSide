@@ -192,8 +192,6 @@ namespace KurbSide.Models
                     .IsRequired()
                     .HasMaxLength(60);
 
-                entity.Property(e => e.CloseTime).HasDefaultValueSql("(getdate())");
-
                 entity.Property(e => e.ContactFirst)
                     .IsRequired()
                     .HasMaxLength(100);
@@ -211,8 +209,6 @@ namespace KurbSide.Models
                     .HasDefaultValueSql("('CA')");
 
                 entity.Property(e => e.LogoLocation).HasMaxLength(255);
-
-                entity.Property(e => e.OpenTime).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.PhoneNumber)
                     .IsRequired()
@@ -343,6 +339,8 @@ namespace KurbSide.Models
                     .IsRequired()
                     .HasMaxLength(100);
 
+                entity.Property(e => e.Price).HasColumnType("decimal(19, 4)");
+
                 entity.Property(e => e.Removed)
                     .IsRequired()
                     .HasDefaultValueSql("('FALSE')");
@@ -433,7 +431,7 @@ namespace KurbSide.Models
 
             modelBuilder.Entity<Notification>(entity =>
             {
-                entity.Property(e => e.NotificationId).ValueGeneratedNever();
+                entity.Property(e => e.NotificationId).HasDefaultValueSql("(newid())");
 
                 entity.Property(e => e.NotificationDetails).HasMaxLength(500);
 
@@ -444,18 +442,18 @@ namespace KurbSide.Models
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.Notification)
                     .HasForeignKey(d => d.OrderId)
-                    .HasConstraintName("FK__Notificat__Order__56E8E7AB");
+                    .HasConstraintName("FK__Notificat__Order__32767D0B");
 
                 entity.HasOne(d => d.Recipient)
                     .WithMany(p => p.Notification)
                     .HasForeignKey(d => d.RecipientId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Notificat__Recip__55009F39");
+                    .HasConstraintName("FK__Notificat__Recip__308E3499");
 
                 entity.HasOne(d => d.Sale)
                     .WithMany(p => p.Notification)
                     .HasForeignKey(d => d.SaleId)
-                    .HasConstraintName("FK__Notificat__SaleI__55F4C372");
+                    .HasConstraintName("FK__Notificat__SaleI__318258D2");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -559,7 +557,7 @@ namespace KurbSide.Models
                     .HasMaxLength(5)
                     .HasDefaultValueSql("('')");
 
-                entity.Property(e => e.TaxRate).HasDefaultValueSql("((0))");
+                entity.Property(e => e.TaxRate).HasColumnType("decimal(19, 4)");
 
                 entity.HasOne(d => d.CountryCodeNavigation)
                     .WithMany(p => p.Province)
@@ -570,7 +568,9 @@ namespace KurbSide.Models
 
             modelBuilder.Entity<Sale>(entity =>
             {
-                entity.Property(e => e.SaleId).ValueGeneratedNever();
+                entity.Property(e => e.SaleId).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.SaleCategory).HasMaxLength(50);
 
                 entity.Property(e => e.SaleDescription).HasMaxLength(500);
 
@@ -579,25 +579,32 @@ namespace KurbSide.Models
                 entity.Property(e => e.SaleName)
                     .IsRequired()
                     .HasMaxLength(50);
+
+                entity.HasOne(d => d.Business)
+                    .WithMany(p => p.Sale)
+                    .HasPrincipalKey(p => p.BusinessId)
+                    .HasForeignKey(d => d.BusinessId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Sale__BusinessId__28ED12D1");
             });
 
             modelBuilder.Entity<SaleItem>(entity =>
             {
                 entity.HasKey(e => new { e.SaleId, e.ItemId })
-                    .HasName("PK__SaleItem__B9C42BC7BE53323A");
+                    .HasName("PK__SaleItem__B9C42BC7214A8768");
 
                 entity.HasOne(d => d.Item)
                     .WithMany(p => p.SaleItem)
                     .HasPrincipalKey(p => p.ItemId)
                     .HasForeignKey(d => d.ItemId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SaleItem__ItemId__5224328E");
+                    .HasConstraintName("FK__SaleItem__ItemId__2CBDA3B5");
 
                 entity.HasOne(d => d.Sale)
                     .WithMany(p => p.SaleItem)
                     .HasForeignKey(d => d.SaleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__SaleItem__SaleId__51300E55");
+                    .HasConstraintName("FK__SaleItem__SaleId__2BC97F7C");
             });
 
             modelBuilder.Entity<TimeZones>(entity =>

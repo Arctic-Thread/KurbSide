@@ -14,14 +14,13 @@ namespace KurbSide.Models
             Cart = new HashSet<Cart>();
             Item = new HashSet<Item>();
             Order = new HashSet<Order>();
+            Sale = new HashSet<Sale>();
         }
 
         public string AspNetId { get; set; }
         public Guid BusinessId { get; set; }
         public string BusinessName { get; set; }
         public string PhoneNumber { get; set; }
-        public TimeSpan? OpenTime { get; set; }
-        public TimeSpan? CloseTime { get; set; }
         public string Street { get; set; }
         public string StreetLn2 { get; set; }
         public string City { get; set; }
@@ -44,5 +43,6 @@ namespace KurbSide.Models
         public virtual ICollection<Cart> Cart { get; set; }
         public virtual ICollection<Item> Item { get; set; }
         public virtual ICollection<Order> Order { get; set; }
+        public virtual ICollection<Sale> Sale { get; set; }
     }
 }

@@ -95,6 +95,7 @@ namespace KurbSide.Controllers
             var items = await _context.Item
                 .Where(i => i.BusinessId.Equals(id))
                 .Where(i => i.Removed != null && i.Removed == false)
+                .Include(s => s.SaleItem)
                 .ToListAsync();
 
             if (items.Count <= 0)
@@ -131,6 +132,13 @@ namespace KurbSide.Controllers
                 .GroupBy(i => KurbSideUtils.KSStringManipulation.KSTitleCase(i.Category))
                 .ToDictionary(i => i.Key, i => i.AsEnumerable());
 
+            var sales = await _context.Sale
+                .Where(b => b.BusinessId.Equals(business.BusinessId))
+                .Include(s => s.SaleItem)
+                .ToListAsync();
+
+            ViewData["sales"] = sales;
+
             TempData["itemCategories"] = categories;
             return View(Tuple.Create(business, categorizedItems));
         }
@@ -151,17 +159,27 @@ namespace KurbSide.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var item = await _context.Item.FirstOrDefaultAsync(i => i.ItemId == id);
+            var item = await _context.Item
+                .Include(si => si.SaleItem)
+                .FirstOrDefaultAsync(i => i.ItemId == id);
+            
             var business = await _context.Business
                 .Where(b => b.BusinessId == item.BusinessId)
                 .Include(b => b.BusinessHours)
                 .FirstOrDefaultAsync();
+
+            var sales = await _context.Sale
+                .Where(b => b.BusinessId.Equals(business.BusinessId))
+                .Include(si => si.SaleItem)
+                .ToListAsync();
 
             if (item == null)
             {
                 _logger.LogDebug("ID Mismatch. Item does not exist.");
                 return RedirectToAction("Index");
             }
+
+            ViewData["sales"] = sales;
 
             return View(Tuple.Create(business, item));
         }
