@@ -96,11 +96,11 @@
                     <td class="align-middle text-center">
                         @Html.DisplayFor(modelItem => item.ItemName)
                     </td>
-                    <td class="align-middle text-center ellipsisForLongText">
-                        @Html.DisplayFor(modelItem => item.Details)
+                    <td class="align-middle text-center">
+                        <p class="ellipsisForLongText3Lines">@Html.DisplayFor(modelItem => item.Details)</p>
                     </td>
                     <td class="align-middle text-center">
-                        @Html.DisplayFor(modelItem => item.Price)
+                        @item.Price.ToString("$#0.00")
                     </td>
                     <td class="align-middle text-center">
                         @(((decimal) item.Price - ((decimal) item.Price * (decimal) @sale.SaleDiscountPercentage)).ToString("$#0.00"))
