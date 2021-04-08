@@ -3,9 +3,10 @@
 @model IEnumerable<KurbSide.Models.Item>
 
 @{
-    ViewData["Title"] = "AddItemsToSale";
-
     var sale = (Sale) ViewData["sale"];
+    
+    ViewData["Title"] = $"Add Items To {sale.SaleName}";
+
 
     var rawCategories = (IEnumerable<string>) TempData["itemCategories"];
     var rawFilter = (string) TempData["saleFilter"];
@@ -33,7 +34,7 @@
 
 <vc:business-head/>
 
-<h1>Add items to @sale.SaleName</h1>
+<h1>Add Items To @sale.SaleName</h1>
 
 <div class="card">
     <div class="card-body row">
