@@ -221,5 +221,97 @@ namespace KurbSideTest
             // Assert
             Assert.IsTrue(result != null);
         }
+
+        /// <summary>
+        /// UC20 - Business Ends Sale
+        /// Tests ending a sale.
+        /// Note: Does not delete the sale, can still be re-activated later.
+        /// </summary>
+        [Test]
+        [Order(5)]
+        public void UC20_Sales_EndSale_ShouldPass()
+        {
+            // Arrange
+            // Fields & Buttons
+            string manageSalesButtonID = "dashboard-sales";
+            string swapViewingModeButtonID = "swapViewingMode";
+            string saleSwapStatusButtonID = "saleSwapStatus-This Is An Edited Test Sale";
+            string sysMessageID = "sysMessage";
+
+            // Titles
+            string businessDashboardTitle = "Business Dashboard - KurbSide";
+            string activeSalesListTitle = "Active Sales List - KurbSide";
+
+            // Act
+            KSUnitTestLogin(AccountType.BUSINESS);
+
+            KSTitleContains(businessDashboardTitle);
+            KSClick(manageSalesButtonID);
+
+            KSTitleContains(activeSalesListTitle);
+            KSClick(saleSwapStatusButtonID);
+            var confirmEnd = _driver.SwitchTo().Alert();
+            confirmEnd.Accept();
+
+            KSTitleContains(activeSalesListTitle);
+            KSWaitUntilElementIsVisible(sysMessageID);
+            KSClick(swapViewingModeButtonID);
+            KSClick(saleSwapStatusButtonID);
+            var confirmActivate = _driver.SwitchTo().Alert();
+            confirmActivate.Accept();
+
+            KSTitleContains(activeSalesListTitle);
+            KSWaitUntilElementIsVisible(saleSwapStatusButtonID);
+
+            var result = _driver.FindElement(By.Id(saleSwapStatusButtonID));
+
+            // Assert
+            Assert.That(result != null);
+        }
+
+        /// <summary>
+        /// UC20 - Business Ends Sale
+        /// Tests deleting a sale.
+        /// </summary>
+        [Test]
+        [Order(6)]
+        public void UC20_Sales_DeleteSale_ShouldPass()
+        {
+            // Arrange
+            // Fields & Buttons
+            string manageSalesButtonID = "dashboard-sales";
+            string deleteSaleButtonID = "sales-deleteSale";
+            string editSaleButtonID = "editSale-This Is An Edited Test Sale";
+
+            string sysMessageID = "sysMessage";
+
+            // Titles
+            string businessDashboardTitle = "Business Dashboard - KurbSide";
+            string activeSalesListTitle = "Active Sales List - KurbSide";
+            string editSalePageTitle = "Edit Sale: This Is An Edited Test Sale - KurbSide";
+
+            // Expected Result
+            string expectedMessage = "The sale: This Is An Edited Test Sale has been deleted";
+
+            // Act
+            KSUnitTestLogin(AccountType.BUSINESS);
+
+            KSTitleContains(businessDashboardTitle);
+            KSClick(manageSalesButtonID);
+
+            KSTitleContains(activeSalesListTitle);
+            KSClick(editSaleButtonID);
+
+            KSTitleContains(editSalePageTitle);
+            KSClick(deleteSaleButtonID);
+            var confirmDelete = _driver.SwitchTo().Alert();
+            confirmDelete.Accept();
+
+            KSTitleContains(activeSalesListTitle);
+            string actualMessage = _driver.FindElement(By.Id(sysMessageID)).Text;
+
+            // Assert
+            Assert.That(actualMessage.Contains(expectedMessage));
+        }
     }
 }

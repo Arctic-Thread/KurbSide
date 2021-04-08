@@ -134,11 +134,11 @@
                                 <a asp-controller="Business" asp-action="ManageSaleItem" asp-route-saleId="@sale.SaleId" id="manageSale-@sale.SaleName" class="btn btn-width btn-info">Manage Items</a>
                                 @if (sale.Active)
                                 {
-                                    <input type="submit" id="endSale-@sale.SaleName" class="btn btn-width btn-danger" value="End Sale">
+                                    <input type="submit" id="saleSwapStatus-@sale.SaleName" class="btn btn-width btn-danger" value="End Sale">
                                 }
                                 else
                                 {
-                                    <input type="submit" id="endSale-@sale.SaleName" class="btn btn-width btn-success" value="Activate Sale">
+                                    <input type="submit" id="saleSwapStatus-@sale.SaleName" class="btn btn-width btn-success" value="Activate Sale">
                                 }
                             </div>
                         </form>
