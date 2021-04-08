@@ -1,15 +1,22 @@
 ﻿@model IEnumerable<KurbSide.Models.Sale>
 
 @{
-    ViewData["Title"] = "Sale List";
+    bool viewInactive = (bool) TempData["viewInactiveSales"];
+
+    if (viewInactive)
+    {
+        ViewData["Title"] = "Inactive Sales List";
+    }
+    else
+    {
+        ViewData["Title"] = "Active Sales List";
+    }
 
     var rawCategories = (IEnumerable<string>) TempData["saleCategories"];
     var rawFilter = (string) TempData["saleFilter"];
 
     var categories = new List<string>();
     var activeFilter = "";
-
-    bool viewInactive = (bool) TempData["viewInactiveSales"];
 
     var page = (int) TempData["currentPage"];
     var perPage = (int) TempData["perPage"];
@@ -47,11 +54,11 @@
                         <div>
                             @if (viewInactive)
                             {
-                                <a class="btn btn-sm btn-danger btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page)" asp-route-perPage="@(perPage)" asp-route-viewInactive="false">Viewing Inactive Sales</a>
+                                <a id="swapViewingMode" class="btn btn-sm btn-danger btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page)" asp-route-perPage="@(perPage)" asp-route-viewInactive="false">Viewing Inactive Sales</a>
                             }
                             else
                             {
-                                <a class="btn btn-sm btn-success btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page)" asp-route-perPage="@(perPage)" asp-route-viewInactive="true">Viewing Active Sales</a>
+                                <a id="swapViewingMode" class="btn btn-sm btn-success btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-controller="Business" asp-action="ViewSales" asp-route-page="@(page)" asp-route-perPage="@(perPage)" asp-route-viewInactive="true">Viewing Active Sales</a>
                             }
                         </div>
                         <a class="btn btn-sm btn-dark btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-controller="Business" asp-action="ViewSales" asp-route-perPage="@(perPage)" asp-route-viewInactive="@viewInactive"> @((activeFilter != "") ? "Clear Filter" : "Filter By Category") </a>
@@ -106,7 +113,7 @@
             <tbody>
             @foreach (var sale in Model)
             {
-                <tr id="saleList-sale-@sale.SaleId">
+                <tr id="saleList-sale-@sale.SaleName">
                     <td class="align-middle text-center">
                         @Html.DisplayFor(modelItem => sale.SaleName)
                     </td>

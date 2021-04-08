@@ -20,27 +20,27 @@ namespace KurbSideTest
             string manageSalesButtonID = "dashboard-sales";
             string newSaleButtonID = "saleList-CreateSale";
             string createSaleButtonID = "sales-createSale";
-            
+
             // Titles
             string businessDashboardTitle = "Business Dashboard - KurbSide";
-            string saleListTitle = "Sale List - KurbSide";
+            string activeSalesListTitle = "Active Sales List - KurbSide";
             string createSaleTitle = "Create Sale - KurbSide";
-            
+
             // Expected Result
             int numberOfExpectedErrors = 3;
-            
+
             // Act
             KSUnitTestLogin(AccountType.BUSINESS);
-            
+
             KSTitleContains(businessDashboardTitle);
             KSClick(manageSalesButtonID);
-            
-            KSTitleContains(saleListTitle);
+
+            KSTitleContains(activeSalesListTitle);
             KSClick(newSaleButtonID);
-            
+
             KSTitleContains(createSaleTitle);
             KSClick(createSaleButtonID);
-            
+
             // Result
             IReadOnlyList<IWebElement> numberOfErrors = _driver.FindElements(By.CssSelector("[id$='-error']"));
 
@@ -62,7 +62,7 @@ namespace KurbSideTest
             string saleCategory = "Test Category";
             string saleDescription = "This is a Sale Description";
             string saleDiscountAmount = "50";
-            
+
             // Fields & Buttons
             string manageSalesButtonID = "dashboard-sales";
             string newSaleButtonID = "saleList-CreateSale";
@@ -75,20 +75,21 @@ namespace KurbSideTest
 
             // Titles
             string businessDashboardTitle = "Business Dashboard - KurbSide";
-            string saleListTitle = "Sale List - KurbSide";
+            string activeSalesListTitle = "Active Sales List - KurbSide";
+
             string createSaleTitle = "Create Sale - KurbSide";
 
             string expectedTitle = $"Add Items To {saleName} - KurbSide";
-            
+
             // Act
             KSUnitTestLogin(AccountType.BUSINESS);
-            
+
             KSTitleContains(businessDashboardTitle);
             KSClick(manageSalesButtonID);
-            
-            KSTitleContains(saleListTitle);
+
+            KSTitleContains(activeSalesListTitle);
             KSClick(newSaleButtonID);
-            
+
             KSTitleContains(createSaleTitle);
             KSSendKeys(saleNameFieldID, saleName);
             KSSendKeys(saleCategoryFieldID, saleCategory);
@@ -97,9 +98,128 @@ namespace KurbSideTest
             KSClick(createSaleButtonID);
 
             var actualTitle = _driver.Title;
-            
+
             // Assert
             Assert.AreEqual(expectedTitle, actualTitle);
+        }
+
+        /// <summary>
+        /// UC19 - Business Edits Sale
+        /// Tests error message generation when editing a sale with invalid details.
+        /// </summary>
+        [Test]
+        [Order(3)]
+        public void UC19_Sales_EditSale_InvalidDetails_ShouldFail()
+        {
+            // Arrange
+            // Fields & Buttons
+            string manageSalesButtonID = "dashboard-sales";
+            string saveSaleButtonID = "sales-saveSale";
+            string swapViewingModeButtonID = "swapViewingMode";
+            string editSaleButtonID = "editSale-This Is A Test Sale";
+
+            string saleNameFieldID = "SaleName";
+            string saleCategoryFieldID = "SaleCategory";
+            string saleDescriptionFieldID = "SaleDescription";
+            string saleDiscountFieldID = "SaleDiscountPercentage";
+
+            // Titles
+            string businessDashboardTitle = "Business Dashboard - KurbSide";
+            string activeSalesListTitle = "Active Sales List - KurbSide";
+            string inactiveSalesListTitle = "Inactive Sales List - KurbSide";
+            string editSalePageTitle = "Edit Sale: This Is A Test Sale - KurbSide";
+
+            // Expected Result
+            int numberOfExpectedErrors = 3;
+
+            // Act
+            KSUnitTestLogin(AccountType.BUSINESS);
+
+            KSTitleContains(businessDashboardTitle);
+            KSClick(manageSalesButtonID);
+
+            KSTitleContains(activeSalesListTitle);
+            KSClick(swapViewingModeButtonID);
+
+            KSTitleContains(inactiveSalesListTitle);
+            KSClick(editSaleButtonID);
+
+            KSTitleContains(editSalePageTitle);
+            KSClearInput(saleNameFieldID);
+            KSClearInput(saleCategoryFieldID);
+            KSClearInput(saleDescriptionFieldID);
+            KSClearInput(saleDiscountFieldID);
+
+            KSClick(saveSaleButtonID);
+
+            // Result
+            IReadOnlyList<IWebElement> numberOfErrors = _driver.FindElements(By.CssSelector("[id$='-error']"));
+
+            // Assert
+            Assert.AreEqual(numberOfExpectedErrors, numberOfErrors.Count);
+        }
+
+        /// <summary>
+        /// UC19 - Business Edits Sale
+        /// Tests editing a sale with valid details.
+        /// </summary>
+        [Test]
+        [Order(4)]
+        public void UC19_Sales_EditSale_ValidDetails_ShouldPass()
+        {
+            // Arrange
+            // Input
+            string saleName = "This Is An Edited Test Sale";
+            string saleCategory = "Edited Test Category";
+            string saleDescription = "This Is An Edited Sale Description";
+            string saleDiscountAmount = "05";
+
+            // Fields & Buttons
+            string manageSalesButtonID = "dashboard-sales";
+            string saveSaleButtonID = "sales-saveSale";
+            string swapViewingModeButtonID = "swapViewingMode";
+            string editSaleButtonID = "editSale-This Is A Test Sale";
+
+            string saleNameFieldID = "SaleName";
+            string saleCategoryFieldID = "SaleCategory";
+            string saleDescriptionFieldID = "SaleDescription";
+            string saleDiscountFieldID = "SaleDiscountPercentage";
+            string saleCurrentlyActiveLabelID = "activeLabel";
+
+            string editedSaleID = "saleList-sale-This Is An Edited Test Sale";
+
+            // Titles
+            string businessDashboardTitle = "Business Dashboard - KurbSide";
+            string activeSalesListTitle = "Active Sales List - KurbSide";
+            string inactiveSalesListTitle = "Inactive Sales List - KurbSide";
+            string editSalePageTitle = "Edit Sale: This Is A Test Sale - KurbSide";
+
+            // Act
+            KSUnitTestLogin(AccountType.BUSINESS);
+
+            KSTitleContains(businessDashboardTitle);
+            KSClick(manageSalesButtonID);
+
+            KSTitleContains(activeSalesListTitle);
+            KSClick(swapViewingModeButtonID);
+
+            KSTitleContains(inactiveSalesListTitle);
+            KSClick(editSaleButtonID);
+
+            KSTitleContains(editSalePageTitle);
+            KSReplaceText(saleNameFieldID, saleName);
+            KSReplaceText(saleCategoryFieldID, saleCategory);
+            KSReplaceText(saleDescriptionFieldID, saleDescription);
+            KSReplaceText(saleDiscountFieldID, saleDiscountAmount);
+            KSClick(saleCurrentlyActiveLabelID);
+            KSClick(saveSaleButtonID);
+
+            KSTitleContains(activeSalesListTitle);
+
+            var result = _driver.FindElement(By.Id(editedSaleID));
+
+            // Assert
+            Assert.IsTrue(result != null);
         }
     }
 }

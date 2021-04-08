@@ -1,7 +1,7 @@
 ﻿@model KurbSide.Models.Sale
 
 @{
-    ViewData["Title"] = "Edit Sale";
+    ViewData["Title"] = $"Edit Sale: {Model.SaleName}";
 }
 
 <link href="~/css/Business/BusinessSales.css" rel="stylesheet"/>
@@ -53,7 +53,7 @@
                         <div class="form-group">
                             <div class="form-check custom-control custom-checkbox checkbox-lg">
                                 <input type="checkbox" asp-for="Active" class="form-check-input custom-control-input"/>
-                                <label asp-for="Active" class="form-check-label custom-control-label"></label>
+                                <label id="activeLabel" asp-for="Active" class="form-check-label custom-control-label"></label>
                             </div>
                             <span asp-validation-for="Active" class="text-danger"></span>
                         </div>
@@ -63,7 +63,7 @@
                     <a class="btn btn-sm btn-secondary" asp-action="ViewSales">Back to Sales</a>
                     <div class="btn-group" role="group">
                         <a asp-controller="Business" asp-action="DeleteSale" asp-route-saleId="@Model.SaleId" class="btn btn-sm btn-danger" id="sales-deleteSale" onclick="return confirm('Clicking OK will delete this sale forever, this can not be undone! Did you mean to deactivate it instead?')">Delete Sale</a>
-                        <button class="btn btn-sm btn-success" id="sales-createSale" type="submit">Save Sale</button>
+                        <button class="btn btn-sm btn-success" id="sales-saveSale" type="submit">Save Sale</button>
                     </div>                    
                 </div>
             </div>
