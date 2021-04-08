@@ -64,10 +64,10 @@
             <thead>
             <tr>
                 <th scope="col">
-                    Date
+                    Order #
                 </th>
                 <th scope="col">
-                    Short Order No.
+                    Date
                 </th>
                 <th scope="col">
                     Member Name
@@ -114,10 +114,12 @@
                 </form>
                 <tr>
                     <td>
-                        @order.CreationDate.ToString("d")
+                        <h5>
+                            <span style="width: 5em;" class="badge badge-dark" title="@order.OrderId.ToString()">@order.OrderId.ToString().Substring(order.OrderId.ToString().Length - 6).ToUpper()</span>
+                        </h5>
                     </td>
                     <td>
-                        @order.OrderId.ToString().Substring(order.OrderId.ToString().Length - 6).ToUpper()
+                        @order.CreationDate.ToString("d")
                     </td>
                     <td>
                         @(order.Member.FirstName + " " + order.Member.LastName)
