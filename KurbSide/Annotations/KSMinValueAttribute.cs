@@ -16,7 +16,7 @@ namespace KurbSide.Annotations
 
         public override bool IsValid(object value)
         {
-            return (double)value >= _minValue;
+            return (decimal)value >= (decimal)_minValue;
         }
     }
 }

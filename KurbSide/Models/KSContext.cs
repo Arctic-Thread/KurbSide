@@ -192,8 +192,6 @@ namespace KurbSide.Models
                     .IsRequired()
                     .HasMaxLength(60);
 
-                entity.Property(e => e.CloseTime).HasDefaultValueSql("(getdate())");
-
                 entity.Property(e => e.ContactFirst)
                     .IsRequired()
                     .HasMaxLength(100);
@@ -211,8 +209,6 @@ namespace KurbSide.Models
                     .HasDefaultValueSql("('CA')");
 
                 entity.Property(e => e.LogoLocation).HasMaxLength(255);
-
-                entity.Property(e => e.OpenTime).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.PhoneNumber)
                     .IsRequired()
@@ -342,6 +338,8 @@ namespace KurbSide.Models
                 entity.Property(e => e.ItemName)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                entity.Property(e => e.Price).HasColumnType("decimal(19, 4)");
 
                 entity.Property(e => e.Removed)
                     .IsRequired()
@@ -559,7 +557,7 @@ namespace KurbSide.Models
                     .HasMaxLength(5)
                     .HasDefaultValueSql("('')");
 
-                entity.Property(e => e.TaxRate).HasDefaultValueSql("((0))");
+                entity.Property(e => e.TaxRate).HasColumnType("decimal(19, 4)");
 
                 entity.HasOne(d => d.CountryCodeNavigation)
                     .WithMany(p => p.Province)

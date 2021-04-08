@@ -1,88 +1,153 @@
-﻿@model Cart;
+﻿@using KurbSide.Utilities
+@model Cart;
 @{
     ViewData["Title"] = "Checkout";
+
+    var sales = (List<Sale>) ViewData["sales"];
 }
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
-<script src="https://www.paypal.com/sdk/js?client-id=AUPzX4RZX9uXei_PDOlXbUg_6cY9O6lAHonu4R2h2-W07J77wpC6K3I39vVT6vFhI54uXtct5pQLuThz&currency=CAD&intent=authorize&buyer-country=CA" data-order-id="@Model.CartId">
-</script>
 
-<vc:member-head />
+@if (Model == null)
+{
+    <vc:member-head/>
 
-<div class="card">
-    <div class="card-header">
-        Your Order with @Model.Business.BusinessName @DateTime.Today
-    </div>
-    <div class="card-body">
-        <ul class="list-group list-group-flush">
-            @foreach (var item in Model.CartItem)
-            {
-                var itemtotal = (item.Item.Price.Value * (double)item.Quantity);
-                var distotal = (0d * (double)item.Quantity);
-                <li class="list-group-item w-100">
-                    <form class="d-flex justify-content-between" asp-controller="Order" asp-action="CartUpdate" method="POST">
-                        <span>
-                            @item.Item.ItemName
-                        </span>
-                        <span>
-                            <span class="input-group input-group-sm">
-
-                                @*<span class="input-group-prepend">
-                                        <small class="input-group-text text-sm-center">Quantity</small>
-                                    </span>*@
-                                <input name="q" type="number" class="form-control" style="max-width: 5em;" value="@item.Quantity" onchange="submit();">
-                                <input name="id" type="hidden" class="form-control" value="@item.ItemId">
-
-                                <span class="input-group-append">
-                                    <span class="input-group-text bg-light text-dark" style="font-family:monospace;">
-                                        @(itemtotal.ToString("$#0.00").PadLeft(10, '\u00a0'))<br />
-                                        <span style="position: absolute; bottom: -.5em; @(distotal>0? null:"display:none")" class="text-success">@(distotal.ToString("-$#0.00").PadLeft(10, '\u00a0'))</span>
-                                    </span>
-                                    <a class="btn btn-outline-danger" title="Remove from Cart" asp-action="CartRemove" asp-controller="Order" asp-route-id="@item.ItemId">
-                                        <i class="fa fa-trash fa-sm" aria-hidden="true"></i>
-                                    </a>
-                                </span>
-                            </span>
-                        </span>
-                    </form>
-                </li>
-            }
-        </ul>
-    </div>
-    <div class="card-footer d-flex justify-content-between align-bottom">
-        <div style="margin-top: auto;">
-            <a class="btn btn-secondary" asp-controller="Store" asp-action="Catalogue" asp-route-id="@Model.BusinessId">@("<- Back to Catalogue")</a>
+    <div class="card">
+        <div class="card-body text-center">
+            <h3>Your cart is empty.</h3>
+            <p>Why don't you head on back to the store and fill it up.</p>
+            <a class="btn btn-primary" asp-controller="Store" asp-action="Index">Start shopping here!</a>
         </div>
-        <div>
-            <p style="font-family:monospace;">
-                @{
-                    decimal subtotalBeforeDiscount = (decimal)Model.CartItem.Sum(ci => ci.Quantity * ci.Item.Price).Value;
-                    decimal discountTotal = (decimal)ViewData["discountTotal"];
-                    decimal subtotalAfterDiscount = subtotalBeforeDiscount - discountTotal;
+    </div>
+}
+else
+{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous"/>
+    <script src="https://www.paypal.com/sdk/js?client-id=AUPzX4RZX9uXei_PDOlXbUg_6cY9O6lAHonu4R2h2-W07J77wpC6K3I39vVT6vFhI54uXtct5pQLuThz&currency=CAD&intent=authorize&buyer-country=CA" data-order-id="@Model.CartId"></script>
 
-                    decimal taxrate = (decimal)Math.Round(Model.Member.ProvinceCodeNavigation.TaxRate.Value, 2);
-                    decimal tax = Math.Round(taxrate * subtotalAfterDiscount, 2);
-                    decimal serviceFee = 3.50m;
-                    decimal grandTotal = subtotalAfterDiscount + tax + serviceFee;
+    <vc:member-head/>
+
+    <div class="card">
+        <div class="card-header">
+            Your Order with @Model.Business.BusinessName - @DateTime.Now
+        </div>
+        <div class="card-body">
+            <div class="table-responsive"></div>
+            <table class="card-table table">
+                <thead>
+                <tr>
+                    <th scope="col" style="width: 10%;" class="align-middle text-center">Image</th>
+                    <th scope="col" style="width: 20%;" class="align-middle text-center">Item Name</th>
+                    <th scope="col" style="width: 40%;" class="align-middle text-center">Description</th>
+                    <th scope="col" style="width: 15%;" class="align-middle text-center">Quantity</th>
+                    <th scope="col" style="width: 15%;" class="align-middle text-center">Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var cartItem in Model.CartItem)
+                {
+                    var itemTotal = cartItem.Item.Price * cartItem.Quantity;
+                    var itemDiscount = KSOrderUtilities.GetDiscountPrice(cartItem.Item, sales);
+                    var itemTotalWithDiscount = itemDiscount * cartItem.Quantity;
+                    <tr style="height: 100px">
+                        <td>
+                            @{
+                                if (cartItem.Item.ImageLocation == null)
+                                {
+                                    <img alt="No Logo Available For @cartItem.Item.ItemName" class="card-img-top mx-auto zoom" src="~/img/NoImageAvailable.png" style="width: 100px; height: 100px; margin: 10px 0 0 0;"/>
+                                }
+                                else
+                                {
+                                    <div style="height: 100px; width: 100px; margin: auto">
+                                        <img alt="Image for @cartItem.Item.ItemName" class="card-img-top mx-auto align-self-center zoom" src="@cartItem.Item.ImageLocation" style="width: 100%; height: 100%; object-fit: scale-down;"/>
+                                    </div>
+                                }
+                            }
+                        </td>
+                        <td class="text-center">
+                            <p class="ellipsisForLongText3Lines">@cartItem.Item.ItemName</p>
+                        </td>
+                        <td>
+                            @if (string.IsNullOrEmpty(cartItem.Item.Details))
+                            {
+                                <p>@cartItem.Item.Business.BusinessName has not set a description for this item.</p>
+                            }
+                            else
+                            {
+                                <p class="ellipsisForLongText3Lines">@cartItem.Item.Details</p>
+                            }
+                        </td>
+                        <td>
+                            <form asp-controller="Order" asp-action="CartUpdate" method="POST">
+                                <input name="id" type="hidden" class="form-control" value="@cartItem.ItemId">
+                                <div>
+                                    <span class="input-group input-group-sm" style="width: 5em; margin: auto;">
+                                        <input name="q" type="number" class="form-control" value="@cartItem.Quantity" onchange="submit();">
+                                        <span class="input-group-append">
+                                            <a class="btn btn-outline-danger" title="Remove from Cart" asp-action="CartRemove" asp-controller="Order" asp-route-id="@cartItem.ItemId">
+                                                <i class="fa fa-trash fa-sm" aria-hidden="true"></i>
+                                            </a>
+                                        </span>
+                                    </span>
+                                </div>
+                            </form>
+
+                        </td>
+                        <td class="text-center">
+                            @if (itemTotalWithDiscount < itemTotal)
+                            {
+                                <span style="text-decoration: line-through">@itemTotal.ToString("$#0.00")</span>
+                                <br/>
+                                <span class="text-success" style="font-size: 1.2rem;">@itemTotalWithDiscount.ToString("$#0.00")</span>
+                            }
+                            else
+                            {
+                                <span>@itemTotal.ToString("$#0.00")</span>
+                            }
+                        </td>
+                    </tr>
                 }
+                </tbody>
+            </table>
+        </div>
 
-                <span>@("Subtotal:".PadRight(15, '\u00a0'))@(subtotalBeforeDiscount.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br />
-                <span>@("Discount:".PadRight(15, '\u00a0'))@(discountTotal.ToString("-$#0.00").PadLeft(10, '\u00a0'))</span><br />
-                <span>@($"Tax ({taxrate.ToString("P0")}):".PadRight(15, '\u00a0'))@(tax.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br />
-                <span>@("Service Fees:".PadRight(15, '\u00a0'))@(serviceFee.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br /><br />
-                <span>@("Grand Total:".PadRight(15, '\u00a0'))@(grandTotal.ToString("$#0.00").PadLeft(10, '\u00a0'))</span>
-            </p>
+        <div class="card-footer d-flex justify-content-between align-bottom">
+            <div style="margin-top: auto;">
+                <a class="btn btn-secondary" asp-controller="Store" asp-action="Catalogue" asp-route-id="@Model.BusinessId">@("<- Back to Catalogue")</a>
+            </div>
+            <div>
+                <p style="font-family:monospace;">
+                    @{
+                        decimal subtotalBeforeDiscount = Model.CartItem.Sum(ci => ci.Quantity * ci.Item.Price);
+                        decimal discountTotal = (decimal) ViewData["discountTotal"];
+                        decimal subtotalAfterDiscount = subtotalBeforeDiscount - discountTotal;
 
-            <div id="paypal-button-container"></div>
-            <form hidden id="PlaceOrderForm" asp-controller="Order" asp-action="PlaceOrder"></form>
+                        decimal taxRate = Math.Round(Model.Member.ProvinceCodeNavigation.TaxRate, 2);
+                        decimal tax = Math.Round(taxRate * subtotalAfterDiscount, 2);
+                        decimal serviceFee = 3.50m;
+                        decimal grandTotal = subtotalAfterDiscount + tax + serviceFee;
+                    }
 
-            <script>
+                    <span>@("Subtotal:".PadRight(15, '\u00a0'))@(subtotalBeforeDiscount.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br/>
+                    @if (discountTotal > 0)
+                    {
+                        <span>@("Total Discount:".PadRight(15, '\u00a0'))@(discountTotal.ToString("-$#0.00").PadLeft(10, '\u00a0'))</span>
+                        <br/>
+                    }
+                    <span>@($"Tax ({taxRate:P0}):".PadRight(15, '\u00a0'))@(tax.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br/>
+                    <span>@("Service Fees:".PadRight(15, '\u00a0'))@(serviceFee.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br/><br/>
+                    <span>@("Grand Total:".PadRight(15, '\u00a0'))@(grandTotal.ToString("$#0.00").PadLeft(10, '\u00a0'))</span>
+                </p>
+
+                <div id="paypal-button-container"></div>
+                <form hidden id="PlaceOrderForm" asp-controller="Order" asp-action="PlaceOrder"></form>
+
+                <script>
                 paypal.Buttons({
                     createOrder: function (data, actions) {
                         // This function sets up the details of the transaction, including the amount and line item details.
                         return actions.order.create({
                             purchase_units: [{
                                 amount: {
-                                    value: @(Math.Round(grandTotal,2))
+                                    value: @(Math.Round(grandTotal, 2))
                                 }
                             }]
                         });
@@ -92,6 +157,7 @@
                     }
                 }).render('#paypal-button-container');
             </script>
+            </div>
         </div>
     </div>
-</div>
+}
