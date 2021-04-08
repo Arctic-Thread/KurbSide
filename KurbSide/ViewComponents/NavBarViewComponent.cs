@@ -35,15 +35,22 @@ namespace KurbSide.ViewComponents
             {
                 var business = await _context.Business
                     .Include(b => b.BusinessHours)
+                    .Include(b => b.Order)
+                    .ThenInclude(o=> o.OrderItem)
+                    .ThenInclude(oi => oi.Item)
                     .Where(b => b.AspNetId.Equals(user.Id))
                     .FirstOrDefaultAsync();
 
+                TempData["orderCount"] = business.Order.Count(o => new[] { 0,1,2,3 }.Contains(o.Status));
                 TempData["loggedInBusiness"] = business;
                 TempData["openForBusiness"] = KSStoreUtilities.CheckIfOpenForBusiness(business.BusinessHours, DateTime.Now.DayOfWeek);
             }
             else if (accountType == KSCurrentUser.AccountType.MEMBER)
             {
                 var member = await _context.Member
+                    .Include(m => m.Order)
+                    .ThenInclude(o=> o.OrderItem)
+                    .ThenInclude(oi => oi.Item)
                     .Where(m => m.AspNetId.Equals(user.Id))
                     .FirstOrDefaultAsync();
 

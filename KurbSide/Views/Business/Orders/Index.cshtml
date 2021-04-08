@@ -28,7 +28,25 @@
 }
 
 <vc:business-head/>
+<div class="card text-center">
+    <div class="card-body">
+        <p class="card-text">
+            This page will automatically refresh in <span id="countdown"></span> seconds.
+            <span class="badge badge-primary pointer" onclick="location.reload(true);">Refresh Now</span>
+        </p>
+    </div>
+</div>
 
+<script>
+    (function countdown(remaining) {
+        if(remaining === 0)
+            location.reload(true);
+        document.getElementById('countdown').innerHTML = remaining;
+        setTimeout(function(){ countdown(remaining - 1); }, 1000);
+    })(120);
+</script>
+
+<br>
 <div class="card">
     <div class="card-body row">
         <div class="col">
@@ -81,6 +99,7 @@
             </tr>
             </thead>
             <style>
+                .pointer {cursor: pointer;}
                 tr.hover-controls {
                     display: none;
                     position: absolute;
