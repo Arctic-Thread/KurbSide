@@ -61,7 +61,10 @@
                 </div>
                 <div class="row justify-content-between">
                     <a class="btn btn-sm btn-secondary" asp-action="ViewSales">Back to Sales</a>
-                    <button class="btn btn-sm btn-success" id="sales-createSale" type="submit">Save Sale</button>
+                    <div class="btn-group" role="group">
+                        <a asp-controller="Business" asp-action="DeleteSale" asp-route-saleId="@Model.SaleId" class="btn btn-sm btn-danger" id="sales-deleteSale" onclick="return confirm('Clicking OK will delete this sale forever, this can not be undone! Did you mean to deactivate it instead?')">Delete Sale</a>
+                        <button class="btn btn-sm btn-success" id="sales-createSale" type="submit">Save Sale</button>
+                    </div>                    
                 </div>
             </div>
         </form>
