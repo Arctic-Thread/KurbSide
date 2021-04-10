@@ -5,7 +5,7 @@
     var businessId = (Guid) TempData["businessId"];
 }
 
-@* Stlyes for the barcode and qrcode *@
+@* Styles for the barcode and qrcode *@
 <style>
         .barcode {
             height: 1.5em;
@@ -26,8 +26,7 @@
         }
 </style>
 
-
-@* Buisness head display *@
+@* Business head display *@
 <vc:business-head/>
 
 <div>
@@ -71,22 +70,24 @@
                     @Html.DisplayFor(modelItem => item.Category)
                 </td>
                 <td class="align-middle">
-                    <img class="@(item.Sku == null ? "none" : "qrcode")" src="https://bwip-js.herokuapp.com/?bcid=datamatrix&text=@item.Sku"/>
+                    <img class="@(item.Sku == null ? "none" : "qrcode")" alt="@item.ItemName SKU" src="https://bwip-js.herokuapp.com/?bcid=datamatrix&text=@item.Sku"/>
                     @item.Sku
                 </td>
                 <td class="align-middle">
                     <span class="@(item.Upc == null ? "none" : null)">
                         @if (item.Upc != null)
-                        switch (item.Upc.Length)
                         {
-                        case 13:
-                        <img class="barcode" src="https://bwip-js.herokuapp.com/?bcid=ean13&text=@item.Upc"/>
-                        <br/>
-                        break;
-                        default:
-                        <img class="barcode" src="https://bwip-js.herokuapp.com/?bcid=upca&text=@item.Upc"/>
-                        <br/>
-                        break;
+                            switch (item.Upc.Length)
+                            {
+                                case 13:
+                                    <img class="barcode" alt="@item.ItemName UPC" src="https://bwip-js.herokuapp.com/?bcid=ean13&text=@item.Upc"/>
+                                    <br/>
+                                    break;
+                                default:
+                                    <img class="barcode" alt="@item.ItemName UPC" src="https://bwip-js.herokuapp.com/?bcid=upca&text=@item.Upc"/>
+                                    <br/>
+                                    break;
+                            }
                         }
                     </span>
                     @item.Upc
@@ -104,5 +105,4 @@
             <a class="btn btn-sm btn-secondary" asp-controller="Reports" asp-action="ViewAllReportList">Back to Report Listings</a>
         </div>
     </div>
-
 </div>
