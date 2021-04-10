@@ -63,7 +63,9 @@ namespace KurbSide.Controllers
             return View();
 
         }
-        
+
+        #region ItemReports
+
         /// <summary>
         /// Shows a report for all the items
         /// </summary>
@@ -257,5 +259,7 @@ namespace KurbSide.Controllers
 
             return File(workStream, type, fileName);
         }
+        
+        #endregion
     }
 }
