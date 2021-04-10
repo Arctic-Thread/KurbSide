@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using NUnit.Framework;
-using OpenQA.Selenium;
+using Syroot.Windows.IO;
 
 namespace KurbSideTest
 {
@@ -10,127 +8,70 @@ namespace KurbSideTest
     class ReportTests : BaseTest
     {
         /// <summary>
-        /// UC21- Business views Reports
-        /// Tests error message generation when adding an item with invalid details.
-        /// Note: To run this test you may have to modify the download path
+        /// UC21 - Business Views Report
+        /// Tests downloading of generated reports.
         /// Note: For Best results ensure the download path is clear on you device
         /// </summary>
-        [Test]
+        [TestCase("reports-availableItems", "Available Items Report - KurbSide", "KurbSide-Available Items Report-*.pdf")]
+        [TestCase("reports-allItems", "All Items Report - KurbSide", "KurbSide-All Items Report-*.pdf")]
+        [TestCase("reports-RemovedItems", "Removed Items Report - KurbSide", "KurbSide-Removed Items Report-*.pdf")]
         [Order(1)]
-        public void UC21_Reports_DownLoadReport_AllItems_ShouldPass()
+        public void UC21_Reports_DownloadReport_ShouldPass(string reportButtonId, string reportTitle, string fileName)
         {
-            //strings needed for the test
+            // Arrange
+            // Fields & Buttons
+            string dashboardReportsButtonID = "dashboard-reports";
+            string downloadReportButtonID = "btnDownloadReport";
+
+            // Titles
             string dashboard = "Business Dashboard - KurbSide";
             string reportsListing = "Business Report Listing - KurbSide";
-            string allItemsReport = "All Items Report - KurbSide";
-            string downLoadPath = @"C:\Users\User\Downloads\All Items Report.pdf";//You may need to modify based on the file location
-            
-            //logins to the business account
-            KSUnitTestLogin(AccountType.BUSINESS);
-            
-            //From the dashboard navigates to report listings
-            KSTitleContains(dashboard);
-            System.Threading.Thread.Sleep(200);
-            KSClick("dashboard-reports");
-            
-            //navigates to all items reports
-            KSTitleContains(reportsListing);
-            System.Threading.Thread.Sleep(200);
-            KSClick("reports-allItems");
-            
-            //Waits till intended page displays
-            KSTitleContains(allItemsReport);
-            KSClick("btnDownloadGameListReport");
-            
-            //Checks if the file was downloaded
 
-            System.Threading.Thread.Sleep(5000);
-            
-            Assert.IsTrue(File.Exists(downLoadPath));//checks to make sure that there are items in the list
+            // Other
+            string downLoadPath = new KnownFolder(KnownFolderType.Downloads).Path;
+
+            // Act
+            // Logs in to the business account.
+            KSUnitTestLogin(AccountType.BUSINESS);
+
+            // From the dashboard, navigates to report listings page.
+            KSTitleContains(dashboard);
+            KSClick(dashboardReportsButtonID);
+
+            // Navigates to the specified report.
+            KSTitleContains(reportsListing);
+            KSClick(reportButtonId);
+
+            // Downloads the specified report.
+            KSTitleContains(reportTitle);
+            KSClick(downloadReportButtonID);
+
+            // Assert
+            // Checks if the file was downloaded.
+            if (KSCheckForFileInDirectory(downLoadPath, fileName))
+            {
+                //Deletes the file from the folder.
+                KSDeleteFilesInDirectory(downLoadPath, fileName);
+                Assert.IsTrue(true);
+            }
+            else
+            {
+                Assert.IsTrue(false);
+            }
         }
-        
-        /// <summary>
-        /// UC21- Business views Reports
-        /// Tests error message generation when adding an item with invalid details.
-        /// Note: To run this test you may have to modify the download path
-        /// Note: For Best results ensure the download path is clear on you device
-        /// </summary>
-        [Test]
-        [Order(2)]
-        public void UC21_Reports_DownLoadReport_AvailableItems_ShouldPass()
+
+        private static bool KSCheckForFileInDirectory(string directory, string filePattern)
         {
-            //strings needed for the test
-            string dashboard = "Business Dashboard - KurbSide";
-            string reportsListing = "Business Report Listing - KurbSide";
-            string allItemsReport = "Available Items Report - KurbSide";
-            string downLoadPath = @"C:\Users\User\Downloads\Available Items Report.pdf";//You may need to modify based on the file location
-            
-            //logins to the business account
-            KSUnitTestLogin(AccountType.BUSINESS);
-            
-            //From the dashboard navigates to report listings
-            KSTitleContains(dashboard);
-            System.Threading.Thread.Sleep(200);
-            KSClick("dashboard-reports");
-            
-            //navigates to all items reports
-            KSTitleContains(reportsListing);
-            System.Threading.Thread.Sleep(200);
-            KSClick("reports-availableItems");
-            
-            //Waits till intended page displays
-            KSTitleContains(allItemsReport);
-            KSClick("btnDownloadGameListReport");
-            
-            //Checks if the file was downloaded
-
-            System.Threading.Thread.Sleep(5000);
-            
-            Assert.IsTrue(File.Exists(downLoadPath));//checks to make sure that there are items in the list
+            var files = Directory.GetFiles(directory, filePattern, SearchOption.TopDirectoryOnly);
+            return files.Length > 0;
         }
-        
-        /// <summary>
-        /// UC21- Business views Reports
-        /// Tests error message generation when adding an item with invalid details.
-        /// Note: To run this test you may have to modify the download path
-        /// Note: For Best results ensure the download path is clear on you device
-        /// </summary>
-        [Test]
-        [Order(3)]
-        public void UC21_Reports_DownLoadReport_RemovedItems_ShouldPass()
+
+        private static void KSDeleteFilesInDirectory(string directory, string filePattern)
         {
-            //strings needed for the test
-            string dashboard = "Business Dashboard - KurbSide";
-            string reportsListing = "Business Report Listing - KurbSide";
-            string allItemsReport = "Removed Items Report - KurbSide";
-            string downLoadPath = @"C:\Users\User\Downloads\Removed Items Report.pdf";//You may need to modify based on the file location
-            
-            //logins to the business account
-            KSUnitTestLogin(AccountType.BUSINESS);
-            
-            //From the dashboard navigates to report listings
-            KSTitleContains(dashboard);
-            System.Threading.Thread.Sleep(200);
-            KSClick("dashboard-reports");
-            
-            //navigates to all items reports
-            KSTitleContains(reportsListing);
-            System.Threading.Thread.Sleep(200);
-            KSClick("reports-RemovedItems");
-            
-            //Waits till intended page displays
-            KSTitleContains(allItemsReport);
-            KSClick("btnDownloadGameListReport");
-            
-            //Checks if the file was downloaded
-
-            System.Threading.Thread.Sleep(5000);
-            
-            Assert.IsTrue(File.Exists(downLoadPath));//checks to make sure that there are items in the list
+            foreach (var file in Directory.EnumerateFiles(directory, filePattern))
+            {
+                File.Delete(file);
+            }
         }
-        
-        
-        
-        
-    }    
+    }
 }
