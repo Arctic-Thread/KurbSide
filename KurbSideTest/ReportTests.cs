@@ -44,7 +44,7 @@ namespace KurbSideTest
             
             //Checks if the file was downloaded
 
-            System.Threading.Thread.Sleep(10000);
+            System.Threading.Thread.Sleep(5000);
             
             Assert.IsTrue(File.Exists(downLoadPath));//checks to make sure that there are items in the list
         }
@@ -84,7 +84,47 @@ namespace KurbSideTest
             
             //Checks if the file was downloaded
 
-            System.Threading.Thread.Sleep(10000);
+            System.Threading.Thread.Sleep(5000);
+            
+            Assert.IsTrue(File.Exists(downLoadPath));//checks to make sure that there are items in the list
+        }
+        
+        /// <summary>
+        /// UC21- Business views Reports
+        /// Tests error message generation when adding an item with invalid details.
+        /// Note: To run this test you may have to modify the download path
+        /// Note: For Best results ensure the download path is clear on you device
+        /// </summary>
+        [Test]
+        [Order(3)]
+        public void UC21_Reports_DownLoadReport_RemovedItems_ShouldPass()
+        {
+            //strings needed for the test
+            string dashboard = "Business Dashboard - KurbSide";
+            string reportsListing = "Business Report Listing - KurbSide";
+            string allItemsReport = "Removed Items Report - KurbSide";
+            string downLoadPath = @"C:\Users\User\Downloads\Removed Items Report.pdf";//You may need to modify based on the file location
+            
+            //logins to the business account
+            KSUnitTestLogin(AccountType.BUSINESS);
+            
+            //From the dashboard navigates to report listings
+            KSTitleContains(dashboard);
+            System.Threading.Thread.Sleep(200);
+            KSClick("dashboard-reports");
+            
+            //navigates to all items reports
+            KSTitleContains(reportsListing);
+            System.Threading.Thread.Sleep(200);
+            KSClick("reports-RemovedItems");
+            
+            //Waits till intended page displays
+            KSTitleContains(allItemsReport);
+            KSClick("btnDownloadGameListReport");
+            
+            //Checks if the file was downloaded
+
+            System.Threading.Thread.Sleep(5000);
             
             Assert.IsTrue(File.Exists(downLoadPath));//checks to make sure that there are items in the list
         }
