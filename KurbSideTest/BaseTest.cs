@@ -33,7 +33,7 @@ namespace KurbSideTest
     {
         public IWebDriver _driver;
         public Process _application;
-
+        
         [SetUp]
         public void SetUpMethod()
         {
@@ -187,5 +187,22 @@ namespace KurbSideTest
             wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(elementIdToWaitFor))).SendKeys(Keys.LeftShift+Keys.End);
             wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.Id(elementIdToWaitFor))).SendKeys(input);
         }
+
+        /// <summary>
+        /// Waits until the element is visible.
+        /// </summary>
+        /// <param name="elementIdToWaitFor">The ID of the element to be waited on.</param>
+        public void KSWaitUntilElementIsVisible(string elementIdToWaitFor)
+        {
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id(elementIdToWaitFor)));
+        }
+
+        /// <summary>
+        /// Checks if the element is visible.
+        /// </summary>
+        /// <param name="elementIdToWaitFor"></param>
+        /// <returns>A bool if the element is visible.</returns>
+        public bool KSIsElementIsVisible(string elementIdToWaitFor) => _driver.FindElement(By.Id(elementIdToWaitFor)).Displayed;
     }
 }

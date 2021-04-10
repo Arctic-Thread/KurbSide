@@ -12,13 +12,13 @@
             <h5 class="card-title text-sm-center">Navigation</h5>
             <p class="card-text">
                 <div class="btn-group-vertical w-100" role="group">
-                    <a asp-controller="Business" asp-action="EditBusiness" class="btn btn-secondary">Edit Business Info</a>
-                    <a asp-controller="Business" asp-action="EditBusinessHours" class="btn btn-secondary">Edit Hours</a>
+                    <a asp-controller="Business" asp-action="EditBusiness" id="dashboard-edit-business" class="btn btn-secondary">Edit Business Info</a>
+                    <a asp-controller="Business" asp-action="EditBusinessHours" id="dashboard-business-hours" class="btn btn-secondary">Edit Hours</a>
                     @*<a asp-controller="Business" asp-action="PickupWindows" class="btn btn-secondary">Edit Pickup Windows</a>*@
-                    <a asp-controller="Business" asp-action="Catalogue" class="btn btn-secondary">Edit Catalogue</a>
-                    <a asp-controller="Business" asp-action="ViewSales" class="btn btn-secondary">Manage Sales</a>
-                    <a asp-controller="Business" asp-action="Orders" class="btn btn-dark">All Orders</a>
-                    <a asp-controller="Reports" asp-action="ViewAllReportList" class="btn btn-secondary">Reporting</a>
+                    <a asp-controller="Business" asp-action="Catalogue" id="dashboard-catalogue" class="btn btn-secondary">Edit Catalogue</a>
+                    <a asp-controller="Business" asp-action="ViewSales" id="dashboard-sales" class="btn btn-secondary">Manage Sales</a>
+                    <a asp-controller="Business" asp-action="Orders" id="dashboard-orders" class="btn btn-dark">All Orders</a>
+                    <a asp-controller="Reports" asp-action="ViewAllReportList" id="dashboard-reports" class="btn btn-secondary">Reporting</a>
                 </div>
             </p>
         </div>
