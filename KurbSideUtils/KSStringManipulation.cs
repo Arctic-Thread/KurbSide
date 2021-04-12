@@ -91,7 +91,7 @@ namespace KurbSideUtils
         /// <summary>
         /// Formats the provided postal code to include a dash, space or nothing.
         /// </summary>
-        /// <param name="postalCode">The postal code to be formated.</param>
+        /// <param name="postalCode">The postal code to be formatted.</param>
         /// <param name="format">Using PostalFormat enum. DASH = '-', SPACE = ' ', NOTHING = ''</param>
         /// <returns></returns>
         public static string KSPostalCodeFormat(this string postalCode, PostalFormat format = PostalFormat.NOTHING)
