@@ -37,9 +37,23 @@ namespace KurbSide.ViewComponents
             List<Sale> sales = null;
             if (cart != null)
             {
-                sales = await _context.Sale
-                    .Where(b => b.BusinessId.Equals(cart.BusinessId))
-                    .ToListAsync();
+                if (cart.CartItem.Count > 0)
+                {
+                    sales = await _context.Sale
+                        .Where(b => b.BusinessId.Equals(cart.BusinessId))
+                        .ToListAsync();
+
+                    var removedItems = cart.CartItem.Where(i => i.Item.Removed == true).ToList();
+
+                    _context.CartItem.RemoveRange(removedItems);
+                    await _context.SaveChangesAsync();
+                }
+                
+                if (cart.CartItem.Count <= 0)
+                {
+                    _context.Cart.Remove(cart);
+                    await _context.SaveChangesAsync();
+                }
             }
 
             if (cart != null && cart.ExpiryDate < DateTime.Today)
@@ -49,7 +63,14 @@ namespace KurbSide.ViewComponents
                 await _context.SaveChangesAsync();
             }
 
-            return await Task.FromResult((IViewComponentResult)View("Default", Tuple.Create(cart, sales)));
+            var updatedCart = await _context.Cart
+                .Where(c => c.MemberId.Equals(currentMember.MemberId))
+                .Include(c => c.Business)
+                .Include(c => c.CartItem)
+                .ThenInclude(ci => ci.Item)
+                .FirstOrDefaultAsync();
+
+            return await Task.FromResult((IViewComponentResult)View("Default", Tuple.Create(updatedCart, sales)));
         }
     }
 }
