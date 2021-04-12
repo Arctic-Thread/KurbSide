@@ -36,12 +36,12 @@ namespace KurbSide.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             
             return accountType switch
             {
-                KSCurrentUser.AccountType.BUSINESS => RedirectToAction("Index", "Business"),
-                KSCurrentUser.AccountType.MEMBER => RedirectToAction("Index", "Store"),
+                KSUserUtilities.AccountType.BUSINESS => RedirectToAction("Index", "Business"),
+                KSUserUtilities.AccountType.MEMBER => RedirectToAction("Index", "Store"),
                 _ => RedirectToPage("/Account/Register", new { area = "Identity" })
             };
         }

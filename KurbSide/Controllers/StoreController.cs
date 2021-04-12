@@ -30,11 +30,11 @@ namespace KurbSide.Controllers
 
         public async Task<IActionResult> IndexAsync(int md = 25, string filter = "")
         {
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -73,10 +73,10 @@ namespace KurbSide.Controllers
 
         public async Task<IActionResult> Catalogue(Guid? id, string filter = "")
         {
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -151,9 +151,9 @@ namespace KurbSide.Controllers
                 return RedirectToAction("Index");
             }
 
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");

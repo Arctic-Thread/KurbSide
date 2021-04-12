@@ -4,12 +4,12 @@
     Business business = new Business();
     Member member = new Member();
 
-    switch ((KSCurrentUser.AccountType) loggedInType)
+    switch ((KSUserUtilities.AccountType) loggedInType)
     {
-        case KSCurrentUser.AccountType.MEMBER:
+        case KSUserUtilities.AccountType.MEMBER:
             member = (Member) TempData["loggedInMember"];
             break;
-        case KSCurrentUser.AccountType.BUSINESS:
+        case KSUserUtilities.AccountType.BUSINESS:
             business = (Business) TempData["loggedInBusiness"];
             break;
     }
@@ -17,9 +17,9 @@
 
 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
     <partial name="_LoginPartial"/>
-    @switch ((KSCurrentUser.AccountType) loggedInType)
+    @switch ((KSUserUtilities.AccountType) loggedInType)
     {
-        case KSCurrentUser.AccountType.VISITOR:
+        case KSUserUtilities.AccountType.VISITOR:
         {
                 @*<ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
@@ -28,7 +28,7 @@
                     </ul>*@
             break;
         }
-        case KSCurrentUser.AccountType.MEMBER:
+        case KSUserUtilities.AccountType.MEMBER:
         {
                 @*<ul id="navbar-member-links" class="navbar-nav flex-grow-1">
                         <li class="nav-item">
@@ -37,7 +37,7 @@
                     </ul>*@
             break;
         }
-        case KSCurrentUser.AccountType.BUSINESS:
+        case KSUserUtilities.AccountType.BUSINESS:
         {
             <ul id="navbar-business-links" class="navbar-nav flex-grow-1">
                 <li class="nav-item">

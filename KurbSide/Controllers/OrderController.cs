@@ -29,10 +29,10 @@ namespace KurbSide.Controllers
         [HttpPost]
         public async Task<IActionResult> CartUpdateAsync(Guid id, int q = 0)
         {
-            var currentMember = await KSCurrentUser.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var currentMember = await KSUserUtilities.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -105,10 +105,10 @@ namespace KurbSide.Controllers
         [HttpPost]
         public async Task<IActionResult> CartAddAsync(Guid id, int q = 1)
         {
-            var currentMember = await KSCurrentUser.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var currentMember = await KSUserUtilities.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -180,10 +180,10 @@ namespace KurbSide.Controllers
 
         public async Task<IActionResult> CartRemoveAsync(Guid id)
         {
-            var currentMember = await KSCurrentUser.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var currentMember = await KSUserUtilities.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -221,13 +221,13 @@ namespace KurbSide.Controllers
         [Route("ClearCart")]
         public async Task<IActionResult> CartClearAsync()
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
             var currentMember = await _context.Member
                 .Where(m => m.AspNetId.Equals(currentUser.Id))
                 .FirstOrDefaultAsync();
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -248,13 +248,13 @@ namespace KurbSide.Controllers
         [Route("Checkout")]
         public async Task<IActionResult> Checkout()
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
             var currentMember = await _context.Member
                 .Where(m => m.AspNetId.Equals(currentUser.Id))
                 .FirstOrDefaultAsync();
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -304,14 +304,14 @@ namespace KurbSide.Controllers
 
         public async Task<IActionResult> PlaceOrder()
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
             var currentMember = await _context.Member
                 .Where(m => m.AspNetId.Equals(currentUser.Id))
                 .Include(p => p.ProvinceCodeNavigation)
                 .FirstOrDefaultAsync();
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");

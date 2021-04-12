@@ -25,10 +25,7 @@ namespace KurbSide.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var currentMember = await _context.Member
-                .Where(m => m.AspNetId.Equals(currentUser.Id))
-                .FirstOrDefaultAsync();
+            var currentMember = await KSUserUtilities.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
 
             var cart = await _context.Cart
                 .Where(c => c.MemberId.Equals(currentMember.MemberId))
@@ -36,7 +33,7 @@ namespace KurbSide.ViewComponents
                 .Include(c => c.CartItem)
                 .ThenInclude(ci => ci.Item)
                 .FirstOrDefaultAsync();
-
+            
             List<Sale> sales = null;
             if (cart != null)
             {
