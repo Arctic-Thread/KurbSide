@@ -192,6 +192,7 @@ namespace KurbSideTest
             // Arrange
             // Fields & Buttons
             string searchBarID = "filter2";
+            string searchCatalogueID = "filter";
             string viewBusinessCatalogueButtonID = "view-test-catalogue";
             string addToCartButtonID = "addToCart";
             string cartItemsID = "cartItems";
@@ -210,6 +211,8 @@ namespace KurbSideTest
             KSClick(viewBusinessCatalogueButtonID);
 
             KSTitleContains(businessPageTitle);
+            KSReplaceText(searchCatalogueID, "test");
+            KSSendKeys(searchCatalogueID, Keys.Enter);
 
             KSClick(addToCartButtonID); //adds a item to the cart to make the cart visible
 
