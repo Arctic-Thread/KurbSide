@@ -29,6 +29,7 @@ namespace KurbSide.Controllers
         /// Visitor -> Registration page.
         /// </summary>
         /// <returns>A redirect to the "home page" for each account type.</returns>
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
@@ -45,6 +46,7 @@ namespace KurbSide.Controllers
         /// Displays the privacy policy page.
         /// </summary>
         /// <returns>A redirect to the privacy policy page.</returns>
+        [HttpGet]
         public IActionResult Privacy()
         {
             return View();

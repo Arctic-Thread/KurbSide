@@ -39,6 +39,7 @@ namespace KurbSide.Controllers
         /// Displays the business dashboard.
         /// </summary>
         /// <returns>A redirect to the index page.</returns>
+        [HttpGet]
         public async Task<IActionResult> IndexAsync()
         {
             //Check that the accessing user is a business type account
@@ -89,8 +90,7 @@ namespace KurbSide.Controllers
         /// <param name="business">The new <see cref="Business"/> information.</param>
         /// <param name="businessLogo">The businesses logo.</param>
         /// <returns>If successful A redirect to the business dashboard, otherwise the index.</returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> EditBusiness(Guid id, Business business, IFormFile businessLogo)
         {
             //Check that the accessing user is a business type account
@@ -177,6 +177,7 @@ namespace KurbSide.Controllers
         /// <param name="page">Pagination: The page number the business would like to view.</param>
         /// <param name="perPage">Pagination: The number of items the business would like to see per page.</param>
         /// <returns> A redirect to the business catalogue page.</returns>
+        [HttpGet]
         public async Task<IActionResult> Catalogue(string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
@@ -279,8 +280,7 @@ namespace KurbSide.Controllers
         /// <param name="item">The new <see cref="Item"/>s information.</param>
         /// <param name="itemImage">The image for the new item.</param>
         /// <returns>If successful A redirect to the businesses catalogue, otherwise the index.</returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> AddItem(Item item, IFormFile itemImage)
         {
             //Check that the accessing user is a business type account
@@ -375,8 +375,7 @@ namespace KurbSide.Controllers
         /// <param name="item">The new <see cref="Item"/>s information.</param>
         /// <param name="itemImageEdit">The image for the new item.</param>
         /// <returns>If successful A redirect to the businesses catalogue, otherwise the index.</returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> EditItem(Item item, IFormFile itemImageEdit)
         {
             //Check that the accessing user is a business type account
@@ -453,6 +452,7 @@ namespace KurbSide.Controllers
         /// <param name="page">Pagination: The page number the business would like to view.</param>
         /// <param name="perPage">Pagination: The number of items the business would like to see per page.</param>
         /// <returns>If successful A redirect to the business catalogue, otherwise the index.</returns>
+        [HttpGet]
         public async Task<IActionResult> RemoveItem(Guid id, string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
@@ -530,8 +530,7 @@ namespace KurbSide.Controllers
         /// <param name="id">The ID of the business.</param>
         /// <param name="businessHours">The business hour information.</param>
         /// <returns>If successful A redirect to the business dashboard, otherwise the index,</returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> EditBusinessHours(Guid id, BusinessHours businessHours)
         {
             //Check that the accessing user is a business type account

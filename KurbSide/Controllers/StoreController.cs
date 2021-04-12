@@ -28,6 +28,7 @@ namespace KurbSide.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
         public async Task<IActionResult> IndexAsync(int md = 25, string filter = "")
         {
             var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -71,6 +72,7 @@ namespace KurbSide.Controllers
             return View(businessListings);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Catalogue(Guid? id, string filter = "")
         {
             var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
@@ -143,6 +145,7 @@ namespace KurbSide.Controllers
             return View(Tuple.Create(business, categorizedItems));
         }
 
+        [HttpGet]
         public async Task<IActionResult> ViewItem(Guid? id)
         {
             if (id == null)
