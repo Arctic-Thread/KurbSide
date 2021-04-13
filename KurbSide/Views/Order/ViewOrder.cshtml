@@ -1,13 +1,13 @@
 ﻿@using static KurbSide.Utilities.KSCurrentUser
-@model Tuple<AccountType,Order>
+@model Tuple<AccountType, Order>
 
 @{
     var order = Model.Item2;
     var business = Model.Item2.Business;
     var member = Model.Item2.Member;
-    
+
     var shortOrder = order.OrderId.ToString().Substring(order.OrderId.ToString().Length - 6).ToUpper();
-    
+
     ViewData["title"] = $"Order {shortOrder} with {business.BusinessName}";
 }
 
@@ -46,20 +46,39 @@
                         @orderItem.Item.Category
                     </span>
                     <span style="font-family: monospace">
-                        <small>
-                            @(orderItem.Quantity + " @ " + orderItem.Item.Price.ToString("$#0.00"))
-                        </small>
-                        @((orderItem.Quantity * orderItem.Item.Price).ToString("$#0.00"))
+                        @{
+                            decimal discountedPrice = orderItem.Item.Price - orderItem.Discount ?? 0;
+
+                            if (discountedPrice < orderItem.Item.Price)
+                            {
+                                <span style="color: green">
+                                    <small style="padding-right: 3em;">
+                                        @(orderItem.Quantity + " @ " + orderItem.Item.Price.ToString("$#0.00"))
+                                    </small>
+                                    @((orderItem.Quantity * orderItem.Item.Price).ToString("$#0.00"))
+                                    <br/>
+                                    <small>Saved: @(((decimal)orderItem.Discount*orderItem.Quantity).ToString("$#0.00"))</small>
+                                </span>
+                            }
+                            else
+                            {
+                                <small style="padding-right: 3em;">
+                                    @(orderItem.Quantity + " @ " + orderItem.Item.Price.ToString("$#0.00"))
+                                </small>
+                                @((orderItem.Quantity * orderItem.Item.Price).ToString("$#0.00"))
+                            }
+                        }
                     </span>
                 </div>
+                <br/>
             }
         </div>
         <div class="card-footer text-right">
             <p style="font-family:monospace;">
                 @{
                     decimal subtotalBeforeDiscount = order.OrderItem.Sum(ci => ci.Quantity * ci.Item.Price);
-                    // decimal discountTotal = (decimal) ViewData["discountTotal"];
-                    decimal discountTotal = 0;
+                    decimal discountTotal = Model.Item2.DiscountTotal ?? 0;
+
                     decimal subtotalAfterDiscount = subtotalBeforeDiscount - discountTotal;
 
                     decimal taxRate = Math.Round(member.ProvinceCodeNavigation.TaxRate, 2);
@@ -165,5 +184,3 @@
         </div>
     </div>
 </div>
-
-
