@@ -360,9 +360,8 @@ namespace KurbSide.Controllers
                 }
             }
 
-            cartSubTotal -= discountTotal;
             var taxRate = currentMember.ProvinceCodeNavigation.TaxRate;
-            var taxTotal = taxRate * cartSubTotal;
+            var taxTotal = taxRate * (cartSubTotal - discountTotal);
             var pendingOrderStatus =
                 await _context.OrderStatus.Where(s => s.StatusName.Equals("Pending")).FirstOrDefaultAsync();
 
@@ -410,7 +409,7 @@ namespace KurbSide.Controllers
                     SubTotal = cartSubTotal,
                     DiscountTotal = discountTotal,
                     Tax = taxTotal,
-                    GrandTotal = cartSubTotal + cartSubTotal * taxRate,
+                    GrandTotal = cartSubTotal - discountTotal + taxTotal,
                     Status = pendingOrderStatus.StatusId,
                     CreationDate = DateTime.Now,
                     BusinessId = cart.BusinessId
@@ -428,7 +427,7 @@ namespace KurbSide.Controllers
                         OrderId = order.OrderId,
                         ItemId = cartItem.ItemId,
                         Quantity = cartItem.Quantity,
-                        Discount = discountTotal
+                        Discount = cartItem.Quantity * (cartItem.Item.Price - KSOrderUtilities.GetDiscountPrice(cartItem.Item, businessSales))
                     };
 
                     orderItems.Add(orderItem);
