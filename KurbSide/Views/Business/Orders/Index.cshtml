@@ -6,7 +6,7 @@
     var statusFull = (IEnumerable<OrderStatus>) TempData["statusFull"];
     
     var rawCategories = (IEnumerable<string>) TempData["status"];
-    var rawFilter = (string) TempData["filter"];
+    var rawFilter = TempData["filter"];
 
     var categories = new List<string>();
     var activeFilter = "";
@@ -23,7 +23,7 @@
     }
     if (rawFilter != null)
     {
-        activeFilter = rawFilter;
+        activeFilter = rawFilter as string;
     }
 }
 

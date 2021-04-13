@@ -511,7 +511,7 @@ namespace KurbSide.Controllers
             }
             else if(accountType == KSCurrentUser.AccountType.MEMBER && order.Member.AspNetId.Equals(currentUser.Id))
             {
-                if (status.Equals(5) && order.Status < status)
+                if (status.Equals(5) && order.Status < 4)
                 {
                     order.Status = status;
                     _context.Order.Update(order);
