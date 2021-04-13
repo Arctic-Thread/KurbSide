@@ -1,0 +1,60 @@
+﻿@model IEnumerable<KurbSide.Models.Order>
+
+<vc:business-head/>
+
+<div>
+    <table class="table table-responsive-sm">
+        <thead>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.OrderId)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.Member.FirstName)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.Member.LastName)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.GrandTotal)
+        </th>
+        </thead>
+        <tbody>
+        @foreach (var order in Model)
+        {
+            <tr id="orderReport-@order.OrderId">
+                <td class="align-middle">
+                    @Html.DisplayFor(modelItem => order.OrderId)
+                </td>
+                <td class="align-middle">
+                    @Html.DisplayFor(modelItem => order.Member.FirstName)
+                </td>
+                <td class="align-middle">
+                    @Html.DisplayFor(modelItem => order.Member.LastName)
+                </td>
+                <td class="align-middle">
+                    @Html.DisplayFor(modelItem => order.CreationDate)
+                </td>
+                <td class="align-middle">
+                    @Html.DisplayFor(modelItem => order.StatusNavigation.StatusName)
+                </td>
+                <td class="align-middle">
+                    @Html.DisplayFor(modelItem => order.GrandTotal)
+                </td>
+
+
+            </tr>
+        }
+
+        </tbody>
+
+
+    </table>
+
+
+</div>

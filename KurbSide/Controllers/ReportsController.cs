@@ -259,7 +259,41 @@ namespace KurbSide.Controllers
 
             return File(workStream, type, fileName);
         }
-        
         #endregion
+        
+        /// <summary>
+        /// Allows a buiness to view all orders
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> ViewAllOrdersReport()
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+            
+            //Gets the current logged in business
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            TempData["businessId"] = business.BusinessId;
+            
+            //Gets the orders of the business
+            var orders = await _context.Order
+                .Include(m=> m.Member)
+                .Include(s=> s.StatusNavigation)
+                .OrderBy(o => o.CreationDate)
+                .Where(b => b.BusinessId.Equals(business.BusinessId))
+                .ToListAsync();
+            
+            return View(orders);
+        }
     }
 }
