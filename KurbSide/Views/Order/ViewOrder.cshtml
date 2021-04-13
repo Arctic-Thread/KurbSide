@@ -14,7 +14,7 @@
 <div class="container">
     @if (order.Status < 4)
     {
-        <vc:auto-refresh/>
+        <vc:auto-refresh seconds="120"/>
     }
     <div class="card">
         <div class="card-header bg-@order.StatusNavigation.BootstrapClass align-content-center text-center text-white">
