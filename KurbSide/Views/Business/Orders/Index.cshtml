@@ -94,6 +94,9 @@
                     SubTotal
                 </th>
                 <th scope="col">
+                    &nbsp;
+                </th>
+                <th scope="col">
                     Status
                 </th>
             </tr>
@@ -146,7 +149,10 @@
                     <td>
                         @order.SubTotal
                     </td>
-                    <td style="width: 1px">
+                    <td class="col-sm-2">
+                        <a asp-controller="Order" asp-action="ViewOrder" asp-route-id="@order.OrderId" class="btn btn-dark">View Details</a>
+                    </td>
+                    <td class="col-sm-2">
                         <span style="width: 10rem;" class="btn disabled btn-block btn-@order.StatusNavigation.BootstrapClass" title="@order.StatusNavigation.StatusText">@order.StatusNavigation.StatusName</span>
                     </td>
                 </tr>

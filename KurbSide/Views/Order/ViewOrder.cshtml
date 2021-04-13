@@ -1,0 +1,16 @@
+﻿@using static KurbSide.Utilities.KSCurrentUser
+@model Tuple<AccountType,Order>
+
+@{
+    var order = Model.Item2;
+    var business = Model.Item2.Business;
+    var member = Model.Item2.Member;
+    
+    var shortOrder = order.OrderId.ToString().Substring(order.OrderId.ToString().Length - 6).ToUpper();
+    
+    ViewData["title"] = $"Order {shortOrder} with {business.BusinessName}";
+}
+
+
+
+

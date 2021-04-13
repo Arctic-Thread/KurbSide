@@ -451,11 +451,6 @@ namespace KurbSide.Controllers
         
         #region Orders
 
-        public async Task<IActionResult> EditOrder()
-        {
-            return View("Orders/Edit");
-        }
-
         public async Task<IActionResult> Orders(string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account

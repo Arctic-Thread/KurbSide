@@ -30,11 +30,14 @@
         }
         case KSCurrentUser.AccountType.MEMBER:
         {
-                @*<ul id="navbar-member-links" class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a id="navbar-home" name="navbar-home" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                    </ul>*@
+            <ul id="navbar-member-links" class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-controller="Store" asp-action="Index">Store</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Orders">My Orders</a>
+                </li>
+            </ul>
             break;
         }
         case KSCurrentUser.AccountType.BUSINESS:
