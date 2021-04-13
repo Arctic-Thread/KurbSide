@@ -325,6 +325,11 @@ namespace KurbSide.Controllers
                 .ThenInclude(ci => ci.Item)
                 .FirstOrDefault();
 
+            if (cart == null) // If the member does not have a cart (e.g. they clear all items while viewing checkout.)
+            {
+                return RedirectToAction("Index", "Store");
+            }
+
             var cartItems = await _context.CartItem
                 .Where(m => m.CartId.Equals(cart.CartId))
                 .Include(i => i.Item)
@@ -332,7 +337,7 @@ namespace KurbSide.Controllers
                 .ThenInclude(s => s.Sale)
                 .ToListAsync();
 
-            if (cart == null || !cart.CartItem.Any())
+            if (cartItems.Count == 0) // If the member has a cart with no items.
             {
                 return RedirectToAction("Index", "Store");
             }
