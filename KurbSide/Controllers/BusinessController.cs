@@ -256,7 +256,9 @@ namespace KurbSide.Controllers
                     _logger.LogDebug("Debug: Item is present in orders, Marked as Hidden/Removed.");
                 }
                 catch (Exception)
-                { }
+                {
+                    // ignored
+                }
             }
             finally
             {
@@ -377,7 +379,7 @@ namespace KurbSide.Controllers
                 {
                     if(itemImageEdit != null) // If the business has added an image, it is uploaded to imgur and the link is prepped to be saved to the DB
                     {
-                        string uploadResults = await KSImgur.KSUploadImageToImgur(itemImageEdit);
+                        var uploadResults = await KSImgur.KSUploadImageToImgur(itemImageEdit);
                         if (!uploadResults.StartsWith("Error: "))
                         {
                             item.ImageLocation = uploadResults;
@@ -393,7 +395,7 @@ namespace KurbSide.Controllers
                     else // If they are not adding a new image, it uses the pre-existing image.
                     {
                         var existingItem = await _context.Item.AsNoTracking().Where(i => i.ItemId == item.ItemId).FirstOrDefaultAsync();
-                        string existingImage = existingItem.ImageLocation;
+                        var existingImage = existingItem.ImageLocation;
                         item.ImageLocation = existingImage;
                     }
 
@@ -444,6 +446,94 @@ namespace KurbSide.Controllers
             }
 
             return View(item);
+        }
+        #endregion
+        
+        #region Orders
+
+        public async Task<IActionResult> Orders(string filter = "", int page = 1, int perPage = 5)
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            var orders = await _context.Order
+                .Where(o => o.Business.BusinessId.Equals(business.BusinessId))
+                .Include(o => o.Member)
+                .Include(o => o.StatusNavigation)
+                .OrderBy(o => o.Status)
+                .ToListAsync();
+            
+            //Retrieve the existing status(es) that are relevant
+            //to the current business
+            var status = orders
+                .Select(o => o.StatusNavigation.StatusName.ToUpper().Trim())
+                .Distinct()
+                .ToList();
+
+            //Filtering functions
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filter = filter.Trim();
+                TempData["filter"] = filter;
+                //sort by category if the search term/filter
+                //  is contained in the categories list
+                if (status.Contains(filter.ToUpper()))
+                {
+                    orders = orders
+                        .Where(o => o.StatusNavigation.StatusName.ToUpper().Equals(filter))
+                        .ToList();
+                }
+                //try filtering orders in the following order
+                // 1. OrderId
+                // 2. FirstName
+                // 3. LastName
+                //HACK: this is a ham-fisted way to do this, but it is unlikely
+                // that any user will be named 22BBF0/etc so there should be very little
+                // collision.
+                else
+                {
+                    orders = orders
+                        .Where
+                            (o =>
+                            o.OrderId.ToString().ToUpper().Contains(filter.ToUpper()) ||
+                            o.Member.FirstName.ToUpper().Contains(filter.ToUpper()) ||
+                            o.Member.LastName.ToUpper().Contains(filter.ToUpper()))
+                        .ToList();
+                    
+                    if (orders.Count() == 1)
+                    {
+                        //this seems like an excellent idea :)
+                        TempData["sysMessage"] = $"Only one order found for {filter}, redirecting to order.";
+                        return RedirectToAction("ViewOrder","Order", new {id = orders.First().OrderId});
+                    }
+                }
+            }
+            
+            var paginatedList = KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
+
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["status"] = status;
+            TempData["statusFull"] = await _context.OrderStatus.ToListAsync();
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedList.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedList.HasNextPage;
+            TempData["hasPrevPage"] = paginatedList.HasPreviousPage;
+            
+            return View("Orders/Index", paginatedList);
         }
         #endregion
 

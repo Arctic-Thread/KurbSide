@@ -10,6 +10,7 @@
     @if (isMemberAccount)
     {
         <li class="nav-item"><a class="nav-link @ManageNavPages.MemberProfileNavClass(ViewContext)" id="profile" asp-page="./MemberProfile">Member Profile</a></li>
+        <li class="nav-item"><a class="nav-link @ManageNavPages.OrdersNavClass(ViewContext)" id="orders" asp-page="./Orders">Orders</a></li>
     }
     else
     {

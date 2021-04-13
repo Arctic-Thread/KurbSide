@@ -246,7 +246,7 @@ namespace KurbSide.Controllers
         }
 
         [Route("Checkout")]
-        public async Task<IActionResult> Checkout()
+        public async Task<IActionResult> CheckoutAsync()
         {
             var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
             var currentMember = await _context.Member
@@ -302,7 +302,7 @@ namespace KurbSide.Controllers
             return View(cart);
         }
 
-        public async Task<IActionResult> PlaceOrder()
+        public async Task<IActionResult> PlaceOrderAsync()
         {
             var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
             var currentMember = await _context.Member
@@ -360,9 +360,8 @@ namespace KurbSide.Controllers
                 }
             }
 
-            cartSubTotal -= discountTotal;
             var taxRate = currentMember.ProvinceCodeNavigation.TaxRate;
-            var taxTotal = taxRate * cartSubTotal;
+            var taxTotal = taxRate * (cartSubTotal - discountTotal);
             var pendingOrderStatus =
                 await _context.OrderStatus.Where(s => s.StatusName.Equals("Pending")).FirstOrDefaultAsync();
 
@@ -410,7 +409,7 @@ namespace KurbSide.Controllers
                     SubTotal = cartSubTotal,
                     DiscountTotal = discountTotal,
                     Tax = taxTotal,
-                    GrandTotal = cartSubTotal + cartSubTotal * taxRate,
+                    GrandTotal = cartSubTotal - discountTotal + taxTotal,
                     Status = pendingOrderStatus.StatusId,
                     CreationDate = DateTime.Now,
                     BusinessId = cart.BusinessId
@@ -428,7 +427,7 @@ namespace KurbSide.Controllers
                         OrderId = order.OrderId,
                         ItemId = cartItem.ItemId,
                         Quantity = cartItem.Quantity,
-                        Discount = discountTotal
+                        Discount = cartItem.Quantity * (cartItem.Item.Price - KSOrderUtilities.GetDiscountPrice(cartItem.Item, businessSales))
                     };
 
                     orderItems.Add(orderItem);
@@ -450,6 +449,86 @@ namespace KurbSide.Controllers
             }
 
             return RedirectToAction("Index", "Store");
+        }
+
+        [Route("/Order/{id}")]
+        public async Task<IActionResult> ViewOrderAsync(Guid id)
+        {
+            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            var member = await _context.Member
+                .FirstOrDefaultAsync(x => x.AspNetId.Equals(currentUser.Id))?? new Member();
+            var business = await _context.Business
+                .FirstOrDefaultAsync(x => x.AspNetId.Equals(currentUser.Id))?? new Business();
+            
+            var order = _context.Order
+                .Include(o => o.Business)
+                .ThenInclude(b => b.BusinessHours)
+                .Include(o => o.Member)
+                .ThenInclude(m => m.ProvinceCodeNavigation)
+                .Include(o => o.StatusNavigation)
+                .Include(o => o.OrderItem)
+                .ThenInclude(oi => oi.Item)
+                .AsEnumerable()
+                .Where(o => OwnsOrder(o, member.MemberId, business.BusinessId))
+                .FirstOrDefault(o => o.OrderId.Equals(id));
+            
+            if (order == null)
+                return RedirectToAction("Index", "Home");
+            
+            return View(Tuple.Create(accountType, order));
+        }
+
+        [Route("/Order/{id}/UpdateStatus")]
+        public async Task<IActionResult> UpdateStatusAsync(Guid id, int status)
+        {
+            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            
+            var member = await _context.Member
+                .FirstOrDefaultAsync(x => x.AspNetId.Equals(currentUser.Id))?? new Member();
+            var business = await _context.Business
+                .FirstOrDefaultAsync(x => x.AspNetId.Equals(currentUser.Id))?? new Business();
+            
+            var order = _context.Order
+                .Include(o => o.Business)
+                .Include(o => o.Member)
+                .AsEnumerable()
+                .Where(o => OwnsOrder(o, member.MemberId, business.BusinessId))
+                .FirstOrDefault(o => o.OrderId.Equals(id));
+
+            if (order == null)
+                return RedirectToAction("Index", "Home");
+            
+            if (accountType == KSCurrentUser.AccountType.BUSINESS && order.Business.AspNetId.Equals(currentUser.Id))
+            {
+                if (!status.Equals(5) && order.Status < status)
+                {
+                    order.Status = status;
+                    _context.Order.Update(order);
+                }
+            }
+            else if(accountType == KSCurrentUser.AccountType.MEMBER && order.Member.AspNetId.Equals(currentUser.Id))
+            {
+                if (status.Equals(5) && order.Status < 4)
+                {
+                    order.Status = status;
+                    _context.Order.Update(order);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return Redirect(HttpContext.Request.Headers["Referer"]);
+        }
+
+        private static bool OwnsOrder(Order order, Guid memberId, Guid businessId)
+        {
+            if (memberId != new Guid())
+                return order.MemberId == memberId;
+            if (businessId != new Guid())
+                return order.BusinessId == businessId;
+            return false;
         }
     }
 }
