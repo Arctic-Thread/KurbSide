@@ -172,7 +172,9 @@
                         </td>
                         <td class="align-middle">
                             <span class="@(item.Upc == null ? "none":null)">
-                                @if (item.Upc != null) switch (item.Upc.Length)
+                                @if (item.Upc != null)
+                                {
+                                    switch (item.Upc.Length)
                                     {
                                         case 13:
                                             <img class="barcode" src="https://bwip-js.herokuapp.com/?bcid=ean13&text=@item.Upc" />
@@ -183,6 +185,7 @@
                                             <br />
                                             break;
                                     }
+                                }
                             </span>
                             @item.Upc
                         </td>
