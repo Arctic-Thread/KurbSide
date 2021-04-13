@@ -438,9 +438,8 @@ namespace KurbSide.Controllers
                 _context.CartItem.RemoveRange(cart.CartItem);
                 _context.Cart.Remove(cart);
                 await _context.SaveChangesAsync();
-
-                var orderDetails = Tuple.Create(order, orderItems);
-                return View("OrderConfirmation", orderDetails);
+                
+                return RedirectToAction("ViewOrder", "Order", new { id = order.OrderId});
             }
             catch (Exception ex)
             {
