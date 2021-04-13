@@ -14,9 +14,9 @@ namespace KurbSide.ViewComponents
         private readonly KSContext _context;
         public AutoRefreshViewComponent(KSContext context) => _context = context;
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync(int seconds)
         {
-            return await Task.FromResult((IViewComponentResult)View("Default"));
+            return await Task.FromResult((IViewComponentResult)View("Default", seconds));
         }
     }
 }
