@@ -461,6 +461,8 @@ namespace KurbSide.Controllers
             var order = _context.Order
                 .Include(o => o.Business)
                 .Include(o => o.Member)
+                .ThenInclude(m => m.ProvinceCodeNavigation)
+                .Include(o => o.StatusNavigation)
                 .Include(o => o.OrderItem)
                 .ThenInclude(oi => oi.Item)
                 .AsEnumerable()

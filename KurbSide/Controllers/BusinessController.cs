@@ -516,7 +516,7 @@ namespace KurbSide.Controllers
                     {
                         //this seems like an excellent idea :)
                         TempData["sysMessage"] = $"Only one order found for {filter}, redirecting to order.";
-                        return RedirectToAction("EditOrder", new {id = orders.First().OrderId});
+                        return RedirectToAction("ViewOrder","Order", new {id = orders.First().OrderId});
                     }
                 }
             }

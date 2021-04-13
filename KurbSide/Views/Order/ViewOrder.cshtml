@@ -11,6 +11,111 @@
     ViewData["title"] = $"Order {shortOrder} with {business.BusinessName}";
 }
 
+<div class="container">
+    @if (order.Status < 4)
+    {
+        <vc:auto-refresh/>
+    }
+    <div class="card">
+        <div class="card-header bg-@order.StatusNavigation.BootstrapClass align-content-center text-center text-white">
+            <b>@order.StatusNavigation.StatusName</b>
+            <br>
+            <small>
+                @order.StatusNavigation.StatusText
+            </small>
+        </div>
+        <div class="card-header d-flex justify-content-between">
+            <span>
+                @member.FirstName's @order.CreationDate.DayOfWeek order with @business.BusinessName
+            </span>
+            <span>
+                <span style="opacity: .5;">@order.OrderId.ToString().Substring(0, order.OrderId.ToString().Length - 6)</span><b>@shortOrder</b>
+            </span>
+            <span>
+                <small>@order.CreationDate</small>
+            </span>
+        </div>
+        <div class="card-body">
+            @foreach (var orderItem in order.OrderItem)
+            {
+                <div class="d-flex justify-content-between">
+                    <span>
+                        @orderItem.Item.ItemName
+                    </span>
+                    <span>
+                        @orderItem.Item.Category
+                    </span>
+                    <span style="font-family: monospace">
+                        <small>
+                            @(orderItem.Quantity + " @ " + orderItem.Item.Price.ToString("$#0.00"))
+                        </small>
+                        @((orderItem.Quantity * orderItem.Item.Price).ToString("$#0.00"))
+                    </span>
+                </div>
+            }
+        </div>
+        <div class="card-footer text-right">
+            <p style="font-family:monospace;">
+                @{
+                    decimal subtotalBeforeDiscount = order.OrderItem.Sum(ci => ci.Quantity * ci.Item.Price);
+                    // decimal discountTotal = (decimal) ViewData["discountTotal"];
+                    decimal discountTotal = 0;
+                    decimal subtotalAfterDiscount = subtotalBeforeDiscount - discountTotal;
 
+                    decimal taxRate = Math.Round(member.ProvinceCodeNavigation.TaxRate, 2);
+                    decimal tax = Math.Round(taxRate * subtotalAfterDiscount, 2);
+                    decimal serviceFee = 3.50m;
+                    decimal grandTotal = subtotalAfterDiscount + tax + serviceFee;
+                }
+
+                <span>@("Subtotal:".PadRight(15, '\u00a0'))@(subtotalBeforeDiscount.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br/>
+                @if (discountTotal > 0)
+                {
+                    <span>@("Total Discount:".PadRight(15, '\u00a0'))@(discountTotal.ToString("-$#0.00").PadLeft(10, '\u00a0'))</span>
+                    <br/>
+                }
+                <span>@($"Tax ({taxRate:P0}):".PadRight(15, '\u00a0'))@(tax.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br/>
+                <span>@("Service Fees:".PadRight(15, '\u00a0'))@(serviceFee.ToString("$#0.00").PadLeft(10, '\u00a0'))</span><br/><br/>
+                <span>@("Grand Total:".PadRight(15, '\u00a0'))@(grandTotal.ToString("$#0.00").PadLeft(10, '\u00a0'))</span>
+            </p>
+        </div>
+        <style>
+                .btn-group.special {
+                  display: flex;
+                }
+                .special .btn:not(.hiddenbtn) {
+                  flex: 1
+                }
+                .hiddenbtn{
+                    display: none;
+                }
+            </style>
+        <div class="card-footer">
+            <span class="btn-group btn-group-sm btn-group btn-group-toggle special" data-toggle="buttons">
+                @switch (Model.Item1)
+                {
+                    case AccountType.MEMBER when order.Status < 4:
+                        <a asp-area="Identity" asp-page="/Account/Manage/Orders" class="btn btn-secondary">@("<- Back To Orders")</a>
+                        <a class="btn btn-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="5">Cancel Order</a>
+                        break;
+                    case AccountType.MEMBER:
+                        <a asp-area="Identity" asp-page="/Account/Manage/Orders" class="btn btn-sm btn-secondary">@("<- Back To Orders")</a>
+                        break;
+                    case AccountType.BUSINESS when order.Status < 4:
+                        <a asp-controller="Business" asp-action="Orders" class="btn btn-secondary">@("<- Back To Orders")</a>
+                        <a title="permanent, customer will be notified" class="btn @(order.StatusNavigation.StatusId < 1 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 1 ? "-outline" : null)-warning" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="1">Accept</a>
+                        <a title="permanent, customer will be notified" class="btn @(order.StatusNavigation.StatusId < 2 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 2 ? "-outline" : null)-info" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="2">Preparing</a>
+                        <a title="permanent, customer will be notified" class="btn @(order.StatusNavigation.StatusId < 3 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 3 ? "-outline" : null)-success" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="3">Ready</a>
+                        <a title="permanent, customer will be notified" class="btn @(order.StatusNavigation.StatusId < 4 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 4 ? "-outline" : null)-secondary" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="4">Picked Up</a>
+                        <a title="permanent, customer will be notified" class="btn @(order.StatusNavigation.StatusId < 4 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 5 ? "-outline" : null)-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="6">Cancel</a>
+                        break;
+                    case AccountType.BUSINESS:
+                        <a asp-controller="Business" asp-action="Orders" class="btn btn-sm btn-secondary">@("<- Back To Orders")</a>
+                        break;
+                }
+            </span>
+        </div>
+    </div>
+</div>
 
 
