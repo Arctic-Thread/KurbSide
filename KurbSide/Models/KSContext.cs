@@ -439,21 +439,31 @@ namespace KurbSide.Models
                     .IsRequired()
                     .HasMaxLength(450);
 
+                entity.Property(e => e.SenderId)
+                    .IsRequired()
+                    .HasMaxLength(450);
+
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.Notification)
                     .HasForeignKey(d => d.OrderId)
-                    .HasConstraintName("FK__Notificat__Order__32767D0B");
+                    .HasConstraintName("FK__Notificat__Order__54CB950F");
 
                 entity.HasOne(d => d.Recipient)
-                    .WithMany(p => p.Notification)
+                    .WithMany(p => p.NotificationRecipient)
                     .HasForeignKey(d => d.RecipientId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Notificat__Recip__308E3499");
+                    .HasConstraintName("FK__Notificat__Recip__52E34C9D");
 
                 entity.HasOne(d => d.Sale)
                     .WithMany(p => p.Notification)
                     .HasForeignKey(d => d.SaleId)
-                    .HasConstraintName("FK__Notificat__SaleI__318258D2");
+                    .HasConstraintName("FK__Notificat__SaleI__53D770D6");
+
+                entity.HasOne(d => d.Sender)
+                    .WithMany(p => p.NotificationSender)
+                    .HasForeignKey(d => d.SenderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Notificat__Sende__51EF2864");
             });
 
             modelBuilder.Entity<Order>(entity =>
