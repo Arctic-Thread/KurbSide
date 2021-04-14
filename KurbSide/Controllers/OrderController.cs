@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using KurbSide.Service;
+using OrderStatus = KurbSide.Service.OrderStatus;
 
 namespace KurbSide.Controllers
 {
@@ -320,7 +322,9 @@ namespace KurbSide.Controllers
             var cart = _context.Cart
                 .Where(c => c.MemberId.Equals(currentMember.MemberId))
                 .Include(c => c.Member)
+                .ThenInclude(m => m.AspNet)
                 .Include(c => c.Business)
+                .ThenInclude(b => b.AspNet)
                 .Include(c => c.CartItem)
                 .ThenInclude(ci => ci.Item)
                 .FirstOrDefault();
@@ -440,6 +444,15 @@ namespace KurbSide.Controllers
                 await _context.SaveChangesAsync();
                 
                 return RedirectToAction("ViewOrder", "Order", new { id = order.OrderId});
+
+                var orderDetails = Tuple.Create(order, orderItems);
+                
+                string notificationDetails = KSNotificationAndEmails.CreateMessage(OrderStatus.PENDING, order.Business.BusinessName);
+                await KSNotification.CreateNotification(_context, order.Member.AspNet.Id, order.Business.AspNet.Id, notificationDetails, orderId: order.OrderId);
+
+                await KSEmail.SendEmail(order.Business.AspNet.Email, OrderStatus.PENDING, order.OrderId, order.Business.BusinessName);
+
+                return RedirectToAction("ViewOrder", "Order", new { id = order.OrderId});
             }
             catch (Exception ex)
             {
@@ -492,7 +505,9 @@ namespace KurbSide.Controllers
             
             var order = _context.Order
                 .Include(o => o.Business)
+                .ThenInclude( b => b.AspNet)
                 .Include(o => o.Member)
+                .ThenInclude(m => m.AspNet)
                 .AsEnumerable()
                 .Where(o => OwnsOrder(o, member.MemberId, business.BusinessId))
                 .FirstOrDefault(o => o.OrderId.Equals(id));
@@ -506,6 +521,11 @@ namespace KurbSide.Controllers
                 {
                     order.Status = status;
                     _context.Order.Update(order);
+
+                    string notificationDetails = KSNotificationAndEmails.CreateMessage((OrderStatus) status, order.Business.BusinessName);
+                    await KSNotification.CreateNotification(_context, currentUser.Id, order.Member.AspNet.Id, notificationDetails, orderId: order.OrderId);
+                    
+                    await KSEmail.SendEmail(order.Member.AspNet.Email, (OrderStatus) status, order.OrderId, order.Business.BusinessName);
                 }
             }
             else if(accountType == KSCurrentUser.AccountType.MEMBER && order.Member.AspNetId.Equals(currentUser.Id))
@@ -514,9 +534,14 @@ namespace KurbSide.Controllers
                 {
                     order.Status = status;
                     _context.Order.Update(order);
+                    
+                    string notificationDetails = KSNotificationAndEmails.CreateMessage((OrderStatus) status, order.Business.BusinessName);
+                    await KSNotification.CreateNotification(_context, currentUser.Id, order.Member.AspNet.Id, notificationDetails, orderId: order.OrderId);
+
+                    await KSEmail.SendEmail(order.Business.AspNet.Email, (OrderStatus) status, order.OrderId, order.Business.BusinessName);
                 }
             }
-
+            
             await _context.SaveChangesAsync();
             return Redirect(HttpContext.Request.Headers["Referer"]);
         }
