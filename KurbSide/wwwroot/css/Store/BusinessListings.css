@@ -18,3 +18,24 @@
     background-color: white;
     box-shadow: rgba(0,0,0,0.25) 0px 0px 3px;
 }
+
+.card-columns {
+    -webkit-column-break-inside: avoid-region;
+}
+
+.card-columns .card {
+    display: block;
+}
+
+.business {
+    margin: 1% !important;
+    flex: 1 1 30%;
+    min-width: 250px;
+}
+
+.bbb {
+    width: 100%;
+    margin: 0;
+    opacity: 0.75;
+    font-size: 9px
+}
