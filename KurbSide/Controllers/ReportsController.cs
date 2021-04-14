@@ -296,16 +296,13 @@ namespace KurbSide.Controllers
                 .FirstOrDefaultAsync();
 
             TempData["businessId"] = business.BusinessId;
-            
-            //Used for the where in the lambda below
-            string[] processed = {"Pending", "Accepted", "Preparing", "Ready For Pickup"};
-            
+
             //Gets the orders of the business
             var orders = await _context.Order
                 .Include(m=> m.Member)
                 .Include(s=> s.StatusNavigation)
                 .OrderBy(o => o.CreationDate)
-                .Where(o=> o.StatusNavigation.StatusName.Equals(processed.Any()))
+                .Where(o=> o.StatusNavigation.StatusName=="Pending"||o.StatusNavigation.StatusName=="Accepted" || o.StatusNavigation.StatusName=="Preparing"|| o.StatusNavigation.StatusName=="Ready For Pickup")
                 .Where(b => b.BusinessId.Equals(business.BusinessId))
                 .ToListAsync();
             
