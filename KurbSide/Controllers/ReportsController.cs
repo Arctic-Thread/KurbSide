@@ -319,6 +319,50 @@ namespace KurbSide.Controllers
 
             return View(paginatedList);
         }
+        
+        public async Task<IActionResult> ViewAllCanceledOrders(int page = 1, int perPage = 5)
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+            
+            //Gets the current logged in business
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            TempData["businessId"] = business.BusinessId;
+
+            //Gets the orders of the business
+            var orders = await _context.Order
+                .Include(m=> m.Member)
+                .Include(s=> s.StatusNavigation)
+                .OrderBy(o => o.CreationDate)
+                .Where(o=> o.StatusNavigation.StatusName=="Canceled"||o.StatusNavigation.StatusName=="Denied")
+                .Where(b => b.BusinessId.Equals(business.BusinessId))
+                .ToListAsync();
+            
+            //Create the paginated list for return
+            var paginatedList = KurbSideUtils.KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
+
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedList.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedList.HasNextPage;
+            TempData["hasPrevPage"] = paginatedList.HasPreviousPage;
+
+            return View(paginatedList);
+        }
+        
         #endregion
         
         /// <summary>
