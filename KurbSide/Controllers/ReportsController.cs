@@ -49,6 +49,7 @@ namespace KurbSide.Controllers
             return View();
         }
 
+        #region ItemReports
         /// <summary>
         /// Displays the All Items Report page.
         /// </summary>
@@ -172,7 +173,157 @@ namespace KurbSide.Controllers
 
             return View(paginatedList);
         }
+        #endregion
 
+        #region OrderReports
+        /// <summary>
+        /// Allows a buiness to view all orders
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> ViewAllOrdersReport(int page = 1, int perPage = 5)
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+            
+            //Gets the current logged in business
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            TempData["businessId"] = business.BusinessId;
+            
+            //Gets the orders of the business
+            var orders = await _context.Order
+                .Include(m=> m.Member)
+                .Include(s=> s.StatusNavigation)
+                .OrderBy(o => o.CreationDate)
+                .Where(b => b.BusinessId.Equals(business.BusinessId))
+                .ToListAsync();
+            
+            //Create the paginated list for return
+            var paginatedList = KurbSideUtils.KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
+
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedList.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedList.HasNextPage;
+            TempData["hasPrevPage"] = paginatedList.HasPreviousPage;
+
+            return View(paginatedList);
+        }
+        
+        /// <summary>
+        /// Views All orders that have been picked up
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> ViewAllCompletedOrders(int page = 1, int perPage = 5)
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+            
+            //Gets the current logged in business
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            TempData["businessId"] = business.BusinessId;
+
+            //Gets the orders of the business
+            var orders = await _context.Order
+                .Include(m=> m.Member)
+                .Include(s=> s.StatusNavigation)
+                .OrderBy(o => o.CreationDate)
+                .Where(o=> o.StatusNavigation.StatusName== "Picked Up")
+                .Where(b => b.BusinessId.Equals(business.BusinessId))
+                .ToListAsync();
+            
+            //Create the paginated list for return
+            var paginatedList = KurbSideUtils.KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
+
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedList.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedList.HasNextPage;
+            TempData["hasPrevPage"] = paginatedList.HasPreviousPage;
+
+            return View(paginatedList);
+        }
+        
+        /// <summary>
+        /// Has a report of all the orders that have not been fully processed 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> ViewAllPendingOrders(int page = 1, int perPage = 5)
+        {
+            //Check that the accessing user is a business type account
+            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+            
+            //Gets the current logged in business
+            var business = await _context.Business
+                .Where(b => b.AspNetId.Equals(user.Id))
+                .FirstOrDefaultAsync();
+
+            TempData["businessId"] = business.BusinessId;
+            
+            //Used for the where in the lambda below
+            string[] processed = {"Pending", "Accepted", "Preparing", "Ready For Pickup"};
+            
+            //Gets the orders of the business
+            var orders = await _context.Order
+                .Include(m=> m.Member)
+                .Include(s=> s.StatusNavigation)
+                .OrderBy(o => o.CreationDate)
+                .Where(o=> o.StatusNavigation.StatusName.Equals(processed.Any()))
+                .Where(b => b.BusinessId.Equals(business.BusinessId))
+                .ToListAsync();
+            
+            //Create the paginated list for return
+            var paginatedList = KurbSideUtils.KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
+
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedList.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedList.HasNextPage;
+            TempData["hasPrevPage"] = paginatedList.HasPreviousPage;
+
+            return View(paginatedList);
+        }
+        #endregion
+        
         /// <summary>
         /// Downloads a PDF version of the specified report.
         /// </summary>
@@ -300,54 +451,7 @@ namespace KurbSide.Controllers
 
             return File(workStream, type, fileName);
         }
-
         
-        
-        /// <summary>
-        /// Allows a buiness to view all orders
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IActionResult> ViewAllOrdersReport(int page = 1, int perPage = 5)
-        {
-            //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
-
-            //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
-            {
-                TempData["sysMessage"] = "Error: You're not signed in as a business.";
-                return RedirectToAction("Index", "Home");
-            }
-            
-            //Gets the current logged in business
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
-
-            TempData["businessId"] = business.BusinessId;
-            
-            //Gets the orders of the business
-            var orders = await _context.Order
-                .Include(m=> m.Member)
-                .Include(s=> s.StatusNavigation)
-                .OrderBy(o => o.CreationDate)
-                .Where(b => b.BusinessId.Equals(business.BusinessId))
-                .ToListAsync();
-            
-            //Create the paginated list for return
-            var paginatedList = KurbSideUtils.KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
-
-            //Gather temp data and pagination/filter info
-            //  all in to one place for use 
-            TempData["currentPage"] = page;
-            TempData["totalPage"] = paginatedList.TotalPages;
-            TempData["perPage"] = perPage;
-            TempData["hasNextPage"] = paginatedList.HasNextPage;
-            TempData["hasPrevPage"] = paginatedList.HasPreviousPage;
-
-            return View(paginatedList);
-        }
 
     }
 }
