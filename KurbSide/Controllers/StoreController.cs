@@ -36,7 +36,6 @@ namespace KurbSide.Controllers
         /// <param name="md">The maximum distance a business can be from the customer.</param>
         /// <param name="filter">The query entered by the member, e.g. item name or category.</param>
         /// <returns>A redirect to the store front index page.</returns>
-        [HttpGet]
         public async Task<IActionResult> IndexAsync(int md = 25, string filter = "")
         {
             var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
@@ -87,7 +86,6 @@ namespace KurbSide.Controllers
         /// <param name="id">The ID of the specified <see cref="Business"/>.</param>
         /// <param name="filter">The query entered by the business, e.g. item name or category.</param>
         /// <returns>A redirect to the specified businesses catalogue.</returns>
-        [HttpGet]
         public async Task<IActionResult> Catalogue(Guid? id, string filter = "")
         {
             var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
@@ -165,7 +163,6 @@ namespace KurbSide.Controllers
         /// </summary>
         /// <param name="id">The ID of the specified <see cref="Item"/> to view.</param>
         /// <returns>A redirect to the items details page.</returns>
-        [HttpGet]
         public async Task<IActionResult> ViewItem(Guid? id)
         {
             if (id == null)

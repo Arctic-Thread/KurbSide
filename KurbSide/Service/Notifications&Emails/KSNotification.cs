@@ -61,7 +61,7 @@ namespace KurbSide.Service
             UserManager<IdentityUser> userManager,
             HttpContext httpContext)
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(userManager, httpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(userManager, httpContext);
             return await KSContext.Notification
                 .Where(n => n.RecipientId.Equals(currentUser.Id))
                 .Where(n => n.Read == false)

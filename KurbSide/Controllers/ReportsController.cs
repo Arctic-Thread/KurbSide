@@ -37,10 +37,10 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewAllReportList()
         {
             //Check that the accessing user is a business type account
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -57,11 +57,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewAllItemsReport(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -98,11 +98,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewRemovedItemsReport(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -140,11 +140,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewAvailableItemsReport(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -186,11 +186,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewAllOrdersReport(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -234,11 +234,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewAllCompletedOrders(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -283,11 +283,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewAllPendingOrders(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -334,11 +334,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewAllCanceledOrders(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -383,11 +383,11 @@ namespace KurbSide.Controllers
         public async Task<FileResult> CreateReports(string pdfName)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
                 return null;
 
             var business = await _context.Business

@@ -500,11 +500,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> Orders(string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");

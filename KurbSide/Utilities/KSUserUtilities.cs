@@ -140,7 +140,7 @@ namespace KurbSide.Utilities
             if (KSContext.Member.Any(b => b.AspNetId.Equals(currentUser.Id)))
                 return AccountType.MEMBER; // The current user is present in the member table.
             throw new Exception(
-                "KurbSide.Service.KSCurrentUser.KSGetAccountType - Current user is neither a Business or Member"); // The current user is logged in, but not present in either the business or member table.
+                "KurbSide.Service.KSUserUtilities.KSGetAccountType - Current user is neither a Business or Member"); // The current user is logged in, but not present in either the business or member table.
         }
     }
 }

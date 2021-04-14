@@ -35,13 +35,13 @@ namespace KurbSide.Controllers
         /// <returns></returns>
         public async Task<IActionResult> IndexAsync(int page = 1, int perPage = 25)
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             List<Notification> notifications = new List<Notification>();
 
             //TODO maybe this can be condensed instead of if/else
-            if (accountType == KSCurrentUser.AccountType.MEMBER)
+            if (accountType == KSUserUtilities.AccountType.MEMBER)
             {
                 notifications = await _context.Notification
                     .Include(s => s.Sender.Business)
@@ -82,7 +82,7 @@ namespace KurbSide.Controllers
         /// <returns>A redirect to the view order page.</returns>
         public async Task<IActionResult> ViewNotificationOrder(Guid notificationId)
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
 
             var notification = await _context.Notification
                 .Where(n => n.NotificationId.Equals(notificationId))
@@ -103,7 +103,7 @@ namespace KurbSide.Controllers
         /// <param name="notificationId">The Id of the notification</param>
         public async Task<IActionResult> MarkNotificationAsRead(Guid notificationId)
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
 
             var notification = await _context.Notification
                 .Where(n => n.NotificationId.Equals(notificationId))

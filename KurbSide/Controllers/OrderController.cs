@@ -459,8 +459,8 @@ namespace KurbSide.Controllers
         [Route("/Order/{id}")]
         public async Task<IActionResult> ViewOrderAsync(Guid id)
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             var member = await _context.Member
                 .FirstOrDefaultAsync(x => x.AspNetId.Equals(currentUser.Id))?? new Member();
@@ -488,8 +488,8 @@ namespace KurbSide.Controllers
         [Route("/Order/{id}/UpdateStatus")]
         public async Task<IActionResult> UpdateStatusAsync(Guid id, int status)
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             
             var member = await _context.Member
                 .FirstOrDefaultAsync(x => x.AspNetId.Equals(currentUser.Id))?? new Member();
@@ -508,7 +508,7 @@ namespace KurbSide.Controllers
             if (order == null)
                 return RedirectToAction("Index", "Home");
             
-            if (accountType == KSCurrentUser.AccountType.BUSINESS && order.Business.AspNetId.Equals(currentUser.Id))
+            if (accountType == KSUserUtilities.AccountType.BUSINESS && order.Business.AspNetId.Equals(currentUser.Id))
             {
                 if (!status.Equals(5) && order.Status < status)
                 {
@@ -521,7 +521,7 @@ namespace KurbSide.Controllers
                     await KSEmail.SendEmail(order.Member.AspNet.Email, (OrderStatus) status, order.OrderId, order.Business.BusinessName);
                 }
             }
-            else if(accountType == KSCurrentUser.AccountType.MEMBER && order.Member.AspNetId.Equals(currentUser.Id))
+            else if(accountType == KSUserUtilities.AccountType.MEMBER && order.Member.AspNetId.Equals(currentUser.Id))
             {
                 if (status.Equals(5) && order.Status < 4)
                 {
