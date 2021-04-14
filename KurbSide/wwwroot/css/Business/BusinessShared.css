@@ -1,3 +1,14 @@
+.checkbox-lg .custom-control-label::before,
+.checkbox-lg .custom-control-label::after {
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+.checkbox-lg .custom-control-label {
+    padding-left: 6px;
+}
+
+
 /* Chrome, Safari, Edge, Opera */
 .noArrowsOnInputNumber::-webkit-outer-spin-button,
 .noArrowsOnInputNumber::-webkit-inner-spin-button {
@@ -10,12 +21,10 @@
     -moz-appearance: textfield;
 }
 
-.checkbox-lg .custom-control-label::before,
-.checkbox-lg .custom-control-label::after {
-    width: 1.15rem;
-    height: 1.15rem;
+.btn-width {
+    min-width: 6em;
 }
 
-.checkbox-lg .custom-control-label {
-    padding-left: 6px;
+.btn-filter {
+    min-width: 10em;
 }

@@ -25,14 +25,14 @@ namespace KurbSide.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
-            var email = await KSCurrentUser.KSGetLoggedInEmailAsync(_userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
+            var email = await KSUserUtilities.KSGetLoggedInEmailAsync(_userManager, HttpContext);
 
             TempData["email"] = email;
             TempData["loggedInType"] = accountType;
 
-            if (accountType == KSCurrentUser.AccountType.BUSINESS)
+            if (accountType == KSUserUtilities.AccountType.BUSINESS)
             {
                 var business = await _context.Business
                     .Include(b => b.BusinessHours)
@@ -46,7 +46,7 @@ namespace KurbSide.ViewComponents
                 TempData["loggedInBusiness"] = business;
                 TempData["openForBusiness"] = KSStoreUtilities.CheckIfOpenForBusiness(business.BusinessHours, DateTime.Now.DayOfWeek);
             }
-            else if (accountType == KSCurrentUser.AccountType.MEMBER)
+            else if (accountType == KSUserUtilities.AccountType.MEMBER)
             {
                 var member = await _context.Member
                     .Include(m => m.Order)
@@ -58,7 +58,7 @@ namespace KurbSide.ViewComponents
                 TempData["loggedInMember"] = member;
             }
 
-            if (accountType != KSCurrentUser.AccountType.VISITOR)
+            if (accountType != KSUserUtilities.AccountType.VISITOR)
             {
                 var notificationCount = await KSNotification.GetUnreadNotificationCount(_context, _userManager, HttpContext);
                 TempData["notificationCount"] = notificationCount;

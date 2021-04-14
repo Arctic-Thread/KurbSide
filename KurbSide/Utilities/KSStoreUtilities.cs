@@ -9,9 +9,7 @@ namespace KurbSide.Utilities
         /// Checks if a business is currently open or closed on the specified day.
         /// </summary>
         /// <remarks>
-        /// TODO might go crazy with some for loops allowing the ability to check
-        ///  different days of the week in the future if we're feeling up to it.
-        /// -Liam De Rivers
+        /// Liam De Rivers
         /// </remarks>
         /// <param name="businessHours">The business hours of the business</param>
         /// <param name="dayToCheck">The day of the week to check</param>
@@ -41,7 +39,7 @@ namespace KurbSide.Utilities
                     {
                         return "Closed.";
                     }
-                
+
                 case DayOfWeek.Tuesday:
                     if (businessHours.TuesOpen < DateTime.Now.TimeOfDay &&
                         DateTime.Now.TimeOfDay < businessHours.TuesClose)
@@ -52,7 +50,7 @@ namespace KurbSide.Utilities
                     {
                         return "Closed.";
                     }
-                
+
                 case DayOfWeek.Wednesday:
                     if (businessHours.WedOpen < DateTime.Now.TimeOfDay &&
                         DateTime.Now.TimeOfDay < businessHours.WedClose)
@@ -63,7 +61,7 @@ namespace KurbSide.Utilities
                     {
                         return "Closed.";
                     }
-                
+
                 case DayOfWeek.Thursday:
                     if (businessHours.ThuOpen < DateTime.Now.TimeOfDay &&
                         DateTime.Now.TimeOfDay < businessHours.ThuClose)
@@ -74,7 +72,7 @@ namespace KurbSide.Utilities
                     {
                         return "Closed.";
                     }
-                
+
                 case DayOfWeek.Friday:
                     if (businessHours.FriOpen < DateTime.Now.TimeOfDay &&
                         DateTime.Now.TimeOfDay < businessHours.FriClose)
@@ -85,7 +83,7 @@ namespace KurbSide.Utilities
                     {
                         return "Closed.";
                     }
-                
+
                 case DayOfWeek.Saturday:
                     if (businessHours.SatOpen < DateTime.Now.TimeOfDay &&
                         DateTime.Now.TimeOfDay < businessHours.SatClose)
@@ -96,7 +94,7 @@ namespace KurbSide.Utilities
                     {
                         return "Closed.";
                     }
-                
+
                 default:
                     return "Closed.";
             }

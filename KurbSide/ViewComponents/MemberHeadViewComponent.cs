@@ -24,7 +24,7 @@ namespace KurbSide.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
 
             var member = await _context.Member
                 .Where(m => m.AspNetId.Equals(user.Id))

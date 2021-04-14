@@ -34,20 +34,20 @@ namespace KurbSideUtils
 
         /// <summary>
         /// Check if within the defined bounds,
-        /// there is a previous accesable page.
+        /// there is a previous accessible page.
         /// </summary>
         public bool HasPreviousPage => (PageIndex > 1);
 
         /// <summary>
         /// Check if within the defined bounds,
-        /// there is a nexr accesable page.
+        /// there is a next accessible page.
         /// </summary>
         public bool HasNextPage => (PageIndex < TotalPages);
 
         /// <summary>
-        /// Create the paginated collection
+        /// Create the paginated collection.
         /// </summary>
-        /// <param name="source">Queryable colletion to be paginated</param>
+        /// <param name="source">Queryable collection to be paginated</param>
         /// <param name="pageIndex">Page to be displayed</param>
         /// <param name="pageSize">Number of objects to display per page</param>
         /// <returns>Specified page of given collection</returns>

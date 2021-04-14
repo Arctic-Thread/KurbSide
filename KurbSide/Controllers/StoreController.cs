@@ -5,15 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using KurbSide.Service;
 using KurbSide.Utilities;
 
 namespace KurbSide.Controllers
 {
+    /// <summary>
+    /// If the user trying to view the store front is not a logged in they are redirected to the login page.
+    /// If the currently logged in user is not a member they are redirected to the business dashboard.
+    /// </summary>
     [Authorize]
     public class StoreController : Controller
     {
@@ -28,23 +30,30 @@ namespace KurbSide.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Displays the store index page.
+        /// </summary>
+        /// <param name="md">The maximum distance a business can be from the customer.</param>
+        /// <param name="filter">The query entered by the member, e.g. item name or category.</param>
+        /// <returns>A redirect to the store front index page.</returns>
         public async Task<IActionResult> IndexAsync(int md = 25, string filter = "")
         {
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
             }
 
-            //Get the current logged in member, and prepare location var
-            var member = await _context.Member.FirstOrDefaultAsync(m => m.AspNetId.Equals(user.Id));
+            //Get the current logged in member
+            var member = await KSUserUtilities.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
 
+            // prepare the current members location
             var memberLocation = new Location(member.Lat, member.Lng, "");
 
+            // The list of businesses and their business hours.
             var businesses = _context.Business
                 .Include(b => b.BusinessHours)
                 .AsEnumerable();
@@ -71,12 +80,18 @@ namespace KurbSide.Controllers
             return View(businessListings);
         }
 
+        /// <summary>
+        /// Displays the specified businesses catalogue.
+        /// </summary>
+        /// <param name="id">The ID of the specified <see cref="Business"/>.</param>
+        /// <param name="filter">The query entered by the business, e.g. item name or category.</param>
+        /// <returns>A redirect to the specified businesses catalogue.</returns>
         public async Task<IActionResult> Catalogue(Guid? id, string filter = "")
         {
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -143,6 +158,11 @@ namespace KurbSide.Controllers
             return View(Tuple.Create(business, categorizedItems));
         }
 
+        /// <summary>
+        /// Displays an <see cref="Item"/>s details page.
+        /// </summary>
+        /// <param name="id">The ID of the specified <see cref="Item"/> to view.</param>
+        /// <returns>A redirect to the items details page.</returns>
         public async Task<IActionResult> ViewItem(Guid? id)
         {
             if (id == null)
@@ -151,9 +171,9 @@ namespace KurbSide.Controllers
                 return RedirectToAction("Index");
             }
 
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -184,6 +204,12 @@ namespace KurbSide.Controllers
             return View(Tuple.Create(business, item));
         }
 
+        /// <summary>
+        /// Returns the distance between two locations.
+        /// </summary>
+        /// <param name="location1">The first location e.g. The customers location.</param>
+        /// <param name="location2">The second location e.g. The businesses location.</param>
+        /// <returns>The distance between the two locations.</returns>
         public static double GetDistance(Location location1, Location location2) =>
             GeoCode.CalculateDistanceLocal(location1, location2).distance / 1000;
     }

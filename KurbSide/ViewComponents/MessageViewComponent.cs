@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace KurbSide.ViewComponents
 {
     [ViewComponent(Name = "Message")]
@@ -16,7 +15,7 @@ namespace KurbSide.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            return await Task.FromResult((IViewComponentResult)View("Default"));
+            return await Task.FromResult((IViewComponentResult) View("Default"));
         }
     }
 }

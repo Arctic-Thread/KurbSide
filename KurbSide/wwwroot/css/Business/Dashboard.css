@@ -1,0 +1,10 @@
+.tab-pane {
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    border-bottom-left-radius: .25rem;
+    border-bottom-right-radius: .25rem;
+}
+small.d-block {
+    opacity: 0.5;
+}

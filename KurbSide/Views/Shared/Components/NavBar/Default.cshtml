@@ -4,12 +4,12 @@
     Business business = new Business();
     Member member = new Member();
 
-    switch ((KSCurrentUser.AccountType) loggedInType)
+    switch ((KSUserUtilities.AccountType) loggedInType)
     {
-        case KSCurrentUser.AccountType.MEMBER:
+        case KSUserUtilities.AccountType.MEMBER:
             member = (Member) TempData["loggedInMember"];
             break;
-        case KSCurrentUser.AccountType.BUSINESS:
+        case KSUserUtilities.AccountType.BUSINESS:
             business = (Business) TempData["loggedInBusiness"];
             break;
     }
@@ -19,18 +19,13 @@
 
 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
     <partial name="_LoginPartial"/>
-    @switch ((KSCurrentUser.AccountType) loggedInType)
+    @switch ((KSUserUtilities.AccountType) loggedInType)
     {
-        case KSCurrentUser.AccountType.VISITOR:
+        case KSUserUtilities.AccountType.VISITOR:
         {
-                @*<ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a id="navbar-home" name="navbar-home" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                    </ul>*@
             break;
         }
-        case KSCurrentUser.AccountType.MEMBER:
+        case KSUserUtilities.AccountType.MEMBER:
         {
             <ul id="navbar-member-links" class="navbar-nav flex-grow-1">
                 <li class="nav-item">
@@ -45,14 +40,14 @@
             </ul>
             break;
         }
-        case KSCurrentUser.AccountType.BUSINESS:
+        case KSUserUtilities.AccountType.BUSINESS:
         {
             <ul id="navbar-business-links" class="navbar-nav flex-grow-1">
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Index">
                         <strong>@business.BusinessName</strong>
                         @{
-                            var openForBusiness = (string)TempData["openForBusiness"];
+                            var openForBusiness = (string) TempData["openForBusiness"];
                             if (openForBusiness.StartsWith("Open"))
                             {
                                 <span title="Accepting Orders" class=" badge badge-success">Accepting Orders</span>
@@ -76,8 +71,8 @@
                     <a class="nav-link text-dark" asp-area="" id="businessOrders" asp-controller="Business" asp-action="Orders">
                         Orders
                         @{
-                            var pendCount = business.Order.Count(o => new[] { 0 }.Contains(o.Status));
-                            var orderCount = business.Order.Count(o => new[] { 1,2,3 }.Contains(o.Status));
+                            var pendCount = business.Order.Count(o => new[] {0}.Contains(o.Status));
+                            var orderCount = business.Order.Count(o => new[] {1, 2, 3}.Contains(o.Status));
 
                             if (pendCount > 0)
                             {
@@ -97,5 +92,4 @@
             break;
         }
     }
-
 </div>

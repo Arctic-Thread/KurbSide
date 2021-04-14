@@ -23,62 +23,8 @@
         activeFilter = rawFilter;
     }
 }
-<style>
-    .barcode {
-        height: 1.5em;
-        width: 6em;
-        margin-bottom: .2em;
-        image-rendering: auto;
-        image-rendering: -moz-crisp-edges;
-        image-rendering: pixelated;
-    }
 
-    .qrcode {
-        height: 1.5em;
-        width: 1.5em;
-        margin-bottom: .2em;
-        image-rendering: auto;
-        image-rendering: -moz-crisp-edges;
-        /*image-rendering: pixelated;*/
-    }
-
-    .none {
-        display: none;
-        height: 0;
-        height: 0;
-    }
-
-    .btn-width {
-        min-width: 6em;
-    }
-
-    .btn-filter {
-        min-width: 10em;
-    }
-
-    .zoom {
-        height: 50px;
-        max-width: 100px;
-        display: block;
-        cursor: pointer;
-        background-color: white;
-        -webkit-transition-property: all;
-        -webkit-transition-duration: 0.3s;
-        -webkit-transition-timing-function: ease;
-    }
-
-    .zoom:hover {
-        transform: scale(2.75);
-        /*border-style: solid;*/
-        /*border-width: 0.5px;*/
-        border-radius: 3px;
-        /*border-color: #888;*/
-        z-index: 999999 !important;
-        position: relative;
-        background-color: white;
-        box-shadow: rgba(0,0,0,0.25) 0px 0px 3px;
-    }
-</style>
+<link href="~/css/Business/BusinessShared.css" rel="stylesheet"/>
 
 <vc:business-head />
 
@@ -113,9 +59,6 @@
                     <th scope="col">
                         &nbsp;
                     </th>
-                    @*<th scope="col">
-                            @Html.DisplayNameFor(modelItem => modelItem.ItemId)
-                        </th>*@
                     <th scope="col">
                         @Html.DisplayNameFor(modelItem => modelItem.ItemName)
                     </th>
@@ -125,9 +68,6 @@
                     <th scope="col">
                         @Html.DisplayNameFor(modelItem => modelItem.Category)
                     </th>
-                    @*<th scope="col">
-                            @Html.DisplayNameFor(modelItem => modelItem.Details)
-                        </th>*@
                     <th scope="col">
                         @Html.DisplayNameFor(modelItem => modelItem.Sku)
                     </th>
@@ -163,12 +103,17 @@
                         <td class="align-middle">
                             <span class="ellipsisForLongText" style="display: inline-block; width: 200px;">@item.Category</span>
                         </td>
-                        @*<td class="align-middle">
-                                @item.Details
-                            </td>*@
                         <td class="align-middle">
-                            <img class="@(item.Sku == null ? "none":"qrcode")" src="https://bwip-js.herokuapp.com/?bcid=datamatrix&text=@item.Sku" />
-                            @item.Sku
+                            @if (item.Sku != null)
+                            {
+                                <img class="@(item.Sku == null ? "none" : "qrcode")" alt="SKU for @item.ItemName" src="https://bwip-js.herokuapp.com/?bcid=datamatrix&text=@item.Sku"/>
+                                <span>@item.Sku</span>
+                            }
+                            else
+                            {
+                                <span>N/A</span>
+                            }
+                            
                         </td>
                         <td class="align-middle">
                             <span class="@(item.Upc == null ? "none":null)">
@@ -177,17 +122,22 @@
                                     switch (item.Upc.Length)
                                     {
                                         case 13:
-                                            <img class="barcode" src="https://bwip-js.herokuapp.com/?bcid=ean13&text=@item.Upc" />
+                                            <img class="barcode" alt="Barcode for @item.ItemName" src="https://bwip-js.herokuapp.com/?bcid=ean13&text=@item.Upc" />
                                             <br />
                                             break;
                                         default:
-                                            <img class="barcode" src="https://bwip-js.herokuapp.com/?bcid=upca&text=@item.Upc" />
+                                            <img class="barcode" alt="Barcode for @item.ItemName" src="https://bwip-js.herokuapp.com/?bcid=upca&text=@item.Upc" />
                                             <br />
                                             break;
                                     }
+                                    @item.Upc
+                                }
+                                else
+                                {
+                                    <span>N/A</span>
                                 }
                             </span>
-                            @item.Upc
+                            
                         </td>
                         <td class="align-middle">
                             <form method="post" asp-controller="business" asp-action="removeItem" asp-route-id="@item.ItemId" asp-route-page="@(page)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)" onSubmit="return confirm('Are you sure you want to delete @(item.ItemName)?') ">

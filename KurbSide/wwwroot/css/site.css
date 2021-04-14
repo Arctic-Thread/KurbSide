@@ -21,6 +21,24 @@ a.navbar-brand {
   word-break: break-all;
 }
 
+.barcode {
+  height: 1.5em;
+  width: 6em;
+  margin-bottom: .2em;
+  image-rendering: auto;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: pixelated;
+}
+
+.qrcode {
+  height: 1.5em;
+  width: 1.5em;
+  margin-bottom: .2em;
+  image-rendering: auto;
+  image-rendering: -moz-crisp-edges;
+  /*image-rendering: pixelated;*/
+}
+
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;

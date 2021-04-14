@@ -4,13 +4,13 @@
     ViewData["Title"] = $"Edit Sale: {Model.SaleName}";
 }
 
-<link href="~/css/Business/BusinessSales.css" rel="stylesheet"/>
+<link href="~/css/Business/BusinessShared.css" rel="stylesheet"/>
 
 <vc:business-head/>
 
 <div class="card">
     <div class="card-body">
-        <form asp-controller="Business" asp-action="EditSale" method="post" asp-route-businessId="@Model.BusinessId">
+        <form asp-controller="Business" asp-action="EditSale" method="post">
             <h5 class="card-title text-sm-center align-content-center">Create Sale</h5>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="SaleId">

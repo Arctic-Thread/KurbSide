@@ -25,7 +25,7 @@ namespace KurbSide.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(int view = 0)
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
             var currentBusiness = await _context.Business
                 .Where(b => b.AspNetId.Equals(currentUser.Id))
                 .Include(b => b.Order)
@@ -39,7 +39,7 @@ namespace KurbSide.ViewComponents
 
             var businessOrders = currentBusiness.Order
                 .OrderBy(o => o.CreationDate)
-                .OrderBy(o => o.Status)
+                .ThenBy(o => o.Status)
                 .ToList();
 
             switch (view)

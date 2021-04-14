@@ -32,10 +32,10 @@ namespace KurbSide.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var currentMember = await KSCurrentUser.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var currentMember = await KSUserUtilities.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");

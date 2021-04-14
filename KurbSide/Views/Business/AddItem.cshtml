@@ -17,11 +17,13 @@
 </style>
 <script src="~/js/Business/ItemManagement/Add.js"></script>
 <script src="jquery-3.5.1.min.js"></script>
+<link href="~/css/Business/BusinessShared.css" rel="stylesheet"/>
+
 <vc:business-head />
 
 <div class="card">
     <div class="card-body">
-        <form method="post" enctype="multipart/form-data" asp-controller="Business" asp-action="AddItem" asp-route-id="@Model.BusinessId">
+        <form method="post" enctype="multipart/form-data" asp-controller="Business" asp-action="AddItem">
             <h5 class="card-title text-sm-center align-content-center">Add Item</h5>
 
             <input hidden type="text" asp-for="BusinessId" />

@@ -3,16 +3,20 @@
     @{
         if (Model.LogoLocation == null)
         {
-            <img alt="No Logo Available For @Model.BusinessName" class="card-img-top mx-auto" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
+            <img alt="No Logo Available For @Model.BusinessName" class="card-img-top mx-auto" src="~/android-chrome-512x512.png" style="width: 100px; height: 100px; margin: 10px 0 0 0;"/>
         }
         else
         {
-            <img alt="@Model.BusinessName Logo" class="card-img-top mx-auto" src="@Model.LogoLocation" style="width: 100px; height: 100px; margin: 10px 0 0 0;" />
+            <img alt="@Model.BusinessName Logo" class="card-img-top mx-auto" src="@Model.LogoLocation" style="width: 100px; height: 100px; margin: 10px 0 0 0;"/>
         }
     }
     <div class="card-body" style="padding: 0 0 10px 0;">
-        <h5 class="card-title text-sm-center">@Model.BusinessName <small style="opacity: .5">@Model.StoreIdentifier</small></h5>
-        <p class="card-text text-sm-center"><span class="text-secondary">KurbSide Id </span>@Model.BusinessId</p>
+        <h5 class="card-title text-sm-center">
+            @Model.BusinessName <small style="opacity: .5">@Model.StoreIdentifier</small>
+        </h5>
+        <p class="card-text text-sm-center">
+            <span class="text-secondary">KurbSide Id </span>@Model.BusinessId
+        </p>
     </div>
 </div>
-<br />
+<br/>

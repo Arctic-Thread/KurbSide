@@ -24,13 +24,8 @@ namespace KurbSide.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
-
-            return await Task.FromResult((IViewComponentResult)View("Default", business));
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
+            return await Task.FromResult((IViewComponentResult) View("Default", business));
         }
     }
 }

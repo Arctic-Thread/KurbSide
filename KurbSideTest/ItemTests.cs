@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using OpenQA.Selenium;
 
@@ -116,15 +115,10 @@ namespace KurbSideTest
 
             KSClick("catalogue-EditItem");
 
-            _driver.FindElement(By.Id("ItemName")).Clear();
-            _driver.FindElement(By.Id("Price")).Clear();
-            _driver.FindElement(By.Id("Category")).Clear();
-            _driver.FindElement(By.Id("Upc")).Clear();
-
-            KSSendKeys("ItemName", ItemNameTest);
-            KSSendKeys("Price", PriceTest);
-            KSSendKeys("Category", CategoryTest);
-            KSSendKeys("Upc", UpcTest);
+            KSReplaceText("ItemName", ItemNameTest);
+            KSReplaceText("Price", PriceTest);
+            KSReplaceText("Category", CategoryTest);
+            KSReplaceText("Upc", UpcTest);
 
             KSClick("catalogue-saveItem");
             var confirmEdit = _driver.SwitchTo().Alert();

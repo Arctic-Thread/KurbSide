@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KurbSide.Service;
@@ -16,6 +15,10 @@ using KurbSideUtils;
 
 namespace KurbSide.Controllers
 {
+    /// <summary>
+    /// If the user trying to view any business actions is not logged in, they are redirected to the login page.
+    /// If the currently logged in user is not a business they are redirected to the store front.
+    /// </summary>
     [Authorize]
     public class BusinessController : Controller
     {
@@ -31,39 +34,47 @@ namespace KurbSide.Controllers
         }
 
         #region BusinessRU
+
+        /// <summary>
+        /// Displays the business dashboard.
+        /// </summary>
+        /// <returns>A redirect to the index page.</returns>
+        [HttpGet]
         public async Task<IActionResult> IndexAsync()
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
+
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business.FirstOrDefaultAsync(b => b.AspNetId.Equals(user.Id));
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
             return View(business);
         }
 
+        /// <summary>
+        /// Displays the edit business information page.
+        /// </summary>
+        /// <returns>A redirect to the edit business page.</returns>
+        [HttpGet]
         public async Task<IActionResult> EditBusiness()
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
             ViewData["CountryCode"] = new SelectList(_context.Country, "CountryCode", "FullName", business.ProvinceCode);
             ViewData["ProvinceCode"] = new SelectList(_context.Province, "ProvinceCode", "FullName", business.ProvinceCode);
@@ -71,15 +82,22 @@ namespace KurbSide.Controllers
             return View(business);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        /// <summary>
+        /// Upon submission of the EditBusiness page, if the entered information is valid,
+        /// the businesses information is updated in the database.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Business"/> to be updated.</param>
+        /// <param name="business">The new <see cref="Business"/> information.</param>
+        /// <param name="businessLogo">The businesses logo.</param>
+        /// <returns>If successful A redirect to the business dashboard, otherwise the index.</returns>
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> EditBusiness(Guid id, Business business, IFormFile businessLogo)
         {
             //Check that the accessing user is a business type account
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -99,10 +117,13 @@ namespace KurbSide.Controllers
                     if(businessLogo != null) // If the business has added an image, it is uploaded to imgur and the link is prepped to be saved to the DB
                     {
                         string uploadResults = await KSImgur.KSUploadImageToImgur(businessLogo);
+
+                        //If the upload results from imgur do not start with "Error: " the link is saved.
                         if (!uploadResults.StartsWith("Error: "))
                         {
                             business.LogoLocation = uploadResults;
                         }
+                        //If the upload failed, the previous image is used instead.
                         else
                         {
                             var existingBusiness = await _context.Business.AsNoTracking().Where(b => b.BusinessId == business.BusinessId).FirstOrDefaultAsync();
@@ -119,7 +140,7 @@ namespace KurbSide.Controllers
                     }
                     
                     string address = $"{business.Street} {business.City} {business.ProvinceCode} {business.CountryCode} {business.Postal}";
-                    Service.Location location = await Service.GeoCode.GetLocationAsync(address);
+                    Location location = await GeoCode.GetLocationAsync(address);
 
                     business.Lng = location.lng;
                     business.Lat = location.lat;
@@ -148,22 +169,28 @@ namespace KurbSide.Controllers
         #endregion
 
         #region ItemCRUD
+
+        /// <summary>
+        /// Displays the item catalogue page, listing all of the businesses items.
+        /// </summary>
+        /// <param name="filter">The query entered by the business, e.g. item name or category.</param>
+        /// <param name="page">Pagination: The page number the business would like to view.</param>
+        /// <param name="perPage">Pagination: The number of items the business would like to see per page.</param>
+        /// <returns> A redirect to the business catalogue page.</returns>
+        [HttpGet]
         public async Task<IActionResult> Catalogue(string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
             //Retrieve items associated with the editing business
             //  skip items that are marked as removed
@@ -204,7 +231,7 @@ namespace KurbSide.Controllers
             }
 
             //Create the paginated list for return
-            var paginatedList = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
+            var paginatedList = KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
 
             //Gather temp data and pagination/filter info
             //  all in to one place for use 
@@ -217,73 +244,59 @@ namespace KurbSide.Controllers
 
             return View(paginatedList);
         }
-        public async Task<IActionResult> RemoveItem(Guid id, string filter = "", int page = 1, int perPage = 5)
+
+        /// <summary>
+        /// Displays the add item page.
+        /// </summary>
+        /// <returns>A redirect to the add item page.</returns>
+        [HttpGet]
+        public async Task<IActionResult> AddItem()
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
-            var item = await _context.Item
-                .Where(i => i.BusinessId.Equals(business.BusinessId))
-                .Where(i => i.ItemId.Equals(id))
-                .FirstOrDefaultAsync();
+            var blankItem = new Item
+            {
+                BusinessId = business.BusinessId,
+                Business = business
+            };
 
-            try
-            {
-                //Throw an exception forcing items to be hidden instead of removed
-                throw new Exception("");
-                //_context.Item.Remove(item);
-                //_logger.LogDebug("Debug: Item not present in any orders, Removed From Database.");
-            }
-            catch (Exception)
-            {
-                try
-                {
-                    if (item == null) throw new Exception();
-                    item.Removed = true;
-                    _context.Item.Update(item);
-                    _logger.LogDebug("Debug: Item is present in orders, Marked as Hidden/Removed.");
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            }
-            finally
-            {
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToAction("Catalogue", new {filter, page, perPage});
+            return View(blankItem);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddItem(Guid id, Item item, IFormFile itemImage)
+        /// <summary>
+        /// Upon submission of the AddItem page, if the entered information is valid,
+        /// the <see cref="Item"/> is created and saved to the database.
+        /// </summary>
+        /// <param name="item">The new <see cref="Item"/>s information.</param>
+        /// <param name="itemImage">The image for the new item.</param>
+        /// <returns>If successful A redirect to the businesses catalogue, otherwise the index.</returns>
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddItem(Item item, IFormFile itemImage)
         {
             //Check that the accessing user is a business type account
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
+
             //Ensure that the business can only add items for themselves
-            if (id != item.BusinessId)
+            if (item.BusinessId != business.BusinessId)
             {
                 _logger.LogDebug("Debug: Id Mismatch. Edit not performed.");
                 return RedirectToAction("Index");
@@ -299,7 +312,6 @@ namespace KurbSide.Controllers
                         if(!linkToImage.StartsWith("Error: "))
                         {
                             item.ImageLocation = linkToImage;
-
                         }
                         else
                         {
@@ -307,9 +319,9 @@ namespace KurbSide.Controllers
                         }
                     }
 
-                    _context.Item.Add(item);
+                    await _context.Item.AddAsync(item);
                     await _context.SaveChangesAsync();
-                    _logger.LogDebug("Debug: Add succeeded. {item.ItemId}");
+                    _logger.LogDebug($"Debug: Add succeeded. {item.ItemId}");
                     return RedirectToAction("Catalogue");
                 }
             }
@@ -325,49 +337,61 @@ namespace KurbSide.Controllers
             }
             return View(item);
         }
-        public async Task<IActionResult> AddItem()
+
+        /// <summary>
+        /// Displays the edit item information page.
+        /// </summary>
+        /// <param name="id">The ID of the <see cref="Item"/> to be edited.</param>
+        /// <returns>A redirect to the edit item page for the selected item.</returns>
+        [HttpGet]
+        public async Task<IActionResult> EditItem(Guid id)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
-            var blankItem = new Item
+            var item = await KSCatalogueUtilities.GetSpecificItem(_context, business, id);
+
+            if (item == null)
             {
-                BusinessId = business.BusinessId,
-                Business = business
-            };
+                return RedirectToAction("Index");
+            }
 
-            return View(blankItem);
+            return View(item);
         }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditItem(Guid id, Item item, IFormFile itemImageEdit)
+        
+        /// <summary>
+        /// Upon submission of the EditItem page, if the entered information is valid,
+        /// the <see cref="Item"/>s information is updated in the database.
+        /// </summary>
+        /// <param name="item">The new <see cref="Item"/>s information.</param>
+        /// <param name="itemImageEdit">The image for the new item.</param>
+        /// <returns>If successful A redirect to the businesses catalogue, otherwise the index.</returns>
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditItem(Item item, IFormFile itemImageEdit)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
+
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
             //Ensure that the business can only edit items for themselves
-            if (id != item.BusinessId)
+            if (business.BusinessId != item.BusinessId)
             {
                 _logger.LogDebug("Debug: Id Mismatch. Update not performed.");
                 return RedirectToAction("Index");
@@ -418,35 +442,56 @@ namespace KurbSide.Controllers
 
             return View(item);
         }
-        public async Task<IActionResult> EditItem(Guid id)
+
+        /// <summary>
+        /// Removes the item from the businesses catalogue.
+        /// Note: The <see cref="Item"/> is not deleted from the database, but it can no longer be purchased anymore.
+        /// </summary>
+        /// <param name="id">The ID of the item to be removed.</param>
+        /// <param name="filter">The query entered by the business, e.g. item name or category.</param>
+        /// <param name="page">Pagination: The page number the business would like to view.</param>
+        /// <param name="perPage">Pagination: The number of items the business would like to see per page.</param>
+        /// <returns>If successful A redirect to the business catalogue, otherwise the index.</returns>
+        public async Task<IActionResult> RemoveItem(Guid id, string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
-            var item = await _context.Item
-                .Where(i => i.BusinessId.Equals(business.BusinessId))
-                .Where(i => i.ItemId.Equals(id))
-                .FirstOrDefaultAsync();
+            var item = await KSCatalogueUtilities.GetSpecificItem(_context, business, id);
 
-            if (item == null)
+            if (item != null)
             {
-                return RedirectToAction("Index");
+                try
+                {
+                    item.Removed = true;
+                    _context.Item.Update(item);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    TempData["sysMessage"] = $"Error: Business does not exist, Add Failed.";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    //TODO even more debug messages!
+                    TempData["sysMessage"] = $"Error: {ex.GetBaseException().Message}. Add not performed.";
+                    return RedirectToAction("Index");
+                }
             }
 
-            return View(item);
+            return RedirectToAction("Catalogue", new {filter, page, perPage});
         }
+
         #endregion
         
         #region Orders
@@ -454,11 +499,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> Orders(string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -538,44 +583,48 @@ namespace KurbSide.Controllers
         #endregion
 
         #region Business Hours
+
+        /// <summary>
+        /// Displays the edit business hours page.
+        /// </summary>
+        /// <returns>A redirect to the edit business hours page.</returns>
+        [HttpGet]
         public async Task<IActionResult> EditBusinessHours()
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
+            //Get the businesses business hours, if no businesses hours are found, display a blank form.
             var businessHours = await _context.BusinessHours
-                .FirstOrDefaultAsync(b => b.BusinessId == business.BusinessId);
-
-            if (businessHours == null)
-            {
-                TempData["sysMessage"] = $"Error: Business hours not found.";
-                return RedirectToAction("Index");
-            }
-
+                .FirstOrDefaultAsync(b => b.BusinessId == business.BusinessId) ?? new BusinessHours();
+            
             return View(businessHours);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        /// <summary>
+        /// Upon submission of the EditBusinessHours page, if the entered information is valid,
+        /// the businesses <see cref="BusinessHours"/> are updated in the database.
+        /// </summary>
+        /// <param name="id">The ID of the business.</param>
+        /// <param name="businessHours">The business hour information.</param>
+        /// <returns>If successful A redirect to the business dashboard, otherwise the index,</returns>
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> EditBusinessHours(Guid id, BusinessHours businessHours)
         {
             //Check that the accessing user is a business type account
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -617,23 +666,28 @@ namespace KurbSide.Controllers
 
         #region Sales
 
+        /// <summary>
+        /// Displays the sale listing page.
+        /// </summary>
+        /// <param name="filter">The query entered by the business, e.g. item name or category.</param>
+        /// <param name="page">Pagination: The page number the business would like to view.</param>
+        /// <param name="perPage">Pagination: The number of items the business would like to see per page.</param>
+        /// <param name="viewInactive">If the business would like to view inactive or active sales only.</param>
+        /// <returns>A redirect to the sale listing page.</returns>
         [HttpGet]
         public async Task<IActionResult> ViewSales(string filter = "", int page = 1, int perPage = 5, string viewInactive = "false")
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
             bool viewInactiveSales = bool.Parse(viewInactive.KSTitleCase());
 
@@ -682,45 +736,49 @@ namespace KurbSide.Controllers
             return View("SalesList", paginatedSales);
         }
 
+        /// <summary>
+        /// Displays the sale creation page.
+        /// </summary>
+        /// <returns>A redirect to the create sale page.</returns>
         [HttpGet]
         public async Task<IActionResult> CreateSale()
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
             var blankSale = new Sale
             {
                 BusinessId = business.BusinessId
             };
 
-            var items = await _context.Item
-                .Where(i => i.BusinessId.Equals(business.BusinessId))
-                .ToListAsync();
-
             return View(blankSale);
         }
 
+        /// <summary>
+        /// Upon submission of the CreateSale page, if the entered information is valid,
+        /// the <see cref="Sale"/> is created and saved to the database.
+        /// The manage sale items page is then displayed.
+        /// </summary>
+        /// <param name="businessId">The ID of the business</param>
+        /// <param name="sale">The sale information.</param>
+        /// <returns>If successful A redirect to the manage sale item page, otherwise the index,</returns>
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateSale(Guid businessId, Sale sale)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -758,23 +816,28 @@ namespace KurbSide.Controllers
             return View(sale);
         }
 
+        /// <summary>
+        /// Displays the manage sale item page.
+        /// </summary>
+        /// <param name="saleId">The ID of the <see cref="Sale"/> being managed.</param>
+        /// <param name="filter">The query entered by the business, e.g. item name or category.</param>
+        /// <param name="page">Pagination: The page number the business would like to view.</param>
+        /// <param name="perPage">Pagination: The number of items the business would like to see per page.</param>
+        /// <returns>A redirect to the sale item management page.</returns>
         [HttpGet]
         public async Task<IActionResult> ManageSaleItem(Guid saleId, string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
             var sale = await _context.Sale
                 .Where(s => s.BusinessId.Equals(business.BusinessId))
@@ -816,7 +879,7 @@ namespace KurbSide.Controllers
                 }
             }
             
-            var paginatedItems = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
+            var paginatedItems = KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
             
             //Gather temp data and pagination/filter info
             //  all in to one place for use 
@@ -831,39 +894,42 @@ namespace KurbSide.Controllers
             return View(paginatedItems);
         }
 
+        /// <summary>
+        /// Adding or Removing item from a sale.
+        /// </summary>
         public enum AddOrRemove
         {
             ADD,
             REMOVE
         }
 
+        /// <summary>
+        /// Adds or removes, specified by <see cref="AddOrRemove"/>,
+        /// the <see cref="Item"/>, specified by the itemId from the
+        /// <see cref="Sale"/>, specified by the saleId.
+        /// </summary>
+        /// <param name="saleId">The ID of the <see cref="Sale"/> being managed.</param>
+        /// <param name="itemId">The ID of the <see cref="Item"/> being managed.</param>
+        /// <param name="addOrRemove">Adding or removing the <see cref="Item"/> from the <see cref="Sale"/>.</param>
+        /// <returns>If successful A redirect to the businesses catalogue, otherwise the index.</returns>
         [HttpPost]
         public async Task<IActionResult> ManageSaleItem(Guid saleId, Guid itemId, AddOrRemove addOrRemove)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
-            var sale = await _context.Sale
-                .Where(s => s.BusinessId.Equals(business.BusinessId))
-                .Where(s => s.SaleId.Equals(saleId))
-                .FirstOrDefaultAsync();
+            var sale = await KSCatalogueUtilities.GetSpecificSale(_context, business, saleId);
 
-            var item = await _context.Item
-                .Where(i => i.BusinessId.Equals(business.BusinessId))
-                .Where(i => i.ItemId.Equals(itemId))
-                .FirstOrDefaultAsync();
+            var item = await KSCatalogueUtilities.GetSpecificItem(_context, business, itemId);
 
             if (sale == null)
             {
@@ -881,10 +947,7 @@ namespace KurbSide.Controllers
 
             try
             {
-                var saleItem = await _context.SaleItem
-                    .Where(s => s.SaleId.Equals(saleId))
-                    .Where(i => i.ItemId.Equals(itemId))
-                    .FirstOrDefaultAsync();
+                var saleItem = await KSCatalogueUtilities.GetSpecificSaleItem(_context, saleId, itemId);
                 
                 if (addOrRemove == AddOrRemove.ADD)
                 {
@@ -923,28 +986,27 @@ namespace KurbSide.Controllers
             return RedirectToAction("ManageSaleItem", new{saleId});
         }
 
+        /// <summary>
+        /// Displays the edit sale page.
+        /// </summary>
+        /// <param name="saleId">The ID of the <see cref="Sale"/> to be edited.</param>
+        /// <returns>A redirect to the sale edit page.</returns>
         [HttpGet]
         public async Task<IActionResult> EditSale(Guid saleId)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
-            var sale = await _context.Sale
-                .Where(s => s.BusinessId.Equals(business.BusinessId))
-                .Where(s => s.SaleId.Equals(saleId))
-                .FirstOrDefaultAsync();
+            var sale = await KSCatalogueUtilities.GetSpecificSale(_context, business, saleId);
 
             if (sale == null)
             {
@@ -958,22 +1020,29 @@ namespace KurbSide.Controllers
             return View(sale);
         }
         
+        /// <summary>
+        /// Upon submission of the EditSale page, if the entered information is valid,
+        /// the <see cref="Sale"/> is edited in the database.
+        /// </summary>
+        /// <param name="sale">The <see cref="Sale"/> information.</param>
+        /// <returns>If successful A redirect to the businesses catalogue, otherwise the index.</returns>
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditSale(Guid businessId, Sale sale)
+        public async Task<IActionResult> EditSale(Sale sale)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
+
             //Ensure that the business can only add items for themselves
-            if (businessId != sale.BusinessId)
+            if (business.BusinessId != sale.BusinessId)
             {
                 _logger.LogDebug("Debug: Id Mismatch. Edit not performed.");
                 return RedirectToAction("Index");
@@ -1003,28 +1072,28 @@ namespace KurbSide.Controllers
             return View(sale);
         }
 
+        /// <summary>
+        /// Swaps the status of the <see cref="Sale"/>.
+        /// Disabled -> Active | Active -> Disabled.
+        /// </summary>
+        /// <param name="saleId">The id of the <see cref="Sale"/> being edited.</param>
+        /// <returns>A redirect to the sale listing page.</returns>
         [HttpPost]
         public async Task<IActionResult> SwapSaleStatus(Guid saleId)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
-            var sale = await _context.Sale
-                .Where(s => s.BusinessId.Equals(business.BusinessId))
-                .Where(s => s.SaleId.Equals(saleId))
-                .FirstOrDefaultAsync();
+            var sale = await KSCatalogueUtilities.GetSpecificSale(_context, business, saleId);
             
             try
             {
@@ -1047,29 +1116,27 @@ namespace KurbSide.Controllers
             return RedirectToAction("ViewSales");
         }
 
+        /// <summary>
+        /// Deletes the <see cref="Sale"/> from the businesses account.
+        /// </summary>
+        /// <param name="saleId">The ID of the <see cref="Sale"/> to be deleted.</param>
+        /// <returns>If successful A redirect to the sale listing page, otherwise the index.</returns>
         [HttpGet]
         public async Task<IActionResult> DeleteSale(Guid saleId)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
 
-            var business = await _context.Business
-                .Where(b => b.AspNetId.Equals(user.Id))
-                .FirstOrDefaultAsync();
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
 
-            var sale = await _context.Sale
-                .Where(s => s.BusinessId.Equals(business.BusinessId))
-                .Where(s => s.SaleId.Equals(saleId))
-                .Include(si => si.SaleItem)
-                .FirstOrDefaultAsync();
+            var sale = await KSCatalogueUtilities.GetSpecificSale(_context, business, saleId);
 
             try
             {

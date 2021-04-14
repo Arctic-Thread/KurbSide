@@ -37,10 +37,10 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewAllReportList()
         {
             //Check that the accessing user is a business type account
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -57,11 +57,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewAllItemsReport(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -98,11 +98,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewRemovedItemsReport(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -140,11 +140,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewAvailableItemsReport(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -180,17 +180,17 @@ namespace KurbSide.Controllers
         #region OrderReports
 
         /// <summary>
-        /// Allows a buiness to view all orders
+        /// Allows a business to view all orders
         /// </summary>
         /// <returns></returns>
         public async Task<IActionResult> ViewAllOrdersReport(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -234,11 +234,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewAllCompletedOrders(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -283,11 +283,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewAllPendingOrders(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -334,11 +334,11 @@ namespace KurbSide.Controllers
         public async Task<IActionResult> ViewAllCanceledOrders(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
@@ -383,11 +383,11 @@ namespace KurbSide.Controllers
         public async Task<FileResult> CreateReports(string pdfName)
         {
             //Check that the accessing user is a business type account
-            var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var user = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             //If the currently logged in user is not a business they can not access business controllers.
-            if (accountType != KSCurrentUser.AccountType.BUSINESS)
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
                 return null;
 
             var business = await _context.Business
@@ -420,7 +420,7 @@ namespace KurbSide.Controllers
                 {
                     var itemsList = await _context.Item
                         .Where(b => b.BusinessId.Equals(business.BusinessId))
-                        .Select(i => new {i.ItemName, Price=i.Price.ToString("$#0.00"), i.Category, i.Sku, i.Upc, i.Removed})
+                        .Select(i => new {i.ItemName, Price = i.Price.ToString("$#0.00"), i.Category, i.Sku, i.Upc, i.Removed})
                         .ToListAsync();
 
                     //Make the list to IEnumerable
@@ -436,7 +436,7 @@ namespace KurbSide.Controllers
                     var itemsList = await _context.Item
                         .Where(b => b.BusinessId.Equals(business.BusinessId))
                         .Where(i => i.Removed == false)
-                        .Select(i => new {i.ItemName, Price=i.Price.ToString("$#0.00"), i.Category, i.Sku, i.Upc, i.Removed})
+                        .Select(i => new {i.ItemName, Price = i.Price.ToString("$#0.00"), i.Category, i.Sku, i.Upc, i.Removed})
                         .ToListAsync();
 
                     //Make the list to IEnumerable
@@ -452,7 +452,7 @@ namespace KurbSide.Controllers
                     var itemsList = await _context.Item
                         .Where(b => b.BusinessId.Equals(business.BusinessId))
                         .Where(i => i.Removed == true)
-                        .Select(i => new {i.ItemName, Price=i.Price.ToString("$#0.00"), i.Category, i.Sku, i.Upc, i.Removed})
+                        .Select(i => new {i.ItemName, Price = i.Price.ToString("$#0.00"), i.Category, i.Sku, i.Upc, i.Removed})
                         .ToListAsync();
 
                     //Make the list to IEnumerable
@@ -471,7 +471,7 @@ namespace KurbSide.Controllers
                         .Select(o => new
                         {
                             o.OrderId, o.Member.FirstName, o.Member.LastName, o.CreationDate,
-                            o.StatusNavigation.StatusName, GrandTotal=o.GrandTotal.ToString("$#0.00")
+                            o.StatusNavigation.StatusName, GrandTotal = o.GrandTotal.ToString("$#0.00")
                         })
                         .OrderBy(o => o.CreationDate)
                         .ToListAsync();
@@ -492,7 +492,7 @@ namespace KurbSide.Controllers
                         .Select(o => new
                         {
                             o.OrderId, o.Member.FirstName, o.Member.LastName, o.CreationDate,
-                            o.StatusNavigation.StatusName, GrandTotal=o.GrandTotal.ToString("$#0.00")
+                            o.StatusNavigation.StatusName, GrandTotal = o.GrandTotal.ToString("$#0.00")
                         })
                         .OrderBy(o => o.CreationDate)
                         .ToListAsync();
@@ -516,7 +516,7 @@ namespace KurbSide.Controllers
                         .Select(o => new
                         {
                             o.OrderId, o.Member.FirstName, o.Member.LastName, o.CreationDate,
-                            o.StatusNavigation.StatusName, GrandTotal=o.GrandTotal.ToString("$#0.00")
+                            o.StatusNavigation.StatusName, GrandTotal = o.GrandTotal.ToString("$#0.00")
                         })
                         .OrderBy(o => o.CreationDate)
                         .ToListAsync();
@@ -538,7 +538,7 @@ namespace KurbSide.Controllers
                         .Select(o => new
                         {
                             o.OrderId, o.Member.FirstName, o.Member.LastName, o.CreationDate,
-                            o.StatusNavigation.StatusName, GrandTotal=o.GrandTotal.ToString("$#0.00")
+                            o.StatusNavigation.StatusName, GrandTotal = o.GrandTotal.ToString("$#0.00")
                         })
                         .OrderBy(o => o.CreationDate)
                         .ToListAsync();

@@ -31,10 +31,10 @@ namespace KurbSide.Controllers
         [HttpPost]
         public async Task<IActionResult> CartUpdateAsync(Guid id, int q = 0)
         {
-            var currentMember = await KSCurrentUser.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var currentMember = await KSUserUtilities.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -107,10 +107,10 @@ namespace KurbSide.Controllers
         [HttpPost]
         public async Task<IActionResult> CartAddAsync(Guid id, int q = 1)
         {
-            var currentMember = await KSCurrentUser.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var currentMember = await KSUserUtilities.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -182,10 +182,10 @@ namespace KurbSide.Controllers
 
         public async Task<IActionResult> CartRemoveAsync(Guid id)
         {
-            var currentMember = await KSCurrentUser.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var currentMember = await KSUserUtilities.KSGetCurrentMemberAsync(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -209,10 +209,10 @@ namespace KurbSide.Controllers
                 _context.CartItem.Remove(cartItem);
                 await _context.SaveChangesAsync();
 
-                if (!_context.CartItem.Where(ci => ci.CartId.Equals(cart.CartId)).Any())
+                if (!_context.CartItem.Any(ci => ci.CartId.Equals(cart.CartId)))
                 {
                     _context.Cart.Remove(cart);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
             }
             catch (Exception){}
@@ -223,13 +223,13 @@ namespace KurbSide.Controllers
         [Route("ClearCart")]
         public async Task<IActionResult> CartClearAsync()
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
             var currentMember = await _context.Member
                 .Where(m => m.AspNetId.Equals(currentUser.Id))
                 .FirstOrDefaultAsync();
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -250,13 +250,13 @@ namespace KurbSide.Controllers
         [Route("Checkout")]
         public async Task<IActionResult> CheckoutAsync()
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
             var currentMember = await _context.Member
                 .Where(m => m.AspNetId.Equals(currentUser.Id))
                 .FirstOrDefaultAsync();
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -306,14 +306,14 @@ namespace KurbSide.Controllers
 
         public async Task<IActionResult> PlaceOrderAsync()
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
             var currentMember = await _context.Member
                 .Where(m => m.AspNetId.Equals(currentUser.Id))
                 .Include(p => p.ProvinceCodeNavigation)
                 .FirstOrDefaultAsync();
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             //If the currently logged in user is not a member they can not access the store.
-            if (accountType != KSCurrentUser.AccountType.MEMBER)
+            if (accountType != KSUserUtilities.AccountType.MEMBER)
             {
                 TempData["sysMessage"] = "Error: You're not signed in as a member.";
                 return RedirectToAction("Index", "Home");
@@ -371,42 +371,6 @@ namespace KurbSide.Controllers
 
             try
             {
-
-                //for (int i = 0; i < 10; i++)
-                //{
-                //    var order2 = new Order
-                //    {
-                //        MemberId = currentMember.MemberId,
-                //        SubTotal = cartSubTotal,
-                //        DiscountTotal = 0, //TODO Discounts & Sales
-                //        Tax = taxTotal,
-                //        GrandTotal = cartSubTotal + taxRate,
-                //        Status = pendingOrderStatus.StatusId,
-                //        CreationDate = DateTime.Now,
-                //        BusinessId = cart.BusinessId
-                //    };
-
-                //    await _context.Order.AddAsync(order2);
-                //    await _context.SaveChangesAsync();
-
-                //    List<OrderItem> orderItems2 = new List<OrderItem>();
-
-                //    foreach (var cartItem in cartItems)
-                //    {
-                //        var orderItem = new OrderItem
-                //        {
-                //            OrderId = order2.OrderId,
-                //            ItemId = cartItem.ItemId,
-                //            Quantity = cartItem.Quantity,
-                //            Discount = 0 //TODO Discounts & Sales
-                //        };
-
-                //        orderItems2.Add(orderItem);
-                //        await _context.OrderItem.AddAsync(orderItem);
-                //        await _context.SaveChangesAsync();
-                //    }
-                //}
-
                 var order = new Order
                 {
                     MemberId = currentMember.MemberId,
@@ -459,8 +423,8 @@ namespace KurbSide.Controllers
         [Route("/Order/{id}")]
         public async Task<IActionResult> ViewOrderAsync(Guid id)
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
 
             var member = await _context.Member
                 .FirstOrDefaultAsync(x => x.AspNetId.Equals(currentUser.Id))?? new Member();
@@ -488,8 +452,8 @@ namespace KurbSide.Controllers
         [Route("/Order/{id}/UpdateStatus")]
         public async Task<IActionResult> UpdateStatusAsync(Guid id, int status)
         {
-            var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
-            var accountType = await KSCurrentUser.KSGetAccountType(_context, _userManager, HttpContext);
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
             
             var member = await _context.Member
                 .FirstOrDefaultAsync(x => x.AspNetId.Equals(currentUser.Id))?? new Member();
@@ -508,7 +472,7 @@ namespace KurbSide.Controllers
             if (order == null)
                 return RedirectToAction("Index", "Home");
             
-            if (accountType == KSCurrentUser.AccountType.BUSINESS && order.Business.AspNetId.Equals(currentUser.Id))
+            if (accountType == KSUserUtilities.AccountType.BUSINESS && order.Business.AspNetId.Equals(currentUser.Id))
             {
                 if (!status.Equals(5) && order.Status < status)
                 {
@@ -521,7 +485,7 @@ namespace KurbSide.Controllers
                     await KSEmail.SendEmail(order.Member.AspNet.Email, (OrderStatus) status, order.OrderId, order.Business.BusinessName);
                 }
             }
-            else if(accountType == KSCurrentUser.AccountType.MEMBER && order.Member.AspNetId.Equals(currentUser.Id))
+            else if(accountType == KSUserUtilities.AccountType.MEMBER && order.Member.AspNetId.Equals(currentUser.Id))
             {
                 if (status.Equals(5) && order.Status < 4)
                 {

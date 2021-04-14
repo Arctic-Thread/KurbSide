@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "All Completed Orders Report";
-    var businessId = (Guid) TempData["businessId"];
     
     var page = (int)TempData["currentPage"];
     var perPage = (int)TempData["perPage"];
@@ -11,6 +10,7 @@
     var hasPrev = (bool)TempData["hasPrevPage"];
 }
 
+<link href="~/css/site.css" rel="stylesheet"/>
 
 <vc:business-head/>
 <div>

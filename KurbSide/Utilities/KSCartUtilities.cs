@@ -18,7 +18,6 @@ namespace KurbSide.Utilities
         /// </code>
         /// </summary>
         /// <remarks>
-        /// TODO Needs to be implemented still.
         /// Liam De Rivers
         /// </remarks>
         /// <param name="ksContext">The KurbSide context.</param>
@@ -27,7 +26,7 @@ namespace KurbSide.Utilities
         public static async void KSCheckIfCartExpired(KSContext ksContext, UserManager<IdentityUser> userManager,
             HttpContext httpContext)
         {
-            var currentMember = await KSCurrentUser.KSGetCurrentMemberAsync(ksContext, userManager, httpContext);
+            var currentMember = await KSUserUtilities.KSGetCurrentMemberAsync(ksContext, userManager, httpContext);
 
             var cart = await ksContext.Cart
                 .AsNoTracking()

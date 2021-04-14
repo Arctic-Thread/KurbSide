@@ -30,7 +30,7 @@
                 <div id="@status.StatusName" class="list-group list-group-flush">
                     @foreach (var order in Model.Orders[status.StatusId])
                     {
-                        <a id="@order.OrderId" asp-controller="Order" asp-action="ViewOrder" asp-route-id="@order.OrderId"
+                        <a id="@order.StatusNavigation.StatusName-@order.OrderId" asp-controller="Order" asp-action="ViewOrder" asp-route-id="@order.OrderId"
                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                            style="@(order.Status >= 4 ? "opacity: 0.5" : null)">
                             <span>
