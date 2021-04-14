@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using OpenQA.Selenium;
 
@@ -16,7 +17,22 @@ namespace KurbSideTest
         [Order(1)]
         public void UC24_ViewsListOfPreviousOrders_ShouldPass()
         {
+            //Arrange
+            //Titles
+            string loginInPageTitle = "Stores - KurbSide";
             
+            //Login as a member 
+            KSUnitTestLogin(AccountType.MEMBER);
+            
+            //Go to orders page
+            KSTitleContains(loginInPageTitle);
+            KSClick("myOrders");
+            
+            //gets a list of orders to process
+            IReadOnlyList<IWebElement> orders = _driver.FindElements(By.Id("allOrders"));
+
+            //Assert
+            Assert.IsTrue(orders.Count > 0);
         }
         
         /// <summary>
@@ -27,7 +43,7 @@ namespace KurbSideTest
         [Order(2)]
         public void UC25_ViewOrderDetails_ShouldPass()
         {
-        
+            
         }
         
         /// <summary>
@@ -35,7 +51,7 @@ namespace KurbSideTest
         /// </summary>
         [Test]
         [Order(4)]
-        public void UC36_Items_AddItem_InvalidDetails_ShouldFail()
+        public void UC30_CancelOrder_ShouldPass()
         {
 
         }

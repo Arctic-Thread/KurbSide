@@ -27,7 +27,7 @@
                 </small>
             </div>
             <div class="card-body p-0">
-                <div class="list-group list-group-flush">
+                <div class="list-group list-group-flush" id="allOrders">
                     @foreach (var order in Model.Orders[status.StatusId])
                     {
                         <a id="@order.OrderId" asp-controller="Order" asp-action="ViewOrder" asp-route-id="@order.OrderId"
