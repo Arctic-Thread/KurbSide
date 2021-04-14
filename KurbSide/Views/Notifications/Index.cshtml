@@ -1,0 +1,60 @@
+﻿@model IEnumerable<KurbSide.Models.Notification>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NotificationDetails)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Read)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Order)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sender)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recipient)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sale)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NotificationDetails)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Read)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Order.OrderId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sender.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Recipient.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sale.SaleName)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.NotificationId">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

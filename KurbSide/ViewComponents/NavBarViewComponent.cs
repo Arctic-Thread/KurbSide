@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using KurbSide.Service;
 using KurbSide.Utilities;
 
 #nullable enable
@@ -56,6 +57,10 @@ namespace KurbSide.ViewComponents
 
                 TempData["loggedInMember"] = member;
             }
+
+            var notificationCount = await KSNotification.GetUnreadNotificationCount(_context, _userManager, HttpContext);
+
+            TempData["notificationCount"] = notificationCount;
 
             return await Task.FromResult((IViewComponentResult)View("Default"));
         }
