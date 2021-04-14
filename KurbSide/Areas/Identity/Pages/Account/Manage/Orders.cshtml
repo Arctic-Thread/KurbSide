@@ -8,7 +8,11 @@
     @if (!Model.Status.Any())
     {
         <div id="no orders" class="card w-100 m-1">
-            <p>You have no orders on your account.</p>
+            <span class="card-body">
+                You have no orders on your account.
+                <hr />
+                Go to the catalogue and get shopping!
+            </span>
         </div>
     }
     @foreach (var status in Model.Status)
