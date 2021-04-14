@@ -1,60 +1,133 @@
 ﻿@model IEnumerable<KurbSide.Models.Notification>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Notifications";
+
+    var page = (int) TempData["currentPage"];
+    var perPage = (int) TempData["perPage"];
+    var totalPage = (int) TempData["totalPage"];
+    var hasNext = (bool) TempData["hasNextPage"];
+    var hasPrev = (bool) TempData["hasPrevPage"];
 }
 
-<h1>Index</h1>
+<link href="~/css/site.css" rel="stylesheet"/>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NotificationDetails)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Read)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Order)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sender)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Recipient)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sale)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NotificationDetails)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Read)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Order.OrderId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sender.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Recipient.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sale.SaleName)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.NotificationId">Details</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<style>
+    .card-columns {
+        -webkit-column-break-inside: avoid-region;
+    }
+    
+    .card-columns .card {
+        display: block;
+    }
+    
+    .business {
+        margin: 1% !important;
+        flex: 1 1 30%;
+        min-width: 250px;
+        max-width: 300px;
+        min-height: 200px;
+        max-height: 200px;
+    }
+</style>
+
+<div class="container">
+    <h1>Notifications</h1>
+    <br/>
+    
+    <div class="d-flex flex-wrap justify-content-center business-columns">
+        @foreach (var notification in Model)
+        {
+            if (notification.Order != null)
+            {
+                <div class="col-lg">
+                    <div class="card business">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@notification.Order.Business.BusinessName - Order Update</h5>
+                            <p class="ellipsisForLongText3Lines">@notification.NotificationDetails</p>
+                            <a asp-controller="Notifications" asp-action="ViewNotificationOrder" asp-route-notificationId="@notification.NotificationId">go to order</a>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-lg">
+                    <div class="card business">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">&nbsp;</h5>
+                            <p class="ellipsisForLongText3Lines">@notification.NotificationDetails</p>
+                            <a asp-controller="Notifications" asp-action="MarkNotificationAsRead" asp-route-notificationId="@notification.NotificationId">Mark As Read</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <br/>
+    <div class="container container-fluid justify-content-center">
+        <div class="row justify-content-between">
+            <a class="btn btn-sm btn-light border-secondary @(hasPrev ? null : "disabled")" asp-controller="Notifications" asp-action="Index" asp-route-page="@(page - 1)" asp-route-perPage="@(perPage)">@("<Prev Page")</a>
+            <span>
+                <form class="col" method="GET" asp-controller="Notifications" asp-action="Index">
+                    <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text bg-light border-secondary">
+                                Page @(page) / @(totalPage)
+                            </label>
+                        </div>
+                        <select name="perPage" id="perPage" class="custom-select bg-light border-secondary" style="max-width: 200px;" onchange="submit();">
+                            @if (perPage == 5)
+                            {
+                                <option value="5" selected>5 Per Page</option>
+                            }
+                            else
+                            {
+                                <option value="5">5 Per Page</option>
+                            }
+                            @if (perPage == 10)
+                            {
+                                <option value="10" selected>10 Per Page</option>
+                            }
+                            else
+                            {
+                                <option value="10">10 Per Page</option>
+                            }
+                            @if (perPage == 25)
+                            {
+                                <option value="25" selected>25 Per Page</option>
+                            }
+                            else
+                            {
+                                <option value="25">25 Per Page</option>
+                            }
+                            @if (perPage == 50)
+                            {
+                                <option value="50" selected>50 Per Page</option>
+                            }
+                            else
+                            {
+                                <option value="50">50 Per Page</option>
+                            }
+                            @if (perPage == 100)
+                            {
+                                <option value="100" selected>100 Per Page</option>
+                            }
+                            else
+                            {
+                                <option value="100">100 Per Page</option>
+                            }
+                        </select>
+                    </div>
+                </form>
+            </span>
+            <a class="btn btn-sm btn-light border-secondary @(hasNext ? null : "disabled")" asp-controller="Notifications" asp-action="Index" asp-route-page="@(page + 1)" asp-route-perPage="@(perPage)">@("Next Page>")</a>
+        </div>
+    </div>
+    <hr/>
+    <div class="container container-fluid justify-content-center">
+        <div class="row justify-content-between">
+            <a class="btn btn-sm btn-secondary" asp-action="Index">Back to Dashboard</a>
+        </div>
+    </div>
+</div>

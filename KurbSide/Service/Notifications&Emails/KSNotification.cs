@@ -31,6 +31,7 @@ namespace KurbSide.Service
             {
                 SenderId = senderId,
                 RecipientId = recipientId,
+                NotificationDateTime = DateTime.Now,
                 NotificationDetails = details,
                 Read = false
             };
