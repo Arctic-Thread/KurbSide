@@ -12,6 +12,7 @@ namespace KurbSide.Models
         public Guid NotificationId { get; set; }
         public string SenderId { get; set; }
         public string RecipientId { get; set; }
+        public DateTime NotificationDateTime { get; set; }
         public string NotificationDetails { get; set; }
         public bool Read { get; set; }
         public Guid? SaleId { get; set; }

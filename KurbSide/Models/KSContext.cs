@@ -433,6 +433,8 @@ namespace KurbSide.Models
             {
                 entity.Property(e => e.NotificationId).HasDefaultValueSql("(newid())");
 
+                entity.Property(e => e.NotificationDateTime).HasColumnType("datetime");
+
                 entity.Property(e => e.NotificationDetails).HasMaxLength(500);
 
                 entity.Property(e => e.RecipientId)
@@ -446,24 +448,24 @@ namespace KurbSide.Models
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.Notification)
                     .HasForeignKey(d => d.OrderId)
-                    .HasConstraintName("FK__Notificat__Order__54CB950F");
+                    .HasConstraintName("FK__Notificat__Order__73501C2F");
 
                 entity.HasOne(d => d.Recipient)
                     .WithMany(p => p.NotificationRecipient)
                     .HasForeignKey(d => d.RecipientId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Notificat__Recip__52E34C9D");
+                    .HasConstraintName("FK__Notificat__Recip__7073AF84");
 
                 entity.HasOne(d => d.Sale)
                     .WithMany(p => p.Notification)
                     .HasForeignKey(d => d.SaleId)
-                    .HasConstraintName("FK__Notificat__SaleI__53D770D6");
+                    .HasConstraintName("FK__Notificat__SaleI__725BF7F6");
 
                 entity.HasOne(d => d.Sender)
                     .WithMany(p => p.NotificationSender)
                     .HasForeignKey(d => d.SenderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Notificat__Sende__51EF2864");
+                    .HasConstraintName("FK__Notificat__Sende__7167D3BD");
             });
 
             modelBuilder.Entity<Order>(entity =>
