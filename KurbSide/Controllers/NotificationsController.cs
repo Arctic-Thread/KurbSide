@@ -70,6 +70,7 @@ namespace KurbSide.Controllers
                     .Include(n => n.Sender)
                     .ThenInclude(n => n.Business)
                     .Include(n => n.Sale)
+                    .Where(n => n.NotificationId.Equals(id))
                     .FirstOrDefaultAsync(m => m.NotificationId == id);
             }
             else
@@ -81,6 +82,7 @@ namespace KurbSide.Controllers
                     .Include(n => n.Sender)
                     .ThenInclude(n => n.Member)
                     .Include(n => n.Sale)
+                    .Where(n => n.NotificationId.Equals(id))
                     .FirstOrDefaultAsync();
             }
 
