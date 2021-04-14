@@ -108,7 +108,7 @@
                         @(order.Member.FirstName + " " + order.Member.LastName)
                     </td>
                     <td>
-                        @order.SubTotal
+                        @order.SubTotal.ToString("C")
                     </td>
                     <td>
                         <a asp-controller="Order" asp-action="ViewOrder" asp-route-id="@order.OrderId" class="btn btn-dark">View Details</a>
