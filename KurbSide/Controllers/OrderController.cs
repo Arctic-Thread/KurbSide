@@ -422,8 +422,6 @@ namespace KurbSide.Controllers
                 await _context.Order.AddAsync(order);
                 await _context.SaveChangesAsync();
 
-                List<OrderItem> orderItems = new List<OrderItem>();
-
                 foreach (var cartItem in cartItems)
                 {
                     var orderItem = new OrderItem
@@ -434,7 +432,6 @@ namespace KurbSide.Controllers
                         Discount = cartItem.Quantity * (cartItem.Item.Price - KSOrderUtilities.GetDiscountPrice(cartItem.Item, businessSales))
                     };
 
-                    orderItems.Add(orderItem);
                     await _context.OrderItem.AddAsync(orderItem);
                     await _context.SaveChangesAsync();
                 }
