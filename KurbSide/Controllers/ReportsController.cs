@@ -420,7 +420,7 @@ namespace KurbSide.Controllers
                 {
                     var itemsList = await _context.Item
                         .Where(b => b.BusinessId.Equals(business.BusinessId))
-                        .Select(i => new {i.ItemName, i.Price, i.Category, i.Sku, i.Upc, i.Removed})
+                        .Select(i => new {i.ItemName, Price=i.Price.ToString("$#0.00"), i.Category, i.Sku, i.Upc, i.Removed})
                         .ToListAsync();
 
                     //Make the list to IEnumerable
@@ -436,7 +436,7 @@ namespace KurbSide.Controllers
                     var itemsList = await _context.Item
                         .Where(b => b.BusinessId.Equals(business.BusinessId))
                         .Where(i => i.Removed == false)
-                        .Select(i => new {i.ItemName, i.Price, i.Category, i.Sku, i.Upc, i.Removed})
+                        .Select(i => new {i.ItemName, Price=i.Price.ToString("$#0.00"), i.Category, i.Sku, i.Upc, i.Removed})
                         .ToListAsync();
 
                     //Make the list to IEnumerable
@@ -452,7 +452,7 @@ namespace KurbSide.Controllers
                     var itemsList = await _context.Item
                         .Where(b => b.BusinessId.Equals(business.BusinessId))
                         .Where(i => i.Removed == true)
-                        .Select(i => new {i.ItemName, i.Price, i.Category, i.Sku, i.Upc, i.Removed})
+                        .Select(i => new {i.ItemName, Price=i.Price.ToString("$#0.00"), i.Category, i.Sku, i.Upc, i.Removed})
                         .ToListAsync();
 
                     //Make the list to IEnumerable
@@ -471,7 +471,7 @@ namespace KurbSide.Controllers
                         .Select(o => new
                         {
                             o.OrderId, o.Member.FirstName, o.Member.LastName, o.CreationDate,
-                            o.StatusNavigation.StatusName, o.GrandTotal
+                            o.StatusNavigation.StatusName, GrandTotal=o.GrandTotal.ToString("$#0.00")
                         })
                         .OrderBy(o => o.CreationDate)
                         .ToListAsync();
@@ -492,7 +492,7 @@ namespace KurbSide.Controllers
                         .Select(o => new
                         {
                             o.OrderId, o.Member.FirstName, o.Member.LastName, o.CreationDate,
-                            o.StatusNavigation.StatusName, o.GrandTotal
+                            o.StatusNavigation.StatusName, GrandTotal=o.GrandTotal.ToString("$#0.00")
                         })
                         .OrderBy(o => o.CreationDate)
                         .ToListAsync();
@@ -516,7 +516,7 @@ namespace KurbSide.Controllers
                         .Select(o => new
                         {
                             o.OrderId, o.Member.FirstName, o.Member.LastName, o.CreationDate,
-                            o.StatusNavigation.StatusName, o.GrandTotal
+                            o.StatusNavigation.StatusName, GrandTotal=o.GrandTotal.ToString("$#0.00")
                         })
                         .OrderBy(o => o.CreationDate)
                         .ToListAsync();
@@ -538,7 +538,7 @@ namespace KurbSide.Controllers
                         .Select(o => new
                         {
                             o.OrderId, o.Member.FirstName, o.Member.LastName, o.CreationDate,
-                            o.StatusNavigation.StatusName, o.GrandTotal
+                            o.StatusNavigation.StatusName, GrandTotal=o.GrandTotal.ToString("$#0.00")
                         })
                         .OrderBy(o => o.CreationDate)
                         .ToListAsync();
@@ -554,6 +554,7 @@ namespace KurbSide.Controllers
             //Styling the grid
             pdfGrid.Style.Font = new PdfStandardFont(PdfFontFamily.Helvetica, 8);
             pdfGrid.Style.CellPadding = new PdfPaddings(4, 4, 4, 4);
+            pdfGrid.Style.BackgroundBrush = new PdfSolidBrush(Color.WhiteSmoke);
 
             //Draw the table to a pdf page
             graphics.DrawString(fileName, font, PdfBrushes.Black, new PointF(10, 0));
