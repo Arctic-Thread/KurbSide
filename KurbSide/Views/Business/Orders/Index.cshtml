@@ -3,6 +3,11 @@
 @{
     ViewData["Title"] = "Business Orders";
     
+    // You may think this variable is obsolete and unused, you would be correct.
+    // But when we remove this variable, for some reason the page does not display.
+    // So here it will stay.
+    var statusFull = (IEnumerable<OrderStatus>) TempData["statusFull"];
+    
     var rawCategories = (IEnumerable<string>) TempData["status"];
     var rawFilter = TempData["filter"];
 
