@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
+﻿using NUnit.Framework;
 
 namespace KurbSideTest
 {
@@ -19,8 +14,6 @@ namespace KurbSideTest
         public void UC01_Generic_ViewHomePage_ShouldPass()
         {
             // Arrange
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
-
             //Fields & Buttons
             string navbarHomeID = "navbar-home";
 
@@ -47,8 +40,6 @@ namespace KurbSideTest
         public void UC02_Generic_ViewPrivacyPolicy_ShouldPass()
         {
             // Arrange
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
-
             // Fields & Buttons
             string footerPrivacyID = "footer-privacy";
 

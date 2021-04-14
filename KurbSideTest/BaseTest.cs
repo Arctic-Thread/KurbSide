@@ -88,8 +88,7 @@ namespace KurbSideTest
         /// <param name="accountType">The account type to be used in the unit test.</param>
         public void KSUnitTestLogin(AccountType accountType)
         {
-            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
-
+            // Arrange
             // Login Details
             string loginEmail;
             string loginPassword = "Password12345";
@@ -101,7 +100,7 @@ namespace KurbSideTest
             string loginButtonID = "login-button";
 
             // Titles
-            string homePageTitle = "Home Page - KurbSide";
+            string homePageTitle;
             string registerPageTitle = "Register - KurbSide";
             string loginPageTitle = "Log in - KurbSide";
 
