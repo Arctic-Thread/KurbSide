@@ -58,9 +58,11 @@ namespace KurbSide.ViewComponents
                 TempData["loggedInMember"] = member;
             }
 
-            var notificationCount = await KSNotification.GetUnreadNotificationCount(_context, _userManager, HttpContext);
-
-            TempData["notificationCount"] = notificationCount;
+            if (accountType != KSCurrentUser.AccountType.VISITOR)
+            {
+                var notificationCount = await KSNotification.GetUnreadNotificationCount(_context, _userManager, HttpContext);
+                TempData["notificationCount"] = notificationCount;
+            }
 
             return await Task.FromResult((IViewComponentResult)View("Default"));
         }

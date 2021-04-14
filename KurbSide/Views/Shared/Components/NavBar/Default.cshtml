@@ -14,7 +14,7 @@
             break;
     }
 
-    int notificationCount = (int)TempData["notificationCount"];
+    var notificationCount = TempData["notificationCount"];
 }
 
 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
@@ -40,7 +40,7 @@
                     <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Orders">My Orders</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-controller="Notifications" asp-action="Index" class="nav-link text-dark">Notifications <span class="badge badge-primary">@notificationCount</span></a>
+                    <a asp-controller="Notifications" asp-action="Index" class="nav-link text-dark">Notifications <span class="badge badge-primary">@((int)notificationCount)</span></a>
                 </li>
             </ul>
             break;
