@@ -59,7 +59,7 @@
                     @Html.DisplayFor(modelItem => order.StatusNavigation.StatusName)
                 </td>
                 <td class="align-middle">
-                    @Html.DisplayFor(modelItem => order.GrandTotal)
+                    @order.GrandTotal.ToString("$#0.00")
                 </td>
             </tr>
         }

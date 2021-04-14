@@ -70,7 +70,7 @@
                     @Html.DisplayFor(modelItem => item.ItemName)
                 </td>
                 <td class="align-middle">
-                    @Html.DisplayFor(modelItem => item.Price)
+                    @item.Price.ToString("$#0.00")
                 </td>
                 <td class="align-middle">
                     @Html.DisplayFor(modelItem => item.Category)
