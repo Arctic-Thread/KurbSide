@@ -3,6 +3,12 @@
 @{
     ViewData["Title"] = "All Items Report";
     var businessId = (Guid) TempData["businessId"];
+    
+    var page = (int)TempData["currentPage"];
+    var perPage = (int)TempData["perPage"];
+    var totalPage = (int)TempData["totalPage"];
+    var hasNext = (bool)TempData["hasNextPage"];
+    var hasPrev = (bool)TempData["hasPrevPage"];
 }
 
 @* Styles for the barcode and qrcode *@
@@ -99,6 +105,65 @@
         }
         </tbody>
     </table>
+    <div class="container container-fluid justify-content-center">
+                <div class="row justify-content-between">
+                    <a class="btn btn-sm btn-light border-secondary @(hasPrev?null:"disabled")" asp-action="ViewAllItemsReport" asp-route-page="@(page-1)"  asp-route-perPage="@(perPage)">@("<Prev Page")</a>
+                    <span>
+                        <form class="col" method="GET" asp-action="ViewAllItemsReport" asp-route-page="@(page)" >
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text bg-light border-secondary">
+                                        Page @(page) / @(totalPage)
+                                    </label>
+                                </div>
+                                <select name="perPage" id="perPage" class="custom-select bg-light border-secondary" style="max-width: 200px;" onchange="submit();">
+                                    @if (perPage == 5)
+                                    {
+                                        <option value="5" selected>5 Per Page</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="5">5 Per Page</option>
+                                    }
+                                    @if (perPage == 10)
+                                    {
+                                        <option value="10" selected>10 Per Page</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="10">10 Per Page</option>
+                                    }
+                                    @if (perPage == 25)
+                                    {
+                                        <option value="25" selected>25 Per Page</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="25">25 Per Page</option>
+                                    }
+                                    @if (perPage == 50)
+                                    {
+                                        <option value="50" selected>50 Per Page</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="50">50 Per Page</option>
+                                    }
+                                    @if (perPage == 100)
+                                    {
+                                        <option value="100" selected>100 Per Page</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="100">100 Per Page</option>
+                                    }
+                                </select>
+                            </div>
+                        </form>
+                    </span>
+                    <a class="btn btn-sm btn-light border-secondary @(hasNext?null:"disabled")" asp-action="ViewAllItemsReport" asp-route-page="@(page+1)" asp-route-perPage="@(perPage)">@("Next Page>")</a>
+                </div>
+            </div>
     <hr/>
     <div class="container container-fluid justify-content-center">
         <div class="row justify-content-between">

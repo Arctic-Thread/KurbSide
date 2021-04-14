@@ -52,7 +52,7 @@ namespace KurbSide.Controllers
         /// <summary>
         /// Displays the All Items Report page.
         /// </summary>
-        public async Task<IActionResult> ViewAllItemsReport()
+        public async Task<IActionResult> ViewAllItemsReport(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
             var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -75,13 +75,25 @@ namespace KurbSide.Controllers
                 .ToListAsync();
 
             TempData["businessId"] = business.BusinessId;
-            return View(items);
+            
+            //For items per page
+            var paginatedList = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
+
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedList.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedList.HasNextPage;
+            TempData["hasPrevPage"] = paginatedList.HasPreviousPage;
+
+            return View(paginatedList);
         }
 
         /// <summary>
         /// Displays the All Removed Items Report. 
         /// </summary>
-        public async Task<IActionResult> ViewRemovedItemsReport()
+        public async Task<IActionResult> ViewRemovedItemsReport(int page=1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
             var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -105,13 +117,25 @@ namespace KurbSide.Controllers
                 .ToListAsync();
 
             TempData["businessId"] = business.BusinessId;
-            return View(items);
+            
+            //For items per page
+            var paginatedList = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
+
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedList.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedList.HasNextPage;
+            TempData["hasPrevPage"] = paginatedList.HasPreviousPage;
+
+            return View(paginatedList);
         }
 
         /// <summary>
         /// Displays the All Available Items Report.
         /// </summary>
-        public async Task<IActionResult> ViewAvailableItemsReport()
+        public async Task<IActionResult> ViewAvailableItemsReport(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
             var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -135,7 +159,18 @@ namespace KurbSide.Controllers
                 .ToListAsync();
 
             TempData["businessId"] = business.BusinessId;
-            return View(items);
+            
+            var paginatedList = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
+
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedList.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedList.HasNextPage;
+            TempData["hasPrevPage"] = paginatedList.HasPreviousPage;
+
+            return View(paginatedList);
         }
 
         /// <summary>
@@ -233,6 +268,7 @@ namespace KurbSide.Controllers
                         .Select(o => new{o.OrderId, o.Member.FirstName, o.Member.LastName,o.CreationDate,o.StatusNavigation.StatusName, o.GrandTotal})
                         .OrderBy(o => o.CreationDate)
                         .ToListAsync();
+                    //Make the list to IEnumerable
                     IEnumerable<object> orderTable = orderList;
                     //Assign to data source
                     pdfGrid.DataSource = orderTable;
@@ -271,7 +307,7 @@ namespace KurbSide.Controllers
         /// Allows a buiness to view all orders
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> ViewAllOrdersReport()
+        public async Task<IActionResult> ViewAllOrdersReport(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
             var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -299,7 +335,18 @@ namespace KurbSide.Controllers
                 .Where(b => b.BusinessId.Equals(business.BusinessId))
                 .ToListAsync();
             
-            return View(orders);
+            //Create the paginated list for return
+            var paginatedList = KurbSideUtils.KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
+
+            //Gather temp data and pagination/filter info
+            //  all in to one place for use 
+            TempData["currentPage"] = page;
+            TempData["totalPage"] = paginatedList.TotalPages;
+            TempData["perPage"] = perPage;
+            TempData["hasNextPage"] = paginatedList.HasNextPage;
+            TempData["hasPrevPage"] = paginatedList.HasPreviousPage;
+
+            return View(paginatedList);
         }
 
     }
