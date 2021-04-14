@@ -302,7 +302,7 @@ namespace KurbSideTest
 
             // Titles
             string businessPageTitle = "test - KurbSide";
-            string orderConfirmationPageTitle = "Order Confirmation";
+            string orderConfirmationPageTitle = "My Orders - KurbSide";
 
             // Act
             UC26_Store_MemberAddsToCart_ShouldPass();
@@ -312,6 +312,9 @@ namespace KurbSideTest
 
             var placeOrderForm = _driver.FindElement(By.Id(placeOrderFormID));
             placeOrderForm.Submit();
+            
+            // Go back to orders page
+            KSClick("backToOrders");
 
             bool result = _driver.Title.Contains(orderConfirmationPageTitle);
 
