@@ -1,0 +1,57 @@
+﻿@page
+@model OrdersModel
+@{
+    ViewData["Title"] = "My Orders";
+    ViewData["ActivePage"] = ManageNavPages.Orders;
+}
+<div class="row">
+    @if (!Model.Status.Any())
+    {
+        <div id="no orders" class="card w-100 m-1">
+            <span class="card-body">
+                You have no orders on your account.
+                <hr />
+                Go to the catalogue and get shopping!
+            </span>
+        </div>
+    }
+    @foreach (var status in Model.Status)
+    {
+        <div name="@status.StatusName"class="card w-100 m-1">
+            <div class="card-header bg-@status.BootstrapClass align-content-center text-center text-white"
+                 style="@(status.StatusId >= 4 ? "opacity: 0.5" : null)">
+                <b>@status.StatusName</b>
+                <br>
+                <small>
+                    @status.StatusText
+                </small>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush" id="allOrders">
+                    @foreach (var order in Model.Orders[status.StatusId])
+                    {
+                        <a id="@order.OrderId" asp-controller="Order" asp-action="ViewOrder" asp-route-id="@order.OrderId"
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                           style="@(order.Status >= 4 ? "opacity: 0.5" : null)">
+                            <span>
+                                <span class="badge badge-dark">@order.OrderId.ToString().Substring(order.OrderId.ToString().Length - 6).ToUpper()</span>
+                                <br>
+                                <strong>@(order.Business.BusinessName)</strong>
+                            </span>
+                            <span>
+                                <span style="font-family:monospace;">
+                                    @{
+                                        var totalItems = order.OrderItem.Sum(oi => oi.Quantity);
+                                    }
+                                    @("Create Date:".PadRight(15, '\u00a0'))@(order.CreationDate.ToString("d").PadLeft(10, '\u00a0'))<br/>
+                                    @("Total Items:".PadRight(15, '\u00a0'))@(totalItems.ToString().PadLeft(10, '\u00a0'))<br/>
+                                    @("Grand Total:".PadRight(15, '\u00a0'))@(order.GrandTotal.ToString("$#0.00").PadLeft(10, '\u00a0'))<br/>
+                                </span>
+                            </span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

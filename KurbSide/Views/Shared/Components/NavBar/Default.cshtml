@@ -13,6 +13,8 @@
             business = (Business) TempData["loggedInBusiness"];
             break;
     }
+
+    var notificationCount = TempData["notificationCount"];
 }
 
 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
@@ -30,11 +32,17 @@
         }
         case KSUserUtilities.AccountType.MEMBER:
         {
-                @*<ul id="navbar-member-links" class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a id="navbar-home" name="navbar-home" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                    </ul>*@
+            <ul id="navbar-member-links" class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-controller="Store" asp-action="Index">Store</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" id="myOrders" asp-area="Identity" asp-page="/Account/Manage/Orders">My Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a asp-controller="Notifications" asp-action="Index" class="nav-link text-dark">Notifications <span class="badge badge-primary">@((int)notificationCount)</span></a>
+                </li>
+            </ul>
             break;
         }
         case KSUserUtilities.AccountType.BUSINESS:
@@ -65,18 +73,25 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Catalogue" id="navbar-catalogue">Catalogue</a>
                 </li>
                 <li class="nav-item">
-                    <span class="nav-link text-secondary" asp-area="" asp-controller="Business" asp-action="Orders">
-                        Orders (Coming Soon)
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Orders">
+                        Orders
                         @{
-                            var orderCount = TempData["orderCount"];
-                            orderCount = orderCount == null ? 0 : orderCount;
+                            var pendCount = business.Order.Count(o => new[] { 0 }.Contains(o.Status));
+                            var orderCount = business.Order.Count(o => new[] { 1,2,3 }.Contains(o.Status));
 
-                            if ((int) orderCount > 0)
+                            if (pendCount > 0)
                             {
-                                <span class="badge badge-primary">@((int) orderCount)</span>
+                                <span class="badge badge-secondary">@((int) pendCount) Pending</span>
+                            }
+                            if (orderCount > 0)
+                            {
+                                <span class="badge badge-primary">@((int) orderCount) Open</span>
                             }
                         }
-                    </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a asp-controller="Notifications" asp-action="Index" class="nav-link text-dark">Notifications <span class="badge badge-primary">@((int)notificationCount)</span></a>
                 </li>
             </ul>
             break;

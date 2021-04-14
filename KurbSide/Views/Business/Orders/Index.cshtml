@@ -1,0 +1,227 @@
+﻿@using KurbSideUtils
+@model IEnumerable<Order>
+@{
+    ViewData["Title"] = "Business Orders";
+
+    var statusFull = (IEnumerable<OrderStatus>) TempData["statusFull"];
+    
+    var rawCategories = (IEnumerable<string>) TempData["status"];
+    var rawFilter = TempData["filter"];
+
+    var categories = new List<string>();
+    var activeFilter = "";
+
+    var page = (int) TempData["currentPage"];
+    var perPage = (int) TempData["perPage"];
+    var totalPage = (int) TempData["totalPage"];
+    var hasNext = (bool) TempData["hasNextPage"];
+    var hasPrev = (bool) TempData["hasPrevPage"];
+
+    if (rawCategories != null)
+    {
+        categories.AddRange(rawCategories);
+    }
+    if (rawFilter != null)
+    {
+        activeFilter = rawFilter as string;
+    }
+}
+
+<vc:business-head/>
+
+<vc:auto-refresh seconds="120"/>
+
+<div class="card">
+    <div class="card-body row">
+        <div class="col">
+            <div class="btn-group btn-group-sm" style="flex-wrap: wrap; ">
+                <a class="btn btn-sm btn-dark btn-filter rounded" style="margin: 1px 1px 3px 1px;" asp-action="Orders" asp-route-perPage="@(perPage)">@(activeFilter != "" ? "Clear Filter" : "Filter By Category") </a>
+                @foreach (var category in categories)
+                {
+                    <a class="btn btn-sm btn-light border-secondary rounded @(category.Equals(activeFilter) ? "active" : null)" style="margin:1px 1px 3px 1px;" asp-route-filter="@category" asp-route-perPage="@(perPage)">@category</a>
+                }
+                @if (categories.Count <= 0)
+                {
+                    <span class="btn btn-sm btn-outline-light active border-secondary rounded" style="margin:1px 1px 3px 1px; opacity: 0.50;">No Categories</span>
+                }
+            </div>
+        </div>
+        <form class="col" method="GET" asp-action="Orders">
+            <div class="input-group input-group-sm">
+                <input type="text" id="filter" name="filter" class="form-control border-secondary" placeholder="Search Orders" autocomplete="off" value="@activeFilter">
+                <div class="input-group-append">
+                    <input type="submit" class="input-group-text btn-dark text-light bg-dark border-dark" id="btnGroupAddon" value="Search"/>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(activeFilter))
+                {
+                    <div class="input-group-append">
+                        <a asp-action="Orders" class="input-group-text btn btn-dark text-light bg-danger border-dark">Clear Search</a>
+                    </div>
+                }
+            </div>
+        </form>
+    </div>
+    <div class="card-body row">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">
+                    Order #
+                </th>
+                <th scope="col">
+                    Date
+                </th>
+                <th scope="col">
+                    Member Name
+                </th>
+                <th scope="col">
+                    SubTotal
+                </th>
+                <th scope="col">
+                    &nbsp;
+                </th>
+                <th scope="col">
+                    Status
+                </th>
+            </tr>
+            </thead>
+            <style>
+                .pointer {cursor: pointer;}
+                tr.hover-controls {
+                    display: none;
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    margin-left: auto;
+                    margin-right: auto;
+                    z-index: 1000000000000;
+                }
+                tr.hover-controls > td{
+                    padding-top: 0;
+                    border: 1px solid #dee2e6;;
+                    border-top: 0 !important;
+                    border-bottom-left-radius: 5px;
+                    border-bottom-right-radius: 5px;
+                    background-color: #FFF;
+                    box-shadow: 0 4px 4px #AAA;
+                }
+                tr.hover-controls:hover,
+                tr:not(.hover-controls):hover + tr.hover-controls {
+                    display: table;
+                }
+                .hiddenbtn{
+                    display: none;
+                }
+            </style>
+            <tbody>
+            @foreach (var order in Model)
+            {
+                <form method="post" asp-controller="Order" asp-action="UpdateStatus">
+                </form>
+                <tr>
+                    <td>
+                        <h5>
+                            <span style="width: 5em;" class="badge badge-dark" title="@order.OrderId.ToString()">@order.OrderId.ToString().Substring(order.OrderId.ToString().Length - 6).ToUpper()</span>
+                        </h5>
+                    </td>
+                    <td>
+                        @order.CreationDate.ToString("d")
+                    </td>
+                    <td>
+                        @(order.Member.FirstName + " " + order.Member.LastName)
+                    </td>
+                    <td>
+                        @order.SubTotal
+                    </td>
+                    <td>
+                        <a asp-controller="Order" asp-action="ViewOrder" asp-route-id="@order.OrderId" class="btn btn-dark">View Details</a>
+                    </td>
+                    <td>
+                        <span style="width: 10rem;" class="btn disabled btn-block btn-@order.StatusNavigation.BootstrapClass" title="@order.StatusNavigation.StatusText">@order.StatusNavigation.StatusName</span>
+                    </td>
+                </tr>
+                <tr class="hover-controls text-center align-middle">
+                    <td colspan="100">
+                            <span class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-dark disabled">
+                                    <span>Quick Actions:</span>
+                                </label>
+                                <a class="btn @(order.StatusNavigation.StatusId<1?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<1?"-outline":null)-warning" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="1">Accept</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<2?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<2?"-outline":null)-info" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="2">Preparing</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<3?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<3?"-outline":null)-success" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="3">Ready</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<4?"-outline":null)-secondary" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="4">Picked Up</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<5?"-outline":null)-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="6">Cancel</a>
+                                @if (order.StatusNavigation.StatusId >= 4)
+                                {
+                                    <label class="btn btn-light border-dark disabled">
+                                        <span>None</span>
+                                    </label> 
+                                }
+                            </span>
+                        <small class="d-block w-100 text-center p-1">These Actions are Permanent and will Notify the Customer.</small>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <div class="container container-fluid justify-content-center">
+            <div class="row justify-content-between">
+                <a class="btn btn-sm btn-light border-secondary @(hasPrev ? null : "disabled")" asp-action="Orders" asp-route-page="@(page - 1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("<Prev Page")</a>
+                <span>
+                    <form class="col" method="GET" asp-action="Orders" asp-route-page="@(page)" asp-route-filter="@(activeFilter)">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text bg-light border-secondary">
+                                    Page @(page) / @(totalPage)
+                                </label>
+                            </div>
+                            <select name="perPage" id="perPage" class="custom-select bg-light border-secondary" style="max-width: 200px;" onchange="submit();">
+                                @if (perPage == 5)
+                                {
+                                    <option value="5" selected>5 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="5">5 Per Page</option>
+                                }
+                                @if (perPage == 10)
+                                {
+                                    <option value="10" selected>10 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="10">10 Per Page</option>
+                                }
+                                @if (perPage == 25)
+                                {
+                                    <option value="25" selected>25 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="25">25 Per Page</option>
+                                }
+                                @if (perPage == 50)
+                                {
+                                    <option value="50" selected>50 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="50">50 Per Page</option>
+                                }
+                                @if (perPage == 100)
+                                {
+                                    <option value="100" selected>100 Per Page</option>
+                                }
+                                else
+                                {
+                                    <option value="100">100 Per Page</option>
+                                }
+                            </select>
+                        </div>
+                    </form>
+                </span>
+                <a class="btn btn-sm btn-light border-secondary @(hasNext ? null : "disabled")" asp-action="Orders" asp-route-page="@(page + 1)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)">@("Next Page>")</a>
+            </div>
+        </div>
+    </div>
+</div>

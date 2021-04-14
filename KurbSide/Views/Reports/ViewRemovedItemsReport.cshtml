@@ -1,0 +1,173 @@
+﻿@model IEnumerable<KurbSide.Models.Item>
+
+@{
+    ViewData["Title"] = "Removed Items Report";
+    var businessId = (Guid) TempData["businessId"];
+    
+    var page = (int)TempData["currentPage"];
+    var perPage = (int)TempData["perPage"];
+    var totalPage = (int)TempData["totalPage"];
+    var hasNext = (bool)TempData["hasNextPage"];
+    var hasPrev = (bool)TempData["hasPrevPage"];
+}
+
+@* Styles for the barcode and qrcode *@
+<style>
+        .barcode {
+            height: 1.5em;
+            width: 6em;
+            margin-bottom: .2em;
+            image-rendering: auto;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: pixelated;
+        }
+    
+        .qrcode {
+            height: 1.5em;
+            width: 1.5em;
+            margin-bottom: .2em;
+            image-rendering: auto;
+            image-rendering: -moz-crisp-edges;
+            /*image-rendering: pixelated;*/
+        }
+</style>
+
+@* Business head display *@
+<vc:business-head/>
+
+@* Lets the business determine which items to show *@
+<div>
+    <a id="btnDownloadReport" class="btn btn-primary" asp-action="CreateReports" asp-route-pdfName="RemovedItemsReport">Download PDF</a>
+    <br/>
+    <br/>
+    @* Table for item for report listings *@
+    <table class="table table-responsive-sm">
+        <thead>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.ItemName)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.Category)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.Sku)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.Upc)
+        </th>
+        <th scope="col">
+            @Html.DisplayNameFor(model => model.Removed)
+        </th>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="reportItem-@item.ItemName">
+                <td class="align-middle">
+                    @Html.DisplayFor(modelItem => item.ItemName)
+                </td>
+                <td class="align-middle">
+                    @item.Price.ToString("$#0.00")
+                </td>
+                <td class="align-middle">
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td class="align-middle">
+                    <img class="@(item.Sku == null ? "none" : "qrcode")" alt="@item.ItemName SKU" src="https://bwip-js.herokuapp.com/?bcid=datamatrix&text=@item.Sku"/>
+                    @item.Sku
+                </td>
+                <td class="align-middle">
+                    <span class="@(item.Upc == null ? "none" : null)">
+                        @if (item.Upc != null)
+                        {
+                            switch (item.Upc.Length)
+                            {
+                                case 13:
+                                    <img class="barcode" alt="@item.ItemName UPC" src="https://bwip-js.herokuapp.com/?bcid=ean13&text=@item.Upc"/>
+                                    <br/>
+                                    break;
+                                default:
+                                    <img class="barcode" alt="@item.ItemName UPC" src="https://bwip-js.herokuapp.com/?bcid=upca&text=@item.Upc"/>
+                                    <br/>
+                                    break;
+                            }
+                        }
+                    </span>
+                    @item.Upc
+                </td>
+                <td class="align-middle">
+                    @item.Removed
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <div class="container container-fluid justify-content-center">
+                <div class="row justify-content-between">
+                    <a class="btn btn-sm btn-light border-secondary @(hasPrev?null:"disabled")" asp-action="ViewRemovedItemsReport" asp-route-page="@(page-1)" asp-route-perPage="@(perPage)">@("<Prev Page")</a>
+                    <span>
+                        <form class="col" method="GET" asp-action="ViewRemovedItemsReport" asp-route-page="@(page)">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text bg-light border-secondary">
+                                        Page @(page) / @(totalPage)
+                                    </label>
+                                </div>
+                                <select name="perPage" id="perPage" class="custom-select bg-light border-secondary" style="max-width: 200px;" onchange="submit();">
+                                    @if (perPage == 5)
+                                    {
+                                        <option value="5" selected>5 Per Page</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="5">5 Per Page</option>
+                                    }
+                                    @if (perPage == 10)
+                                    {
+                                        <option value="10" selected>10 Per Page</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="10">10 Per Page</option>
+                                    }
+                                    @if (perPage == 25)
+                                    {
+                                        <option value="25" selected>25 Per Page</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="25">25 Per Page</option>
+                                    }
+                                    @if (perPage == 50)
+                                    {
+                                        <option value="50" selected>50 Per Page</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="50">50 Per Page</option>
+                                    }
+                                    @if (perPage == 100)
+                                    {
+                                        <option value="100" selected>100 Per Page</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="100">100 Per Page</option>
+                                    }
+                                </select>
+                            </div>
+                        </form>
+                    </span>
+                    <a class="btn btn-sm btn-light border-secondary @(hasNext?null:"disabled")" asp-action="ViewRemovedItemsReport" asp-route-page="@(page+1)" asp-route-perPage="@(perPage)">@("Next Page>")</a>
+                </div>
+            </div>
+    <hr/>
+    <div class="container container-fluid justify-content-center">
+        <div class="row justify-content-between">
+            <a class="btn btn-sm btn-secondary" asp-controller="Reports" asp-action="ViewAllReportList">Back to Report Listings</a>
+        </div>
+    </div>
+</div>

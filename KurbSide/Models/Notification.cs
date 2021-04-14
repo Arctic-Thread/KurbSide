@@ -10,13 +10,17 @@ namespace KurbSide.Models
     public partial class Notification
     {
         public Guid NotificationId { get; set; }
+        public string SenderId { get; set; }
         public string RecipientId { get; set; }
+        public DateTime NotificationDateTime { get; set; }
         public string NotificationDetails { get; set; }
+        public bool Read { get; set; }
         public Guid? SaleId { get; set; }
         public Guid? OrderId { get; set; }
 
         public virtual Order Order { get; set; }
         public virtual AspNetUsers Recipient { get; set; }
         public virtual Sale Sale { get; set; }
+        public virtual AspNetUsers Sender { get; set; }
     }
 }
