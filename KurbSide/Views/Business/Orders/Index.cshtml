@@ -2,8 +2,6 @@
 @model IEnumerable<Order>
 @{
     ViewData["Title"] = "Business Orders";
-
-    var statusFull = (IEnumerable<OrderStatus>) TempData["statusFull"];
     
     var rawCategories = (IEnumerable<string>) TempData["status"];
     var rawFilter = TempData["filter"];
@@ -26,6 +24,8 @@
         activeFilter = rawFilter as string;
     }
 }
+
+<link href="~/css/Orders/Index.css" rel="stylesheet"/>
 
 <vc:business-head/>
 
@@ -85,34 +85,6 @@
                 </th>
             </tr>
             </thead>
-            <style>
-                .pointer {cursor: pointer;}
-                tr.hover-controls {
-                    display: none;
-                    position: absolute;
-                    left: 0;
-                    right: 0;
-                    margin-left: auto;
-                    margin-right: auto;
-                    z-index: 1000000000000;
-                }
-                tr.hover-controls > td{
-                    padding-top: 0;
-                    border: 1px solid #dee2e6;;
-                    border-top: 0 !important;
-                    border-bottom-left-radius: 5px;
-                    border-bottom-right-radius: 5px;
-                    background-color: #FFF;
-                    box-shadow: 0 4px 4px #AAA;
-                }
-                tr.hover-controls:hover,
-                tr:not(.hover-controls):hover + tr.hover-controls {
-                    display: table;
-                }
-                .hiddenbtn{
-                    display: none;
-                }
-            </style>
             <tbody>
             @foreach (var order in Model)
             {
