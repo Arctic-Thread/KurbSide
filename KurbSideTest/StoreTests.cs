@@ -208,8 +208,6 @@ namespace KurbSideTest
             KSClick(viewBusinessCatalogueButtonID);
 
             KSTitleContains(businessPageTitle);
-            KSReplaceText(searchCatalogueID, "test");
-            KSSendKeys(searchCatalogueID, Keys.Enter);
 
             KSClick(addToCartButtonID); //adds a item to the cart to make the cart visible
 
