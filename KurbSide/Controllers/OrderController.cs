@@ -443,10 +443,6 @@ namespace KurbSide.Controllers
                 _context.Cart.Remove(cart);
                 await _context.SaveChangesAsync();
                 
-                return RedirectToAction("ViewOrder", "Order", new { id = order.OrderId});
-
-                var orderDetails = Tuple.Create(order, orderItems);
-                
                 string notificationDetails = KSNotificationAndEmails.CreateMessage(OrderStatus.PENDING, order.Business.BusinessName);
                 await KSNotification.CreateNotification(_context, order.Member.AspNet.Id, order.Business.AspNet.Id, notificationDetails, orderId: order.OrderId);
 
