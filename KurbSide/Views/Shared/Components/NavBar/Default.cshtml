@@ -40,7 +40,7 @@
                     <a class="nav-link text-dark" id="myOrders" asp-area="Identity" asp-page="/Account/Manage/Orders">My Orders</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-controller="Notifications" asp-action="Index" class="nav-link text-dark">Notifications <span class="badge badge-primary">@((int)notificationCount)</span></a>
+                    <a asp-action="Index" asp-controller="Notifications" class="nav-link text-dark" id="navbar-notifications">Notifications <span class="badge badge-primary">@((int)notificationCount)</span></a>
                 </li>
             </ul>
             break;
@@ -91,7 +91,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a asp-controller="Notifications" asp-action="Index" class="nav-link text-dark">Notifications <span class="badge badge-primary">@((int)notificationCount)</span></a>
+                    <a asp-action="Index" asp-controller="Notifications" class="nav-link text-dark" id="navbar-notifications">Notifications <span class="badge badge-primary">@((int)notificationCount)</span></a>
                 </li>
             </ul>
             break;
