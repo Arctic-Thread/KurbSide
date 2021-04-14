@@ -452,7 +452,6 @@ namespace KurbSide.Controllers
         /// <param name="page">Pagination: The page number the business would like to view.</param>
         /// <param name="perPage">Pagination: The number of items the business would like to see per page.</param>
         /// <returns>If successful A redirect to the business catalogue, otherwise the index.</returns>
-        [HttpGet]
         public async Task<IActionResult> RemoveItem(Guid id, string filter = "", int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
