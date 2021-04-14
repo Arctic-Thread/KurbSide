@@ -104,8 +104,16 @@
                             <span class="ellipsisForLongText" style="display: inline-block; width: 200px;">@item.Category</span>
                         </td>
                         <td class="align-middle">
-                            <img class="@(item.Sku == null ? "none":"qrcode")" alt="SKU for @item.ItemName" src="https://bwip-js.herokuapp.com/?bcid=datamatrix&text=@item.Sku" />
-                            @item.Sku
+                            @if (item.Sku != null)
+                            {
+                                <img class="@(item.Sku == null ? "none" : "qrcode")" alt="SKU for @item.ItemName" src="https://bwip-js.herokuapp.com/?bcid=datamatrix&text=@item.Sku"/>
+                                <span>@item.Sku</span>
+                            }
+                            else
+                            {
+                                <span>N/A</span>
+                            }
+                            
                         </td>
                         <td class="align-middle">
                             <span class="@(item.Upc == null ? "none":null)">
@@ -122,9 +130,14 @@
                                             <br />
                                             break;
                                     }
+                                    @item.Upc
+                                }
+                                else
+                                {
+                                    <span>N/A</span>
                                 }
                             </span>
-                            @item.Upc
+                            
                         </td>
                         <td class="align-middle">
                             <form method="post" asp-controller="business" asp-action="removeItem" asp-route-id="@item.ItemId" asp-route-page="@(page)" asp-route-filter="@(activeFilter)" asp-route-perPage="@(perPage)" onSubmit="return confirm('Are you sure you want to delete @(item.ItemName)?') ">
