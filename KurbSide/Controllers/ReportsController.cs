@@ -320,6 +320,12 @@ namespace KurbSide.Controllers
             return View(paginatedList);
         }
         
+        /// <summary>
+        /// Has reports for all the orders that have been cancelled
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="perPage"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ViewAllCanceledOrders(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
@@ -465,6 +471,57 @@ namespace KurbSide.Controllers
                     //Assign to data source
                     pdfGrid.DataSource = orderTable;
                     fileName = "All Orders Report";
+                    break;
+                }
+                case "AllCompletedOrders":
+                {
+                    var orderList = await _context.Order
+                        .Include(m=> m.Member)
+                        .Include(s=> s.StatusNavigation)
+                        .Where(b => b.BusinessId.Equals(business.BusinessId))
+                        .Where(o=> o.StatusNavigation.StatusName== "Picked Up")
+                        .Select(o => new{o.OrderId, o.Member.FirstName, o.Member.LastName,o.CreationDate,o.StatusNavigation.StatusName, o.GrandTotal})
+                        .OrderBy(o => o.CreationDate)
+                        .ToListAsync();
+                    //Make the list to IEnumerable
+                    IEnumerable<object> orderTable = orderList;
+                    //Assign to data source
+                    pdfGrid.DataSource = orderTable;
+                    fileName = "All Completed Orders Report";
+                    break;
+                }
+                case "AllPendingOrders":
+                {
+                    var orderList = await _context.Order
+                        .Include(m=> m.Member)
+                        .Include(s=> s.StatusNavigation)
+                        .Where(b => b.BusinessId.Equals(business.BusinessId))
+                        .Where(o=> o.StatusNavigation.StatusName=="Pending"||o.StatusNavigation.StatusName=="Accepted" || o.StatusNavigation.StatusName=="Preparing"|| o.StatusNavigation.StatusName=="Ready For Pickup")
+                        .Select(o => new{o.OrderId, o.Member.FirstName, o.Member.LastName,o.CreationDate,o.StatusNavigation.StatusName, o.GrandTotal})
+                        .OrderBy(o => o.CreationDate)
+                        .ToListAsync();
+                    //Make the list to IEnumerable
+                    IEnumerable<object> orderTable = orderList;
+                    //Assign to data source
+                    pdfGrid.DataSource = orderTable;
+                    fileName = "All Pending Orders Report";
+                    break;
+                }
+                case "AllCanceledOrders":
+                {
+                    var orderList = await _context.Order
+                        .Include(m=> m.Member)
+                        .Include(s=> s.StatusNavigation)
+                        .Where(b => b.BusinessId.Equals(business.BusinessId))
+                        .Where(o=> o.StatusNavigation.StatusName=="Canceled"||o.StatusNavigation.StatusName=="Denied")
+                        .Select(o => new{o.OrderId, o.Member.FirstName, o.Member.LastName,o.CreationDate,o.StatusNavigation.StatusName, o.GrandTotal})
+                        .OrderBy(o => o.CreationDate)
+                        .ToListAsync();
+                    //Make the list to IEnumerable
+                    IEnumerable<object> orderTable = orderList;
+                    //Assign to data source
+                    pdfGrid.DataSource = orderTable;
+                    fileName = "All Canceled Orders Report";
                     break;
                 }
             }
