@@ -27,6 +27,12 @@ namespace KurbSide.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Displays a list of unread notifications for the business/member.
+        /// </summary>
+        /// <param name="page">The page the business/member is currently on.</param>
+        /// <param name="perPage">The number of notifications to be viewed per page.</param>
+        /// <returns></returns>
         public async Task<IActionResult> IndexAsync(int page = 1, int perPage = 25)
         {
             var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -68,6 +74,12 @@ namespace KurbSide.Controllers
             return View(paginatedList);
         }
 
+        /// <summary>
+        /// Marks a notification as read and then redirects the user to the order associated
+        /// with the notification.
+        /// </summary>
+        /// <param name="notificationId">The Id of the notification</param>
+        /// <returns>A redirect to the view order page.</returns>
         public async Task<IActionResult> ViewNotificationOrder(Guid notificationId)
         {
             var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -85,6 +97,10 @@ namespace KurbSide.Controllers
             return RedirectToAction("ViewOrder", "Order", new {id = notification.OrderId});
         }
 
+        /// <summary>
+        /// Marks a notification as read.
+        /// </summary>
+        /// <param name="notificationId">The Id of the notification</param>
         public async Task<IActionResult> MarkNotificationAsRead(Guid notificationId)
         {
             var currentUser = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
