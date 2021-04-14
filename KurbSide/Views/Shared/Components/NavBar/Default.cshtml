@@ -90,6 +90,9 @@
                         }
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a asp-controller="Notifications" asp-action="Index" class="nav-link text-dark">Notifications <span class="badge badge-primary">@((int)notificationCount)</span></a>
+                </li>
             </ul>
             break;
         }
