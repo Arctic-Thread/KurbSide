@@ -50,6 +50,7 @@ namespace KurbSide.Controllers
         }
 
         #region ItemReports
+
         /// <summary>
         /// Displays the All Items Report page.
         /// </summary>
@@ -76,7 +77,7 @@ namespace KurbSide.Controllers
                 .ToListAsync();
 
             TempData["businessId"] = business.BusinessId;
-            
+
             //For items per page
             var paginatedList = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
 
@@ -94,7 +95,7 @@ namespace KurbSide.Controllers
         /// <summary>
         /// Displays the All Removed Items Report. 
         /// </summary>
-        public async Task<IActionResult> ViewRemovedItemsReport(int page=1, int perPage = 5)
+        public async Task<IActionResult> ViewRemovedItemsReport(int page = 1, int perPage = 5)
         {
             //Check that the accessing user is a business type account
             var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -118,7 +119,7 @@ namespace KurbSide.Controllers
                 .ToListAsync();
 
             TempData["businessId"] = business.BusinessId;
-            
+
             //For items per page
             var paginatedList = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
 
@@ -160,7 +161,7 @@ namespace KurbSide.Controllers
                 .ToListAsync();
 
             TempData["businessId"] = business.BusinessId;
-            
+
             var paginatedList = KurbSideUtils.KSPaginatedList<Item>.Create(items.AsQueryable(), page, perPage);
 
             //Gather temp data and pagination/filter info
@@ -173,9 +174,11 @@ namespace KurbSide.Controllers
 
             return View(paginatedList);
         }
+
         #endregion
 
         #region OrderReports
+
         /// <summary>
         /// Allows a buiness to view all orders
         /// </summary>
@@ -192,22 +195,22 @@ namespace KurbSide.Controllers
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
-            
+
             //Gets the current logged in business
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
                 .FirstOrDefaultAsync();
 
             TempData["businessId"] = business.BusinessId;
-            
+
             //Gets the orders of the business
             var orders = await _context.Order
-                .Include(m=> m.Member)
-                .Include(s=> s.StatusNavigation)
+                .Include(m => m.Member)
+                .Include(s => s.StatusNavigation)
                 .OrderBy(o => o.CreationDate)
                 .Where(b => b.BusinessId.Equals(business.BusinessId))
                 .ToListAsync();
-            
+
             //Create the paginated list for return
             var paginatedList = KurbSideUtils.KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
 
@@ -221,7 +224,7 @@ namespace KurbSide.Controllers
 
             return View(paginatedList);
         }
-        
+
         /// <summary>
         /// Views All orders that have been picked up
         /// </summary>
@@ -240,7 +243,7 @@ namespace KurbSide.Controllers
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
-            
+
             //Gets the current logged in business
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
@@ -250,13 +253,13 @@ namespace KurbSide.Controllers
 
             //Gets the orders of the business
             var orders = await _context.Order
-                .Include(m=> m.Member)
-                .Include(s=> s.StatusNavigation)
+                .Include(m => m.Member)
+                .Include(s => s.StatusNavigation)
                 .OrderBy(o => o.CreationDate)
-                .Where(o=> o.StatusNavigation.StatusName== "Picked Up")
+                .Where(o => o.StatusNavigation.StatusName == "Picked Up")
                 .Where(b => b.BusinessId.Equals(business.BusinessId))
                 .ToListAsync();
-            
+
             //Create the paginated list for return
             var paginatedList = KurbSideUtils.KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
 
@@ -270,7 +273,7 @@ namespace KurbSide.Controllers
 
             return View(paginatedList);
         }
-        
+
         /// <summary>
         /// Has a report of all the orders that have not been fully processed 
         /// </summary>
@@ -289,7 +292,7 @@ namespace KurbSide.Controllers
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
-            
+
             //Gets the current logged in business
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
@@ -299,13 +302,15 @@ namespace KurbSide.Controllers
 
             //Gets the orders of the business
             var orders = await _context.Order
-                .Include(m=> m.Member)
-                .Include(s=> s.StatusNavigation)
+                .Include(m => m.Member)
+                .Include(s => s.StatusNavigation)
                 .OrderBy(o => o.CreationDate)
-                .Where(o=> o.StatusNavigation.StatusName=="Pending"||o.StatusNavigation.StatusName=="Accepted" || o.StatusNavigation.StatusName=="Preparing"|| o.StatusNavigation.StatusName=="Ready For Pickup")
+                .Where(o => o.StatusNavigation.StatusName == "Pending" || o.StatusNavigation.StatusName == "Accepted" ||
+                            o.StatusNavigation.StatusName == "Preparing" ||
+                            o.StatusNavigation.StatusName == "Ready For Pickup")
                 .Where(b => b.BusinessId.Equals(business.BusinessId))
                 .ToListAsync();
-            
+
             //Create the paginated list for return
             var paginatedList = KurbSideUtils.KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
 
@@ -319,7 +324,7 @@ namespace KurbSide.Controllers
 
             return View(paginatedList);
         }
-        
+
         /// <summary>
         /// Has reports for all the orders that have been cancelled
         /// </summary>
@@ -338,7 +343,7 @@ namespace KurbSide.Controllers
                 TempData["sysMessage"] = "Error: You're not signed in as a business.";
                 return RedirectToAction("Index", "Home");
             }
-            
+
             //Gets the current logged in business
             var business = await _context.Business
                 .Where(b => b.AspNetId.Equals(user.Id))
@@ -348,13 +353,13 @@ namespace KurbSide.Controllers
 
             //Gets the orders of the business
             var orders = await _context.Order
-                .Include(m=> m.Member)
-                .Include(s=> s.StatusNavigation)
+                .Include(m => m.Member)
+                .Include(s => s.StatusNavigation)
                 .OrderBy(o => o.CreationDate)
-                .Where(o=> o.StatusNavigation.StatusName=="Canceled"||o.StatusNavigation.StatusName=="Denied")
+                .Where(o => o.StatusNavigation.StatusName == "Canceled" || o.StatusNavigation.StatusName == "Denied")
                 .Where(b => b.BusinessId.Equals(business.BusinessId))
                 .ToListAsync();
-            
+
             //Create the paginated list for return
             var paginatedList = KurbSideUtils.KSPaginatedList<Order>.Create(orders.AsQueryable(), page, perPage);
 
@@ -368,9 +373,9 @@ namespace KurbSide.Controllers
 
             return View(paginatedList);
         }
-        
+
         #endregion
-        
+
         /// <summary>
         /// Downloads a PDF version of the specified report.
         /// </summary>
@@ -460,10 +465,14 @@ namespace KurbSide.Controllers
                 case "AllOrdersReport":
                 {
                     var orderList = await _context.Order
-                        .Include(m=> m.Member)
-                        .Include(s=> s.StatusNavigation)
+                        .Include(m => m.Member)
+                        .Include(s => s.StatusNavigation)
                         .Where(b => b.BusinessId.Equals(business.BusinessId))
-                        .Select(o => new{o.OrderId, o.Member.FirstName, o.Member.LastName,o.CreationDate,o.StatusNavigation.StatusName, o.GrandTotal})
+                        .Select(o => new
+                        {
+                            o.OrderId, o.Member.FirstName, o.Member.LastName, o.CreationDate,
+                            o.StatusNavigation.StatusName, o.GrandTotal
+                        })
                         .OrderBy(o => o.CreationDate)
                         .ToListAsync();
                     //Make the list to IEnumerable
@@ -476,11 +485,15 @@ namespace KurbSide.Controllers
                 case "AllCompletedOrders":
                 {
                     var orderList = await _context.Order
-                        .Include(m=> m.Member)
-                        .Include(s=> s.StatusNavigation)
+                        .Include(m => m.Member)
+                        .Include(s => s.StatusNavigation)
                         .Where(b => b.BusinessId.Equals(business.BusinessId))
-                        .Where(o=> o.StatusNavigation.StatusName== "Picked Up")
-                        .Select(o => new{o.OrderId, o.Member.FirstName, o.Member.LastName,o.CreationDate,o.StatusNavigation.StatusName, o.GrandTotal})
+                        .Where(o => o.StatusNavigation.StatusName == "Picked Up")
+                        .Select(o => new
+                        {
+                            o.OrderId, o.Member.FirstName, o.Member.LastName, o.CreationDate,
+                            o.StatusNavigation.StatusName, o.GrandTotal
+                        })
                         .OrderBy(o => o.CreationDate)
                         .ToListAsync();
                     //Make the list to IEnumerable
@@ -493,11 +506,18 @@ namespace KurbSide.Controllers
                 case "AllPendingOrders":
                 {
                     var orderList = await _context.Order
-                        .Include(m=> m.Member)
-                        .Include(s=> s.StatusNavigation)
+                        .Include(m => m.Member)
+                        .Include(s => s.StatusNavigation)
                         .Where(b => b.BusinessId.Equals(business.BusinessId))
-                        .Where(o=> o.StatusNavigation.StatusName=="Pending"||o.StatusNavigation.StatusName=="Accepted" || o.StatusNavigation.StatusName=="Preparing"|| o.StatusNavigation.StatusName=="Ready For Pickup")
-                        .Select(o => new{o.OrderId, o.Member.FirstName, o.Member.LastName,o.CreationDate,o.StatusNavigation.StatusName, o.GrandTotal})
+                        .Where(o => o.StatusNavigation.StatusName == "Pending" ||
+                                    o.StatusNavigation.StatusName == "Accepted" ||
+                                    o.StatusNavigation.StatusName == "Preparing" ||
+                                    o.StatusNavigation.StatusName == "Ready For Pickup")
+                        .Select(o => new
+                        {
+                            o.OrderId, o.Member.FirstName, o.Member.LastName, o.CreationDate,
+                            o.StatusNavigation.StatusName, o.GrandTotal
+                        })
                         .OrderBy(o => o.CreationDate)
                         .ToListAsync();
                     //Make the list to IEnumerable
@@ -510,11 +530,16 @@ namespace KurbSide.Controllers
                 case "AllCanceledOrders":
                 {
                     var orderList = await _context.Order
-                        .Include(m=> m.Member)
-                        .Include(s=> s.StatusNavigation)
+                        .Include(m => m.Member)
+                        .Include(s => s.StatusNavigation)
                         .Where(b => b.BusinessId.Equals(business.BusinessId))
-                        .Where(o=> o.StatusNavigation.StatusName=="Canceled"||o.StatusNavigation.StatusName=="Denied")
-                        .Select(o => new{o.OrderId, o.Member.FirstName, o.Member.LastName,o.CreationDate,o.StatusNavigation.StatusName, o.GrandTotal})
+                        .Where(o => o.StatusNavigation.StatusName == "Canceled" ||
+                                    o.StatusNavigation.StatusName == "Denied")
+                        .Select(o => new
+                        {
+                            o.OrderId, o.Member.FirstName, o.Member.LastName, o.CreationDate,
+                            o.StatusNavigation.StatusName, o.GrandTotal
+                        })
                         .OrderBy(o => o.CreationDate)
                         .ToListAsync();
                     //Make the list to IEnumerable
@@ -549,7 +574,5 @@ namespace KurbSide.Controllers
 
             return File(workStream, type, fileName);
         }
-        
-
     }
 }

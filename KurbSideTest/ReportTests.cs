@@ -15,6 +15,10 @@ namespace KurbSideTest
         [TestCase("reports-availableItems", "Available Items Report - KurbSide", "KurbSide-Available Items Report-*.pdf")]
         [TestCase("reports-allItems", "All Items Report - KurbSide", "KurbSide-All Items Report-*.pdf")]
         [TestCase("reports-RemovedItems", "Removed Items Report - KurbSide", "KurbSide-Removed Items Report-*.pdf")]
+        [TestCase("reports-allOrders", "All Orders Report - KurbSide", "KurbSide-All Orders Report-*.pdf")]
+        [TestCase("reports-completedOrders", "All Completed Orders Report - KurbSide", "KurbSide-All Completed Orders Report-*.pdf")]
+        [TestCase("reports-pendingOrders", "All Pending Orders Report - KurbSide", "KurbSide-All Pending Orders Report-*.pdf")]
+        [TestCase("reports-canceledOrders", "All Canceled Orders Report - KurbSide", "KurbSide-All Canceled Orders Report-*.pdf")]
         [Order(1)]
         public void UC21_Reports_DownloadReport_ShouldPass(string reportButtonId, string reportTitle, string fileName)
         {
@@ -39,6 +43,7 @@ namespace KurbSideTest
             KSClick(dashboardReportsButtonID);
 
             // Navigates to the specified report.
+            
             KSTitleContains(reportsListing);
             KSClick(reportButtonId);
 
