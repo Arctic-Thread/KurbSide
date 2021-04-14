@@ -162,14 +162,14 @@
                 @switch (Model.Item1)
                 {
                     case AccountType.MEMBER when order.Status < 4:
-                        <a asp-area="Identity" asp-page="/Account/Manage/Orders" class="btn btn-secondary">@("<- Back To Orders")</a>
+                        <a asp-area="Identity" asp-page="/Account/Manage/Orders" id="backToOrders" class="btn btn-secondary">@("<- Back To Orders")</a>
                         <a class="btn btn-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="5">Cancel Order</a>
                         break;
                     case AccountType.MEMBER:
-                        <a asp-area="Identity" asp-page="/Account/Manage/Orders" class="btn btn-sm btn-secondary">@("<- Back To Orders")</a>
+                        <a asp-area="Identity" asp-page="/Account/Manage/Orders" id="backToOrders" class="btn btn-sm btn-secondary">@("<- Back To Orders")</a>
                         break;
                     case AccountType.BUSINESS when order.Status < 4:
-                        <a asp-controller="Business" asp-action="Orders" class="btn btn-secondary">@("<- Back To Orders")</a>
+                        <a asp-controller="Business" asp-action="Orders" id="backToOrders" class="btn btn-secondary">@("<- Back To Orders")</a>
                         <a title="permanent, customer will be notified" class="btn @(order.StatusNavigation.StatusId < 1 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 1 ? "-outline" : null)-warning" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="1">Accept</a>
                         <a title="permanent, customer will be notified" class="btn @(order.StatusNavigation.StatusId < 2 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 2 ? "-outline" : null)-info" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="2">Preparing</a>
                         <a title="permanent, customer will be notified" class="btn @(order.StatusNavigation.StatusId < 3 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 3 ? "-outline" : null)-success" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="3">Ready</a>
@@ -177,7 +177,7 @@
                         <a title="permanent, customer will be notified" class="btn @(order.StatusNavigation.StatusId < 4 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 5 ? "-outline" : null)-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="6">Cancel</a>
                         break;
                     case AccountType.BUSINESS:
-                        <a asp-controller="Business" asp-action="Orders" class="btn btn-sm btn-secondary">@("<- Back To Orders")</a>
+                        <a asp-controller="Business" asp-action="Orders" id="backToOrders" class="btn btn-sm btn-secondary">@("<- Back To Orders")</a>
                         break;
                 }
             </span>

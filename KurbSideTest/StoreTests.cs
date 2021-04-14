@@ -302,7 +302,7 @@ namespace KurbSideTest
 
             // Titles
             string businessPageTitle = "test - KurbSide";
-            string orderConfirmationPageTitle = "Order Confirmation";
+            string orderConfirmationPageTitle = "My Orders - KurbSide";
 
             // Act
             UC26_Store_MemberAddsToCart_ShouldPass();
@@ -312,11 +312,64 @@ namespace KurbSideTest
 
             var placeOrderForm = _driver.FindElement(By.Id(placeOrderFormID));
             placeOrderForm.Submit();
+            
+            // Go back to orders page
+            KSClick("backToOrders");
 
             bool result = _driver.Title.Contains(orderConfirmationPageTitle);
 
             // Assert
             Assert.IsTrue(result);
+        }
+        
+        /// <summary>
+        /// UC24 - Member View list of previous orders
+        /// Tests to see if member can see list of orders they purchased previously 
+        /// </summary>
+        [Test]
+        [Order(10)]
+        public void UC24_ViewsListOfPreviousOrders_ShouldPass()
+        {
+            //Login as a member 
+            UC28_Store_MemberCheckout_ShouldPass();
+
+            //gets a list of orders to process
+            IReadOnlyList<IWebElement> orders = _driver.FindElements(By.Id("allOrders"));
+
+            //Assert
+            Assert.IsTrue(orders.Count > 0);
+        }
+        
+        /// <summary>
+        /// UC25 - View Order Details
+        /// Tests to see if a user can see the details of a order
+        /// </summary>
+        [Test]
+        [Order(11)]
+        public void UC25_ViewOrderDetails_ShouldPass()
+        {
+            
+        }
+        
+        /// <summary>
+        /// UC30 - Member cancels order
+        /// </summary>
+        [Test]
+        [Order(12)]
+        public void UC30_CancelOrder_ShouldPass()
+        {
+
+        }
+        
+        /// <summary>
+        /// UC36 - Update Order status
+        /// Tests to see if a business can update a order
+        /// </summary>
+        [Test]
+        [Order(13)]
+        public void UC36_UpdateOrderStatus_ShouldPass()
+        {
+
         }
     }
 }
