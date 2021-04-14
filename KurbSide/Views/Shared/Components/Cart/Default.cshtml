@@ -1,6 +1,6 @@
 ﻿@using KurbSide.Utilities
 @model Tuple<Cart, List<Sale>>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous"/>
 <div class="col-sm-3">
     <div id="cartCard" class="card">
         @if (Model.Item1 != null)
@@ -19,15 +19,15 @@
                             <span class="badge badge-pill badge-dark" style="max-width: 3em;">
                                 @*@item.Quantity*@
                                 <form asp-controller="Order" asp-action="CartUpdate">
-                                    <input type="hidden" name="id" value="@item.ItemId" />
-                                    <input style="max-width: 1.5em; text-align: center; -moz-appearance: textfield;" class="bg-transparent border-0 my-0 p-0 text-white" type="text" name="q" value="@item.Quantity" onchange="submit();" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" />
+                                    <input type="hidden" name="id" value="@item.ItemId"/>
+                                    <input style="max-width: 1.5em; text-align: center; -moz-appearance: textfield;" class="bg-transparent border-0 my-0 p-0 text-white" type="text" name="q" value="@item.Quantity" onchange="submit();" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"/>
                                 </form>
                             </span>
-                            <span class="badge badge-success">@(itemTotal.ToString("$#0.00"))</span><br />
+                            <span class="badge badge-success">@(itemTotal.ToString("$#0.00"))</span><br/>
                             @item.Item.ItemName
                         </small>
                         <form method="POST" asp-controller="Order" asp-action="CartRemove" style="margin-left: .5em;" onsubmit="return confirm('Remove @(item.Item.ItemName)?')">
-                            <input type="hidden" name="id" value="@item.ItemId" />
+                            <input type="hidden" name="id" value="@item.ItemId"/>
                             <button type="submit" name="submit" class="btn btn-sm btn-outline-danger" id="remove-from-cart-@item.Item.ItemName" title="Remove from Cart">
                                 <i class="fa fa-trash fa-sm" aria-hidden="true"></i>
                             </button>
@@ -49,8 +49,10 @@
             <ul class="list-group">
                 <li class="list-group-item border-0">
                     Your Cart Is Empty
-                    <br />
-                    <small><a asp-controller="Store" asp-action="Index">Select a store and add some products</a></small>
+                    <br/>
+                    <small>
+                        <a asp-controller="Store" asp-action="Index">Select a store and add some products</a>
+                    </small>
                 </li>
             </ul>
             <div class="card-footer d-flex">
@@ -62,8 +64,6 @@
         }
     </div>
 </div>
-
-
 <script>
     (function ($) {
         var element = $('#cartCard'),

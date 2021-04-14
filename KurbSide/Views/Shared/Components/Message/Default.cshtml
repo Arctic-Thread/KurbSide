@@ -1,5 +1,5 @@
-﻿@{ 
-    string message = (string)TempData["sysMessage"];
+﻿@{
+    string message = (string) TempData["sysMessage"];
 }
 @{
     //HACK Disable debug messages from showing
@@ -11,7 +11,9 @@
     statusMessageClass = message.ToString().StartsWith("Debug") ? "warning" : statusMessageClass;
 
     <div id="sysMessage" class="alert alert-@statusMessageClass alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
         @message
     </div>
 }

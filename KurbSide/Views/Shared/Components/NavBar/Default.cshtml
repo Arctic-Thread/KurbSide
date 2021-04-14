@@ -23,11 +23,6 @@
     {
         case KSUserUtilities.AccountType.VISITOR:
         {
-                @*<ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a id="navbar-home" name="navbar-home" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                    </ul>*@
             break;
         }
         case KSUserUtilities.AccountType.MEMBER:
@@ -40,7 +35,7 @@
                     <a class="nav-link text-dark" id="myOrders" asp-area="Identity" asp-page="/Account/Manage/Orders">My Orders</a>
                 </li>
                 <li class="nav-item">
-                    <a asp-controller="Notifications" asp-action="Index" class="nav-link text-dark">Notifications <span class="badge badge-primary">@((int)notificationCount)</span></a>
+                    <a asp-controller="Notifications" asp-action="Index" class="nav-link text-dark">Notifications <span class="badge badge-primary">@((int) notificationCount)</span></a>
                 </li>
             </ul>
             break;
@@ -52,7 +47,7 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Index">
                         <strong>@business.BusinessName</strong>
                         @{
-                            var openForBusiness = (string)TempData["openForBusiness"];
+                            var openForBusiness = (string) TempData["openForBusiness"];
                             if (openForBusiness.StartsWith("Open"))
                             {
                                 <span title="Accepting Orders" class=" badge badge-success">Accepting Orders</span>
@@ -76,8 +71,8 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Orders">
                         Orders
                         @{
-                            var pendCount = business.Order.Count(o => new[] { 0 }.Contains(o.Status));
-                            var orderCount = business.Order.Count(o => new[] { 1,2,3 }.Contains(o.Status));
+                            var pendCount = business.Order.Count(o => new[] {0}.Contains(o.Status));
+                            var orderCount = business.Order.Count(o => new[] {1, 2, 3}.Contains(o.Status));
 
                             if (pendCount > 0)
                             {
@@ -91,11 +86,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a asp-controller="Notifications" asp-action="Index" class="nav-link text-dark">Notifications <span class="badge badge-primary">@((int)notificationCount)</span></a>
+                    <a asp-controller="Notifications" asp-action="Index" class="nav-link text-dark">Notifications <span class="badge badge-primary">@((int) notificationCount)</span></a>
                 </li>
             </ul>
             break;
         }
     }
-
 </div>
