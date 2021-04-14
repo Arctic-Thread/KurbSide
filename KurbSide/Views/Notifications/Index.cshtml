@@ -43,9 +43,10 @@
                 <div class="col-lg">
                     <div class="card business">
                         <div class="card-body text-center">
-                            <h5 class="card-title">@notification.Order.Business.BusinessName - Order Update</h5>
+                            <h5 class="card-title" style="margin-bottom: 3px;">@notification.Order.Business.BusinessName - Order Update</h5>
+                            <small>@notification.NotificationDateTime</small>
                             <p class="ellipsisForLongText3Lines">@notification.NotificationDetails</p>
-                            <a asp-controller="Notifications" asp-action="ViewNotificationOrder" asp-route-notificationId="@notification.NotificationId">go to order</a>
+                            <a asp-controller="Notifications" asp-action="ViewNotificationOrder" asp-route-notificationId="@notification.NotificationId">View Order</a>
                         </div>
                     </div>
                 </div>
