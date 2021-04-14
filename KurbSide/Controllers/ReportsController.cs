@@ -142,7 +142,7 @@ namespace KurbSide.Controllers
         /// Downloads a PDF version of the specified report.
         /// </summary>
         /// <param name="pdfName">The name of the report</param>
-        public async Task<FileResult> CreateItemsReportsPdf(string pdfName)
+        public async Task<FileResult> CreateReports(string pdfName)
         {
             //Check that the accessing user is a business type account
             var user = await KSCurrentUser.KSGetCurrentUserAsync(_userManager, HttpContext);
@@ -222,6 +222,21 @@ namespace KurbSide.Controllers
                     //Assign to data source
                     pdfGrid.DataSource = itemTable;
                     fileName = "Removed Items Report";
+                    break;
+                }
+                case "AllOrdersReport":
+                {
+                    var orderList = await _context.Order
+                        .Include(m=> m.Member)
+                        .Include(s=> s.StatusNavigation)
+                        .Where(b => b.BusinessId.Equals(business.BusinessId))
+                        .Select(o => new{o.OrderId, o.Member.FirstName, o.Member.LastName,o.CreationDate,o.StatusNavigation.StatusName, o.GrandTotal})
+                        .OrderBy(o => o.CreationDate)
+                        .ToListAsync();
+                    IEnumerable<object> orderTable = orderList;
+                    //Assign to data source
+                    pdfGrid.DataSource = orderTable;
+                    fileName = "All Orders Report";
                     break;
                 }
             }
