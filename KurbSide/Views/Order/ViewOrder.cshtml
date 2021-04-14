@@ -163,7 +163,7 @@
                 {
                     case AccountType.MEMBER when order.Status < 4:
                         <a asp-area="Identity" asp-page="/Account/Manage/Orders" id="backToOrders" class="btn btn-secondary">@("<- Back To Orders")</a>
-                        <a class="btn btn-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="5">Cancel Order</a>
+                        <a class="btn btn-danger" id="cancelOrder" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="5">Cancel Order</a>
                         break;
                     case AccountType.MEMBER:
                         <a asp-area="Identity" asp-page="/Account/Manage/Orders" id="backToOrders" class="btn btn-sm btn-secondary">@("<- Back To Orders")</a>

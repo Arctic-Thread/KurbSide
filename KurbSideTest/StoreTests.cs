@@ -330,7 +330,7 @@ namespace KurbSideTest
         [Order(10)]
         public void UC24_ViewsListOfPreviousOrders_ShouldPass()
         {
-            //Login as a member 
+            //Calls a previous test to ensure a order has been made
             UC28_Store_MemberCheckout_ShouldPass();
 
             //gets a list of orders to process
@@ -348,6 +348,15 @@ namespace KurbSideTest
         [Order(11)]
         public void UC25_ViewOrderDetails_ShouldPass()
         {
+            //Calls a previous test to ensure a order has been made
+            UC28_Store_MemberCheckout_ShouldPass();
+            
+            //Goes to the order details page
+            _driver.FindElement(By.XPath("//div[@id='Pending']/a[@class='list-group-item list-group-item-action d-flex justify-content-between align-items-center'][1]")).Click();
+            
+            bool result = _driver.Title.Contains("Order")&& _driver.Title.Contains("with");
+            
+            Assert.IsTrue(result);
             
         }
         
@@ -358,7 +367,16 @@ namespace KurbSideTest
         [Order(12)]
         public void UC30_CancelOrder_ShouldPass()
         {
-
+            //Calls a previous test to ensure a order has been made
+            UC28_Store_MemberCheckout_ShouldPass();
+            
+            //Goes to the order details page
+            _driver.FindElement(By.XPath("//div[@id='Pending']/a[@class='list-group-item list-group-item-action d-flex justify-content-between align-items-center'][1]")).Click();
+            
+            //Cancels the order
+            KSClick("cancelOrder");
+            
+            
         }
         
         /// <summary>
@@ -369,7 +387,7 @@ namespace KurbSideTest
         [Order(13)]
         public void UC36_UpdateOrderStatus_ShouldPass()
         {
-
+            
         }
     }
 }
