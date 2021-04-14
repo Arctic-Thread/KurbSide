@@ -15,10 +15,6 @@ namespace KurbSide.Service
 {
     public class GeoCode
     {
-        /*
-         * https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf624867863d8af40c46fdb720334e2ff3adb3&start=-80.487571,43.384788&end=-80.510337,43.406860
-         */
-
         public static async Task<Location> GetLocationAsync (string address)
         {
             string apiUrl = "https://api.opencagedata.com/geocode/v1/json?";
