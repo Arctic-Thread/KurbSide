@@ -68,7 +68,7 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Catalogue" id="navbar-catalogue">Catalogue</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Orders">
+                    <a class="nav-link text-dark" asp-area="" id="businessOrders" asp-controller="Business" asp-action="Orders">
                         Orders
                         @{
                             var pendCount = business.Order.Count(o => new[] {0}.Contains(o.Status));

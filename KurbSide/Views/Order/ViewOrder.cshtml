@@ -135,8 +135,7 @@
             
                 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
                     maxZoom: 18,
-                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
-                        'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                    attribution: '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | KurbSide Business Map',
                     id: 'mapbox/streets-v11',
                     tileSize: 512,
                     zoomOffset: -1
@@ -163,7 +162,7 @@
                 {
                     case AccountType.MEMBER when order.Status < 4:
                         <a asp-area="Identity" asp-page="/Account/Manage/Orders" id="backToOrders" class="btn btn-secondary">@("<- Back To Orders")</a>
-                        <a class="btn btn-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="5">Cancel Order</a>
+                        <a class="btn btn-danger" id="cancelOrder" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="5">Cancel Order</a>
                         break;
                     case AccountType.MEMBER:
                         <a asp-area="Identity" asp-page="/Account/Manage/Orders" id="backToOrders" class="btn btn-sm btn-secondary">@("<- Back To Orders")</a>
@@ -174,7 +173,7 @@
                         <a title="permanent, customer will be notified" class="btn @(order.StatusNavigation.StatusId < 2 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 2 ? "-outline" : null)-info" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="2">Preparing</a>
                         <a title="permanent, customer will be notified" class="btn @(order.StatusNavigation.StatusId < 3 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 3 ? "-outline" : null)-success" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="3">Ready</a>
                         <a title="permanent, customer will be notified" class="btn @(order.StatusNavigation.StatusId < 4 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 4 ? "-outline" : null)-secondary" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="4">Picked Up</a>
-                        <a title="permanent, customer will be notified" class="btn @(order.StatusNavigation.StatusId < 4 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 5 ? "-outline" : null)-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="6">Cancel</a>
+                        <a title="permanent, customer will be notified" id="cancelOrder" class="btn @(order.StatusNavigation.StatusId < 4 ? null : "disabled hiddenbtn") btn@(order.StatusNavigation.StatusId < 5 ? "-outline" : null)-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="6">Cancel</a>
                         break;
                     case AccountType.BUSINESS:
                         <a asp-controller="Business" asp-action="Orders" id="backToOrders" class="btn btn-sm btn-secondary">@("<- Back To Orders")</a>

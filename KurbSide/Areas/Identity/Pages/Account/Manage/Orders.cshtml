@@ -17,7 +17,7 @@
     }
     @foreach (var status in Model.Status)
     {
-        <div name="@status.StatusName"class="card w-100 m-1">
+        <div class="card w-100 m-1">
             <div class="card-header bg-@status.BootstrapClass align-content-center text-center text-white"
                  style="@(status.StatusId >= 4 ? "opacity: 0.5" : null)">
                 <b>@status.StatusName</b>
@@ -27,7 +27,7 @@
                 </small>
             </div>
             <div class="card-body p-0">
-                <div class="list-group list-group-flush" id="allOrders">
+                <div id="@status.StatusName" class="list-group list-group-flush">
                     @foreach (var order in Model.Orders[status.StatusId])
                     {
                         <a id="@order.OrderId" asp-controller="Order" asp-action="ViewOrder" asp-route-id="@order.OrderId"

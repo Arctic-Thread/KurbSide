@@ -192,21 +192,18 @@ namespace KurbSideTest
             // Arrange
             // Fields & Buttons
             string searchBarID = "filter2";
-            string searchCatalogueID = "filter";
-            string viewBusinessCatalogueButtonID = "view-test-catalogue";
+            string viewBusinessCatalogueButtonID = "view-Business-catalogue";
             string addToCartButtonID = "addToCart";
             string cartItemsID = "cartItems";
 
             // Titles
             string storesPageTitle = "Stores - KurbSide";
-            string businessPageTitle = "test - KurbSide";
+            string businessPageTitle = "Business - KurbSide";
 
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
 
             KSTitleContains(storesPageTitle);
-            KSReplaceText(searchBarID, "test");
-            KSSendKeys(searchBarID, Keys.Enter);
 
             KSClick(viewBusinessCatalogueButtonID);
 
@@ -304,7 +301,7 @@ namespace KurbSideTest
             string placeOrderFormID = "PlaceOrderForm";
 
             // Titles
-            string businessPageTitle = "test - KurbSide";
+            string businessPageTitle = "Business - KurbSide";
             string orderConfirmationPageTitle = "My Orders - KurbSide";
 
             // Act
@@ -333,7 +330,7 @@ namespace KurbSideTest
         [Order(10)]
         public void UC24_ViewsListOfPreviousOrders_ShouldPass()
         {
-            //Login as a member 
+            //Calls a previous test to ensure a order has been made
             UC28_Store_MemberCheckout_ShouldPass();
 
             //gets a list of orders to process
@@ -344,13 +341,22 @@ namespace KurbSideTest
         }
         
         /// <summary>
-        /// UC25 - View Order Details
+        /// UC25 - View Order Details Member
         /// Tests to see if a user can see the details of a order
         /// </summary>
         [Test]
         [Order(11)]
-        public void UC25_ViewOrderDetails_ShouldPass()
+        public void UC25_Member_ViewOrderDetails_ShouldPass()
         {
+            //Calls a previous test to ensure a order has been made
+            UC28_Store_MemberCheckout_ShouldPass();
+            
+            //Goes to the order details page
+            _driver.FindElement(By.XPath("//div[@id='Pending']/a[@class='list-group-item list-group-item-action d-flex justify-content-between align-items-center'][1]")).Click();
+            
+            bool result = _driver.Title.Contains("Order")&& _driver.Title.Contains("with");
+            
+            Assert.IsTrue(result);
             
         }
         
@@ -361,7 +367,47 @@ namespace KurbSideTest
         [Order(12)]
         public void UC30_CancelOrder_ShouldPass()
         {
-
+            //Calls a previous test to ensure a order has been made
+            UC28_Store_MemberCheckout_ShouldPass();
+            
+            //Goes to the order details page
+            _driver.FindElement(By.XPath("//div[@id='Pending']/a[@class='list-group-item list-group-item-action d-flex justify-content-between align-items-center'][1]")).Click();
+            
+            //Cancels the order
+            KSClick("cancelOrder");
+            
+            //goes to the orders page
+            var result = _driver.FindElement(By.XPath("(//div[contains(.,'Canceled')])[4]"));
+            
+            Assert.That(result != null);
+        }
+        
+        /// <summary>
+        /// UC25 - View Order Details Business
+        /// Tests to see if a user can see the details of a order
+        /// </summary>
+        [Test]
+        [Order(11)]
+        public void UC25_Business_ViewOrderDetails_ShouldPass()
+        {
+            //Page Titles
+            string orderPageTitle = "Business Orders - KurbSide";
+            
+            //Calls a previous test to ensure a order has been made
+            UC28_Store_MemberCheckout_ShouldPass();
+            
+            //Logs out to allow business to login 
+            KSClick("navbar-logout");
+            KSUnitTestLogin(AccountType.BUSINESS);
+            
+            //Goes to orders page and views a order
+            KSClick("businessOrders");
+            KSTitleContains(orderPageTitle);
+            _driver.FindElement(By.XPath("//tbody/tr[1]/td/a")).Click();
+            
+            bool result = _driver.Title.Contains("Order")&& _driver.Title.Contains("with");
+            
+            Assert.IsTrue(result);
         }
         
         /// <summary>
@@ -372,7 +418,26 @@ namespace KurbSideTest
         [Order(13)]
         public void UC36_UpdateOrderStatus_ShouldPass()
         {
-
+            //Page Titles
+            string orderPageTitle = "Business Orders - KurbSide";
+            
+            //Calls a previous test to ensure a order has been made
+            UC28_Store_MemberCheckout_ShouldPass();
+            
+            //Logs out to allow business to login 
+            KSClick("navbar-logout");
+            KSUnitTestLogin(AccountType.BUSINESS);
+            
+            //Goes to orders page and views a order
+            KSClick("businessOrders");
+            KSTitleContains(orderPageTitle);
+            _driver.FindElement(By.XPath("//tbody/tr[1]/td/a")).Click();
+            
+            KSClick("cancelOrder");
+            
+            var result = _driver.FindElement(By.XPath("(//div[contains(.,'Denied')])[4]"));
+            
+            Assert.That(result != null);
         }
     }
 }
