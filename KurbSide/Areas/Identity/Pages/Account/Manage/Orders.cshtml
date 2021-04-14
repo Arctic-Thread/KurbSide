@@ -5,11 +5,17 @@
     ViewData["ActivePage"] = ManageNavPages.Orders;
 }
 <div class="row">
+    @if (!Model.Status.Any())
+    {
+        <div id="no orders" class="card w-100 m-1">
+            <p>You have no orders on your account.</p>
+        </div>
+    }
     @foreach (var status in Model.Status)
     {
-        <div class="card w-100 m-1">
+        <div name="@status.StatusName"class="card w-100 m-1">
             <div class="card-header bg-@status.BootstrapClass align-content-center text-center text-white"
-                style="@(status.StatusId>=4?"opacity: 0.5":null)">
+                 style="@(status.StatusId >= 4 ? "opacity: 0.5" : null)">
                 <b>@status.StatusName</b>
                 <br>
                 <small>
@@ -20,9 +26,9 @@
                 <div class="list-group list-group-flush">
                     @foreach (var order in Model.Orders[status.StatusId])
                     {
-                        <a asp-controller="Order" asp-action="ViewOrder" asp-route-id="@order.OrderId"
+                        <a id="@order.OrderId" asp-controller="Order" asp-action="ViewOrder" asp-route-id="@order.OrderId"
                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                           style="@(order.Status>=4?"opacity: 0.5":null)">
+                           style="@(order.Status >= 4 ? "opacity: 0.5" : null)">
                             <span>
                                 <span class="badge badge-dark">@order.OrderId.ToString().Substring(order.OrderId.ToString().Length - 6).ToUpper()</span>
                                 <br>
