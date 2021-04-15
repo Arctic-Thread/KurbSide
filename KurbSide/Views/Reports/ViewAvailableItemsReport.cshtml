@@ -56,8 +56,15 @@
                     @Html.DisplayFor(modelItem => item.Category)
                 </td>
                 <td class="align-middle">
-                    <img class="@(item.Sku == null ? "none" : "qrcode")" alt="@item.ItemName SKU" src="https://bwip-js.herokuapp.com/?bcid=datamatrix&text=@item.Sku"/>
-                    @item.Sku
+                    @if (item.Sku != null)
+                    {
+                        <img class="@(item.Sku == null ? "none" : "qrcode")" alt="SKU for @item.ItemName" src="https://bwip-js.herokuapp.com/?bcid=datamatrix&text=@item.Sku"/>
+                        <span>@item.Sku</span>
+                    }
+                    else
+                    {
+                        <span>N/A</span>
+                    }
                 </td>
                 <td class="align-middle">
                     <span class="@(item.Upc == null ? "none" : null)">
@@ -74,9 +81,13 @@
                                     <br/>
                                     break;
                             }
+                            @item.Upc
+                        }
+                        else
+                        {
+                            <span>N/A</span>
                         }
                     </span>
-                    @item.Upc
                 </td>
                 <td class="align-middle">
                     @item.Removed
