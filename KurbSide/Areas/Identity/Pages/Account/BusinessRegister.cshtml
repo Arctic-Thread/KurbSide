@@ -10,21 +10,21 @@
 
 }
 <partial name="_Background" />
-<h1>@ViewData["Title"]</h1>
 <form class="" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="row justify-content-center align-items-center jumbotron">
+    <div style="padding-top: 32px!important; padding-bottom: 32px!important;" class="row justify-content-center align-items-center jumbotron">
         <div class="col-md-4">
             <img src="/img/brand/kurbside/vector/Full Logo.svg" alt="KurbSide by Arctic Thread Logo" />
         </div>
         <div class="col-md-4">
             <div class="text-center">
+                <h1>@ViewData["Title"]</h1>
                 <p>
-                    Welcome to KurbSide, We'll get your storefront up and running as quickly as possible, we just need some information first.<br />
+                    Welcome to KurbSide, We'll get your storefront up and running as quickly as possible, we just need some information first.<br/>
                     You will be able to add your catalouge and any other information not provided on this page after you confirm your email address, and your information is validated.
                 </p>
             </div>
         </div>
+        <div style="margin-top: 2em;" asp-validation-summary="ModelOnly" class="text-danger"></div>
     </div>
     <div class="row justify-content-center align-items-center jumbotron">
         <div class="col-md-4">
