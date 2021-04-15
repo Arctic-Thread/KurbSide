@@ -7,8 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ExcelDataReader;
 using KurbSide.Service;
 using KurbSide.Utilities;
 using KurbSideUtils;
@@ -490,6 +494,156 @@ namespace KurbSide.Controllers
             }
 
             return RedirectToAction("Catalogue", new {filter, page, perPage});
+        }
+        
+        /// <summary>
+        /// Displays the Import tool page.
+        /// </summary>
+        public async Task<IActionResult> ViewImportItems()
+        {
+            //Check that the accessing user is a business type account
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+            
+            return View();
+        }
+
+        /// <summary>
+        /// Downloads the Import tool template.
+        /// </summary>
+        public async Task<FileResult> DownloadTemplate()
+        {
+            string filePath = "wwwroot/misc/KurbSide Import.xlsx";
+            string fileName = "KurbSide Import.xlsx";
+
+            byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+
+            return File(fileBytes, "application/force-download", fileName);
+        }
+
+        /// <summary>
+        /// Accepts a .xlsx or .xls file for importing items.
+        /// </summary>
+        /// <param name="itemImport">The .xlsx or .xls template file from the business.</param>
+        public async Task<IActionResult> ImportItems(IFormFile itemImport)
+        {
+            var business = await KSUserUtilities.KSGetCurrentBusinessAsync(_context, _userManager, HttpContext);
+            
+            //Check that the accessing user is a business type account
+            var accountType = await KSUserUtilities.KSGetAccountType(_context, _userManager, HttpContext);
+
+            //If the currently logged in user is not a business they can not access business controllers.
+            if (accountType != KSUserUtilities.AccountType.BUSINESS)
+            {
+                TempData["sysMessage"] = "Error: You're not signed in as a business.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            List<string> validFileExtensions = new List<string>
+            {
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "application/vnd.ms-excel"
+            };
+            
+            // If the file extension is not valid (not in validFileExtensions)
+            if (!validFileExtensions.Contains(itemImport.ContentType))
+            {
+                TempData["sysMessage"] = "Error: Invalid file type.";
+                return RedirectToAction("ViewImportItems", "Business");
+            }
+            
+            // If File size is greater than 20MB
+            if (itemImport.Length > 20971520)
+            {
+                TempData["sysMessage"] = "Error: File size is too large.";
+                return RedirectToAction("ViewImportItems", "Business");
+            }
+
+            try
+            {
+                await using var memoryStream = new MemoryStream();
+                
+                // Copy file to memory.
+                await itemImport.CopyToAsync(memoryStream);
+
+                // Create Excel file reader
+                using var excelDataReader = ExcelReaderFactory.CreateReader(memoryStream);
+                
+                // Ignore headers
+                var excelDataSetConfiguration = new ExcelDataSetConfiguration
+                {
+                    ConfigureDataTable = a => new ExcelDataTableConfiguration
+                    {
+                        UseHeaderRow = true
+                    }
+                };
+
+                // Create the dataset
+                DataSet dataSet = excelDataReader.AsDataSet(excelDataSetConfiguration);
+
+                // Get all rows from Sheet1
+                DataRowCollection row = dataSet.Tables["Sheet1"].Rows;
+                
+                foreach (DataRow tempRow in row)
+                {
+                    // convert DataRow tempRow to List a list of strings
+                    var rowValues = tempRow.ItemArray.ToList().Select(s => s.ToString()).ToList();
+
+                    string itemName = rowValues[0].KSTitleCase();
+                    string category = rowValues[1].KSTitleCase();
+                    string stringPrice = rowValues[2];
+                    
+                    string sku = rowValues[3].KSRemoveWhitespace().Length <= 0
+                        ? null
+                        : rowValues[3].KSRemoveWhitespace();
+
+                    string upc = rowValues[4].KSRemoveWhitespace().Length <= 0
+                        ? null
+                        : rowValues[4].KSRemoveWhitespace();
+
+                    string details = rowValues[5];
+                    
+                    string imageLocation = rowValues[6].KSRemoveWhitespace().Length <= 0
+                        ? null
+                        : rowValues[6].KSRemoveWhitespace();
+                    
+                    if (itemName.Length < 2)
+                        throw new Exception();
+
+                    if (category.Length < 2)
+                        throw new Exception();
+
+                    if (decimal.Parse(rowValues[2]) < 0.01m)
+                        throw new Exception();
+
+                    Item item = new Item
+                    {
+                        BusinessId = business.BusinessId,
+                        ItemName = itemName,                                
+                        Category = category,                                
+                        Price = decimal.Parse(stringPrice),
+                        Sku = sku,
+                        Upc = upc,
+                        Details = details,
+                        ImageLocation = imageLocation
+                    };
+
+                    await _context.AddAsync(item);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception)
+            {
+                TempData["sysMessage"] = "Error: Something went wrong while importing your items.";
+            }
+
+            return RedirectToAction("Catalogue");
         }
 
         #endregion

@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
     <PackageReference Include="Geocoding.Core" Version="4.0.1" />
     <PackageReference Include="Geocoding.Google" Version="4.0.1" />
     <PackageReference Include="GeoCoordinate" Version="2.0.1" />
@@ -31,6 +33,7 @@
     <Folder Include="wwwroot\css\Reports" />
     <Folder Include="wwwroot\img\brand\" />
     <Folder Include="wwwroot\img\bg\" />
+    <Folder Include="wwwroot\misc" />
   </ItemGroup>
 
   <ItemGroup>

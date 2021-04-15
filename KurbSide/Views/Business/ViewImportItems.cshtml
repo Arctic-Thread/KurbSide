@@ -1,0 +1,37 @@
+<script src="~/js/Business/ItemManagement/Import.js"></script>
+<div class="card">
+    <div class="card-header text-center">
+        <h2>Item Import Tool</h2>
+    </div>
+
+    <div class="card-body">
+        <p>Using the following template file you can import your items instead of manually adding them.</p>
+
+        <span>Requirements:</span>
+        <ul>
+            <li>Item name must be atleast 2 characters long.</li>
+            <li>Item category must be atleast 2 characters long.</li>
+            <li>Item price should use the following format: 1.23 (do not enter the $).</li>
+            <li>Item price must be atleast $0.01.</li>
+            <li>File size can not exceed 20 Megabytes(MB)</li>
+        </ul>
+
+        <a class="btn btn-primary" asp-controller="Business" asp-action="DownloadTemplate">Download Template</a>
+
+        <br/><br/>
+        <p>Once you are done, upload here it here</p>
+        <form method="post" enctype="multipart/form-data" asp-controller="Business" asp-action="ImportItems">
+            <div class="input-group" style="max-width: 400px;">
+                <div class="custom-file">
+                    <input id="itemImport" name="itemImport" type="file" class="custom-file-input" accept=".xlsx, .xls">
+                    <label id="labelForItemImport" for="itemImport" class="custom-file-label"></label>
+                </div>
+                <div class="input-group-append">
+                    <button id="resetImport" name="resetImport" type="button" class="btn btn-outline-danger">Reset</button>
+                </div>
+            </div>
+            <br/>
+            <button type="submit" class="btn btn-success">Upload</button>
+        </form>
+    </div>
+</div>
