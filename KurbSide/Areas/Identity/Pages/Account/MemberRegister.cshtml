@@ -4,14 +4,14 @@
     ViewData["Title"] = "Register for KurbSide";
 }
 <partial name="_Background" />
-<h1 class="text-center"><img src="/img/brand/kurbside/vector/Full Logo.svg" alt="KurbSide by Arctic Thread Logo"  width="75" height="75"/> @ViewData["Title"]</h1>
-
 <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-    <div class="row justify-content-center align-items-center jumbotron">
-        <div >
+    <div style="padding-top: 32px!important; padding-bottom: 32px!important;" class="row justify-content-center align-items-center jumbotron">
+        <div>
+        <h1 class="text-center"><img src="/img/brand/kurbside/vector/Full Logo.svg" alt="KurbSide by Arctic Thread Logo"  width="75" height="75"/> @ViewData["Title"]</h1>
+            <br/>
             <h4>Personal Information.</h4>
             <hr />
-            <!--<div asp-validation-summary="All" class="text-danger"></div>-->
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div>
                 <div class="form-group">
                     <span class="row">

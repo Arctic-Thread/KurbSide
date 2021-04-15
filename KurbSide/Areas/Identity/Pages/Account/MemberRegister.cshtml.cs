@@ -205,6 +205,7 @@ namespace KurbSide.Areas.Identity.Pages.Account
                 }
                 foreach (var error in result.Errors)
                 {
+                    if(error.Code=="DuplicateUserName") continue;
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
