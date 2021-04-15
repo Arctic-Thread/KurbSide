@@ -93,6 +93,7 @@
             <tbody>
             @foreach (var order in Model)
             {
+                var shortOrder = order.OrderId.ToString().Substring(order.OrderId.ToString().Length - 6).ToUpper();
                 <form method="post" asp-controller="Order" asp-action="UpdateStatus">
                 </form>
                 <tr>
@@ -119,15 +120,15 @@
                 </tr>
                 <tr class="hover-controls text-center align-middle">
                     <td colspan="100">
-                            <span class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+                            <span class="btn-group btn-group-sm btn-group-toggle">
                                 <label class="btn btn-dark disabled">
                                     <span>Quick Actions:</span>
                                 </label>
-                                <a class="btn @(order.StatusNavigation.StatusId<1?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<1?"-outline":null)-warning" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="1">Accept</a>
-                                <a class="btn @(order.StatusNavigation.StatusId<2?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<2?"-outline":null)-info" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="2">Preparing</a>
-                                <a class="btn @(order.StatusNavigation.StatusId<3?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<3?"-outline":null)-success" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="3">Ready</a>
-                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<4?"-outline":null)-secondary" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="4">Picked Up</a>
-                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<5?"-outline":null)-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="6">Cancel</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<1?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<1?"-outline":null)-warning" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="1" onclick="return confirm('Accept @shortOrder?\nThe customer will be notified of this change.')">Accept</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<2?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<2?"-outline":null)-info" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="2" onclick="return confirm('Prepare @shortOrder?\nThe customer will be notified of this change.')">Preparing</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<3?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<3?"-outline":null)-success" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="3" onclick="return confirm('Mark @shortOrder as Ready for Pickup?\nThe customer will be notified of this change.')">Ready</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<4?"-outline":null)-secondary" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="4" onclick="return confirm('Mark @shortOrder as picked up?\nThe customer will be notified of this change.')">Picked Up</a>
+                                <a class="btn @(order.StatusNavigation.StatusId<4?null:"disabled hiddenbtn") btn@(order.StatusNavigation.StatusId<5?"-outline":null)-danger" asp-controller="Order" asp-action="UpdateStatus" asp-route-id="@order.OrderId" asp-route-status="6" onclick="return confirm('Cancel @shortOrder?\nThe customer will be notified of this change.')">Cancel</a>
                                 @if (order.StatusNavigation.StatusId >= 4)
                                 {
                                     <label class="btn btn-light border-dark disabled">
