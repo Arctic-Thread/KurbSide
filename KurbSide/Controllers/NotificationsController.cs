@@ -117,5 +117,19 @@ namespace KurbSide.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> MarkAllNotificationAsRead()
+        {
+            var currentUser = await KSUserUtilities.KSGetCurrentUserAsync(_userManager, HttpContext);
+
+            var notifications = await _context.Notification
+                .Where(n => n.RecipientId.Equals(currentUser.Id))
+                .ToListAsync();
+            
+            _context.Notification.RemoveRange(notifications);
+            await _context.SaveChangesAsync();
+            
+            return RedirectToAction("Index");
+        }
     }
 }

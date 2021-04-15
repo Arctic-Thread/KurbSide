@@ -37,42 +37,68 @@
     @if (!Model.Any())
     {
         <div class="card">
-        <div class="card-body">
-            You have no new notifications.
-        </div>
+            <div class="card-body">
+                You have no new notifications.
+            </div>
         </div>
     }
     else
     {
-        <div class="d-flex flex-wrap justify-content-center business-columns">
-            @foreach (var notification in Model)
-            {
-                if (notification.Order != null)
-                {
-                    <div class="col-lg">
-                        <div class="card business">
-                            <div class="card-body text-center">
-                                <h5 class="card-title" style="margin-bottom: 3px;">@notification.Order.Business.BusinessName - Order Update</h5>
-                                <small>@notification.NotificationDateTime</small>
-                                <p class="ellipsisForLongText3Lines">@notification.NotificationDetails</p>
-                                <a asp-controller="Notifications" asp-action="ViewNotificationOrder" asp-route-notificationId="@notification.NotificationId">View Order</a>
-                            </div>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <div class="col-lg">
-                        <div class="card business">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">&nbsp;</h5>
-                                <p class="ellipsisForLongText3Lines">@notification.NotificationDetails</p>
-                                <a asp-controller="Notifications" asp-action="MarkNotificationAsRead" asp-route-notificationId="@notification.NotificationId">Mark As Read</a>
-                            </div>
-                        </div>
-                    </div>
-                }
-            }
+        <div class="card">
+            <div class="card-body m-0 p-0">
+                <table class="card-table table">
+                    <thead>
+                    <tr>
+                        <th scope="col" style="width: 25%" class="align-middle text-center">Notification Type</th>
+                        <th scope="col" style="width: 10%" class="align-middle text-center">Date</th>
+                        <th scope="col" style="width: 50%" class="align-middle text-center">Details</th>
+                        <th scope="col" style="width: 15%" class="align-middle text-center">
+                            <a class="btn btn-outline-danger" style="width: 140px;" asp-controller="Notifications" asp-action="MarkAllNotificationAsRead">Clear All</a>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var notification in Model)
+                    {
+                        <tr>
+                            @if (notification.Order != null)
+                            {
+                                <td class="text-center">
+                                    <span>@notification.Order.Business.BusinessName - Order Update</span>
+                                </td>
+                                <td class="text-center">
+                                    <small>@notification.NotificationDateTime</small>
+                                </td>
+                                <td class="text-center">
+                                    <p class="ellipsisForLongText3Lines">@notification.NotificationDetails</p>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group-vertical">
+                                        <a class="btn btn-primary" style="width: 140px;" asp-controller="Notifications" asp-action="ViewNotificationOrder" asp-route-notificationId="@notification.NotificationId">View Order</a>
+                                        <a class="btn btn-outline-primary" style="width: 140px;" asp-controller="Notifications" asp-action="MarkNotificationAsRead" asp-route-notificationId="@notification.NotificationId">Mark As Read</a>
+                                    </div>
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-center">
+                                    <span>New Notification</span>
+                                </td>
+                                <td class="text-center">
+                                    <small>@notification.NotificationDateTime</small>
+                                </td>
+                                <td class="text-center">
+                                    <p class="ellipsisForLongText3Lines">@notification.NotificationDetails</p>
+                                </td>
+                                <td class="text-center">
+                                    <a class="btn btn-outline-primary" style="width: 140px; float:right" asp-controller="Notifications" asp-action="MarkNotificationAsRead" asp-route-notificationId="@notification.NotificationId">Mark As Read</a>
+                                </td>
+                            }
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
         </div>
         <br/>
         <div class="container container-fluid justify-content-center">
