@@ -20,7 +20,8 @@ namespace KurbSide.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<Notification> _logger;
 
-        public NotificationsController(KSContext context, UserManager<IdentityUser> userManager, ILogger<Notification> logger)
+        public NotificationsController(KSContext context, UserManager<IdentityUser> userManager,
+            ILogger<Notification> logger)
         {
             _context = context;
             _userManager = userManager;
@@ -40,7 +41,6 @@ namespace KurbSide.Controllers
 
             List<Notification> notifications = new List<Notification>();
 
-            //TODO maybe this can be condensed instead of if/else
             if (accountType == KSUserUtilities.AccountType.MEMBER)
             {
                 notifications = await _context.Notification
@@ -89,12 +89,24 @@ namespace KurbSide.Controllers
                 .Where(n => n.RecipientId.Equals(currentUser.Id))
                 .FirstOrDefaultAsync();
 
-            //TODO try/catch
-            notification.Read = true;
-            _context.Update(notification);
-            await _context.SaveChangesAsync();
+            try
+            {
+                notification.Read = true;
+                _context.Update(notification);
+                await _context.SaveChangesAsync();
 
-            return RedirectToAction("ViewOrder", "Order", new {id = notification.OrderId});
+                return RedirectToAction("ViewOrder", "Order", new {id = notification.OrderId});
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                _logger.LogError("DbUpdateConcurrencyException while updating notification.");
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex.GetBaseException().Message}.");
+                return RedirectToAction("Index");
+            }
         }
 
         /// <summary>
@@ -110,10 +122,20 @@ namespace KurbSide.Controllers
                 .Where(n => n.RecipientId.Equals(currentUser.Id))
                 .FirstOrDefaultAsync();
 
-            //TODO try/catch
-            notification.Read = true;
-            _context.Update(notification);
-            await _context.SaveChangesAsync();
+            try
+            {
+                notification.Read = true;
+                _context.Update(notification);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                _logger.LogError("DbUpdateConcurrencyException while updating notification.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex.GetBaseException().Message}.");
+            }
 
             return RedirectToAction("Index");
         }
@@ -125,10 +147,21 @@ namespace KurbSide.Controllers
             var notifications = await _context.Notification
                 .Where(n => n.RecipientId.Equals(currentUser.Id))
                 .ToListAsync();
-            
-            _context.Notification.RemoveRange(notifications);
-            await _context.SaveChangesAsync();
-            
+
+            try
+            {
+                _context.Notification.RemoveRange(notifications);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                _logger.LogError("DbUpdateConcurrencyException while updating notification.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error: {ex.GetBaseException().Message}.");
+            }
+
             return RedirectToAction("Index");
         }
     }
