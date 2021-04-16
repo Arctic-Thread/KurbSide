@@ -179,7 +179,7 @@ namespace KurbSideTest
 
             IReadOnlyList<IWebElement> itemNames = _driver.FindElements(By.Id("catalogue-allItems"));//gets all the items and store them in a list
 
-            Assert.IsTrue(itemNames.Count == 1);//checks to make sure that there are no items in the list
+            Assert.IsTrue(itemNames.Count == 2);//checks to make sure that there are no items in the list
         }
         
         /// <summary>
@@ -199,7 +199,7 @@ namespace KurbSideTest
 
             IReadOnlyList<IWebElement> itemNames = _driver.FindElements(By.Id("catalogue-allItems"));//gets all the items and store them in a list
 
-            Assert.IsTrue(itemNames.Count == 0);//checks to make sure that there are no items in the list
+            Assert.IsTrue(itemNames.Count == 1);//checks to make sure that there are no items in the list
         }
     }    
 }

@@ -81,7 +81,7 @@ namespace KurbSideTest
             // Fields & Buttons
             string businessListingsCSSSelector = "[id^='businessListing-']"; // IDs that start with 'businessListing-'
             string searchBarID = "filter2";
-            string desiredBusinessListingID = "businessListing-test";
+            string desiredBusinessListingID = "businessListing-Business";
 
             // Titles
             string storesPageTitle = "Stores - KurbSide";
@@ -91,7 +91,7 @@ namespace KurbSideTest
 
             KSTitleContains(storesPageTitle);
             IReadOnlyList<IWebElement> originalNumberOfBusinessListings = _driver.FindElements(By.CssSelector(businessListingsCSSSelector));
-            KSReplaceText(searchBarID, "test");
+            KSReplaceText(searchBarID, "Business");
             KSSendKeys(searchBarID, Keys.Enter);
 
             IReadOnlyList<IWebElement> newNumberOfBusinessListings = _driver.FindElements(By.CssSelector(businessListingsCSSSelector));
@@ -115,18 +115,18 @@ namespace KurbSideTest
             // Arrange
             // Fields & Buttons
             string searchBarID = "filter2";
-            string viewBusinessCatalogueButtonID = "view-test-catalogue";
+            string viewBusinessCatalogueButtonID = "view-Business-catalogue";
             string catalogueItems = "[id^='catalogue-item-']";
 
             // Titles
             string storesPageTitle = "Stores - KurbSide";
-            string businessPageTitle = "test - KurbSide";
+            string businessPageTitle = "Business - KurbSide";
 
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
 
             KSTitleContains(storesPageTitle);
-            KSReplaceText(searchBarID, "test");
+            KSReplaceText(searchBarID, "Business");
             KSSendKeys(searchBarID, Keys.Enter);
 
             KSClick(viewBusinessCatalogueButtonID);
@@ -152,19 +152,19 @@ namespace KurbSideTest
             // Arrange
             // Fields & Buttons
             string searchBarID = "filter2";
-            string viewBusinessCatalogueButtonID = "view-test-catalogue";
+            string viewBusinessCatalogueButtonID = "view-Business-catalogue";
             string viewTestItemID = "view-Test Item";
 
             // Titles
             string storesPageTitle = "Stores - KurbSide";
-            string businessPageTitle = "test - KurbSide";
+            string businessPageTitle = "Business - KurbSide";
             string testItemPageTitle = "Test Item - KurbSide";
 
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
 
             KSTitleContains(storesPageTitle);
-            KSReplaceText(searchBarID, "test");
+            KSReplaceText(searchBarID, "Business");
             KSSendKeys(searchBarID, Keys.Enter);
 
             KSClick(viewBusinessCatalogueButtonID);
@@ -191,19 +191,19 @@ namespace KurbSideTest
             // Arrange
             // Fields & Buttons
             string searchBarID = "filter2";
-            string viewBusinessCatalogueButtonID = "view-test-catalogue";
+            string viewBusinessCatalogueButtonID = "view-Business-catalogue";
             string addToCartButtonID = "addToCart";
             string cartItemsID = "cartItems";
 
             // Titles
             string storesPageTitle = "Stores - KurbSide";
-            string businessPageTitle = "test - KurbSide";
+            string businessPageTitle = "Business - KurbSide";
 
             // Act
             KSUnitTestLogin(AccountType.MEMBER);
 
             KSTitleContains(storesPageTitle);
-            KSReplaceText(searchBarID, "test");
+            KSReplaceText(searchBarID, "Business");
             KSSendKeys(searchBarID, Keys.Enter);
 
             KSClick(viewBusinessCatalogueButtonID);
@@ -291,7 +291,7 @@ namespace KurbSideTest
             string placeOrderFormID = "PlaceOrderForm";
 
             // Titles
-            string businessPageTitle = "test - KurbSide";
+            string businessPageTitle = "Business - KurbSide";
             string orderConfirmationPageTitle = "My Orders - KurbSide";
 
             // Act
@@ -393,6 +393,8 @@ namespace KurbSideTest
             
             //Cancels the order
             KSClick("cancelOrder");
+            var confirmClearCart = _driver.SwitchTo().Alert();
+            confirmClearCart.Accept();
             
             //goes to the orders page
             var result = _driver.FindElement(By.XPath("(//div[contains(.,'Canceled')])[4]"));
@@ -424,6 +426,8 @@ namespace KurbSideTest
             _driver.FindElement(By.XPath("//tbody/tr[1]/td/a")).Click();
             
             KSClick("cancelOrder");
+            var confirmClearCart = _driver.SwitchTo().Alert();
+            confirmClearCart.Accept();
             
             var result = _driver.FindElement(By.XPath("(//div[contains(.,'Denied')])[4]"));
             
