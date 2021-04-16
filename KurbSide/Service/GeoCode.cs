@@ -1,15 +1,9 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace KurbSide.Service
 {
@@ -22,30 +16,36 @@ namespace KurbSide.Service
 
             string requestUrl = $"{apiUrl}q={address}&key={apiKey}";
 
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri(requestUrl);
-                HttpResponseMessage response = await client.GetAsync("");
-
-                if (response.StatusCode == HttpStatusCode.OK)
+                using (var client = new HttpClient())
                 {
-                    var jsonString = await response.Content.ReadAsStringAsync();
-                    var jsonContent = JsonConvert.DeserializeObject<dynamic>(jsonString);
+                    client.BaseAddress = new Uri(requestUrl);
+                    HttpResponseMessage response = await client.GetAsync("");
 
-                    double lat = jsonContent["results"][0]["geometry"]["lat"];
-                    double lng = jsonContent["results"][0]["geometry"]["lng"];
-                    string fmt = jsonContent["results"][0]["formatted"];
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        var jsonString = await response.Content.ReadAsStringAsync();
+                        var jsonContent = JsonConvert.DeserializeObject<dynamic>(jsonString);
 
-                    return new Location(lat, lng, fmt);
-                }
-                else if(response.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    return new Location(0f, 0f, "bad key");
-                }
-                else
-                {
+                        double lat = jsonContent["results"][0]["geometry"]["lat"];
+                        double lng = jsonContent["results"][0]["geometry"]["lng"];
+                        string fmt = jsonContent["results"][0]["formatted"];
+
+                        return new Location(lat, lng, fmt);
+                    }
+
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    {
+                        return new Location(0f, 0f, "bad key");
+                    }
+
                     return new Location(0f, 0f, "invalid");
                 }
+            }
+            catch (Exception)
+            {
+                return new Location(0f, 0f, "Invalid");
             }
         }
 
@@ -84,14 +84,13 @@ namespace KurbSide.Service
 
                     return new Distance(dst.Value<float>(), tme.Value<float>(), point1, point2, jsonString);
                 }
-                else if (response.StatusCode == HttpStatusCode.Unauthorized)
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     return new Distance(0, 0, point1, point2, requestUrl);
                 }
-                else
-                {
-                    return new Distance(0, 0, point1, point2, "invalid");
-                }
+
+                return new Distance(0, 0, point1, point2, "invalid");
             }
         }
 
@@ -100,10 +99,10 @@ namespace KurbSide.Service
     {
         public Distance(double dst, double tme, Location l1, Location l2, string debug  )
         {
-            this.distance = dst;
-            this.time = tme;
-            this.loc1 = l1;
-            this.loc2 = l2;
+            distance = dst;
+            time = tme;
+            loc1 = l1;
+            loc2 = l2;
             this.debug = debug;
         }
 
