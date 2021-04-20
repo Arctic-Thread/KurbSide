@@ -22,7 +22,7 @@ namespace KurbSide.Service
         private static string CreateEmailMessage(OrderStatus orderStatus, Guid orderId, string businessName)
         {
             string message = CreateMessage(orderStatus, businessName);
-            var linkToOrder = $"https://localhost:5001/Order/{orderId}"; //TODO
+            var linkToOrder = $"https://kurbsi.de/Order/{orderId}";
 
             message += $" to view it's details <a href='{HtmlEncoder.Default.Encode(linkToOrder)}'>Click here</a>";
             return message;
