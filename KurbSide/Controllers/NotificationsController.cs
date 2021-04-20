@@ -57,6 +57,7 @@ namespace KurbSide.Controllers
                 notifications = await _context.Notification
                     .Include(s => s.Sender.Member)
                     .Include(r => r.Recipient.Business)
+                    .Include(o => o.Order)
                     .Where(n => n.RecipientId.Equals(currentUser.Id))
                     .Where(n => n.Read == false)
                     .ToListAsync();
