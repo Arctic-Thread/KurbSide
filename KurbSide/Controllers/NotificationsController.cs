@@ -63,6 +63,8 @@ namespace KurbSide.Controllers
                     .ToListAsync();
             }
 
+            notifications = notifications.OrderByDescending(n => n.NotificationDateTime).ToList();
+
             var paginatedList = KSPaginatedList<Notification>.Create(notifications.AsQueryable(), page, perPage);
 
             TempData["currentPage"] = page;
