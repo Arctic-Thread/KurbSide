@@ -42,6 +42,8 @@
                                 <span style="font-family:monospace;">
                                     @{
                                         var totalItems = order.OrderItem.Sum(oi => oi.Quantity);
+                                        decimal serviceFee = 3.50m;
+                                        order.GrandTotal += serviceFee;
                                     }
                                     @("Create Date:".PadRight(15, '\u00a0'))@(order.CreationDate.ToString("d").PadLeft(10, '\u00a0'))<br/>
                                     @("Total Items:".PadRight(15, '\u00a0'))@(totalItems.ToString().PadLeft(10, '\u00a0'))<br/>
