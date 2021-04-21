@@ -493,7 +493,7 @@ namespace KurbSide.Controllers
                     _context.Order.Update(order);
                     
                     string notificationDetails = KSNotificationAndEmails.CreateMessage((OrderStatus) status, order.Business.BusinessName);
-                    await KSNotification.CreateNotification(_context, currentUser.Id, order.Member.AspNet.Id, notificationDetails, orderId: order.OrderId);
+                    await KSNotification.CreateNotification(_context, currentUser.Id, order.Business.AspNet.Id, notificationDetails, orderId: order.OrderId);
 
                     await KSEmail.SendEmail(order.Business.AspNet.Email, (OrderStatus) status, order.OrderId, order.Business.BusinessName);
                 }
